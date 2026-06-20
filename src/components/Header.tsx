@@ -16,6 +16,16 @@ const NAV: { label: string; to: string; search?: Record<string, string> }[] = [
   { label: "About", to: "/about" },
 ];
 
+const ICON_SIZE = "h-[18px] w-[18px] md:h-[22px] md:w-[22px]";
+
+function Badge({ count }: { count: number }) {
+  return (
+    <span className="absolute top-0 right-0 bg-foreground text-background text-[10px] h-4 min-w-4 px-1 rounded-full grid place-items-center">
+      {count}
+    </span>
+  );
+}
+
 export function Header() {
   const { count, open } = useCart();
   const { isAuthenticated } = useAuth();
@@ -41,74 +51,129 @@ export function Header() {
           scrolled ? "bg-background/90 backdrop-blur" : "bg-background"
         }`}
       >
-        <div className="mx-auto max-w-[1500px] px-5 lg:px-10 h-16 lg:h-20 grid grid-cols-[1fr_auto_1fr] items-center">
-          <nav className="hidden md:flex items-center gap-8 text-[12px] tracking-[0.18em] uppercase">
-            {NAV.map((item) => (
+        <div className="mx-auto max-w-[1500px] px-5 lg:px-10 h-16 md:h-20">
+          {/* Mobile: flex layout with centered logo */}
+          <div className="flex md:hidden items-center h-full">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="grid place-items-center w-10 h-10 shrink-0 -ml-2 text-foreground"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            <div className="flex-1 flex justify-center min-w-0 px-2">
               <Link
-                key={item.label}
-                to={item.to}
-                search={item.search as never}
-                className="link-underline text-foreground/80 hover:text-foreground"
+                to="/"
+                className="flex items-center"
+                aria-label="Velin Studio — home"
               >
-                {item.label}
+                <img
+                  src={LOGO}
+                  alt="Velin Studio"
+                  className="h-6 w-auto max-w-full"
+                />
               </Link>
-            ))}
-          </nav>
+            </div>
 
-          <button
-            type="button"
-            onClick={() => setMobileOpen(true)}
-            className="md:hidden justify-self-start p-2 -ml-2 text-foreground"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+            <div className="flex items-center shrink-0 gap-3">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label="Search"
+              >
+                <Search className={ICON_SIZE} />
+              </button>
+              <Link
+                to={isAuthenticated ? "/account" : "/login"}
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label={isAuthenticated ? "My account" : "Sign in"}
+              >
+                <User className={ICON_SIZE} />
+              </Link>
+              <Link
+                to="/wishlist"
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label="Wishlist"
+              >
+                <Heart className={ICON_SIZE} />
+                {wishCount > 0 && <Badge count={wishCount} />}
+              </Link>
+              <button
+                type="button"
+                onClick={open}
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label="Cart"
+              >
+                <ShoppingBag className={ICON_SIZE} />
+                {count > 0 && <Badge count={count} />}
+              </button>
+            </div>
+          </div>
 
-          <Link to="/" className="justify-self-center flex items-center" aria-label="Velin Studio — home">
-            <img src={LOGO} alt="Velin Studio" className="h-8 lg:h-10 w-auto" />
-          </Link>
+          {/* Desktop: grid layout with centered logo */}
+          <div className="hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-full">
+            <nav className="flex items-center gap-6 text-[12px] tracking-[0.18em] uppercase">
+              {NAV.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  search={item.search as never}
+                  className="link-underline text-foreground/80 hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
 
-          <div className="justify-self-end flex items-center gap-1 lg:gap-2">
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              className="p-2 text-foreground/80 hover:text-foreground"
-              aria-label="Search"
-            >
-              <Search className="h-[18px] w-[18px]" />
-            </button>
             <Link
-              to={isAuthenticated ? "/account" : "/login"}
-              className="p-2 text-foreground/80 hover:text-foreground"
-              aria-label={isAuthenticated ? "My account" : "Sign in"}
+              to="/"
+              className="flex items-center"
+              aria-label="Velin Studio — home"
             >
-              <User className="h-[18px] w-[18px]" />
+              <img
+                src={LOGO}
+                alt="Velin Studio"
+                className="h-9 lg:h-10 w-auto"
+              />
             </Link>
-            <Link
-              to="/wishlist"
-              className="relative p-2 text-foreground/80 hover:text-foreground"
-              aria-label="Wishlist"
-            >
-              <Heart className="h-[18px] w-[18px]" />
-              {wishCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-foreground text-background text-[10px] h-4 min-w-4 px-1 rounded-full grid place-items-center">
-                  {wishCount}
-                </span>
-              )}
-            </Link>
-            <button
-              type="button"
-              onClick={open}
-              className="relative p-2 text-foreground/80 hover:text-foreground"
-              aria-label="Cart"
-            >
-              <ShoppingBag className="h-[18px] w-[18px]" />
-              {count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-foreground text-background text-[10px] h-4 min-w-4 px-1 rounded-full grid place-items-center">
-                  {count}
-                </span>
-              )}
-            </button>
+
+            <div className="flex items-center justify-self-end gap-5 lg:gap-6">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label="Search"
+              >
+                <Search className={ICON_SIZE} />
+              </button>
+              <Link
+                to={isAuthenticated ? "/account" : "/login"}
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label={isAuthenticated ? "My account" : "Sign in"}
+              >
+                <User className={ICON_SIZE} />
+              </Link>
+              <Link
+                to="/wishlist"
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label="Wishlist"
+              >
+                <Heart className={ICON_SIZE} />
+                {wishCount > 0 && <Badge count={wishCount} />}
+              </Link>
+              <button
+                type="button"
+                onClick={open}
+                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
+                aria-label="Cart"
+              >
+                <ShoppingBag className={ICON_SIZE} />
+                {count > 0 && <Badge count={count} />}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -118,7 +183,11 @@ export function Header() {
         <div className="fixed inset-0 z-50 bg-background animate-fade-in-slow">
           <div className="flex items-center justify-between px-5 h-16 border-b border-border/60">
             <img src={LOGO} alt="Velin Studio" className="h-8" />
-            <button onClick={() => setMobileOpen(false)} aria-label="Close menu" className="p-2 -mr-2">
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="grid place-items-center w-10 h-10 -mr-2"
+            >
               <X className="h-5 w-5" />
             </button>
           </div>
