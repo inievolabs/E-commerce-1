@@ -102,7 +102,7 @@ function ProductPage() {
         <nav className="mb-6 lg:mb-10 text-[11px] tracking-widest uppercase text-muted-foreground">
           <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
           <span className="mx-2 opacity-60">/</span>
-          <Link to="/shop" search={{ category: product.category } as never} className="hover:text-foreground transition-colors capitalize">
+          <Link to="/shop" className="hover:text-foreground transition-colors capitalize">
             {product.category}
           </Link>
           <span className="mx-2 opacity-60">/</span>
