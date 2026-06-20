@@ -135,6 +135,15 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function RouteTransition({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <div key={pathname} className="animate-route-fade">
+      {children}
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
