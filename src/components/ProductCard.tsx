@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import type { Product } from "@/data/products";
 import { formatPrice, useCart } from "@/lib/cart";
+import { WishlistButton } from "@/components/WishlistButton";
 
 interface Props {
   product: Product;
@@ -47,6 +48,10 @@ export function ProductCard({ product, aspect = "portrait" }: Props) {
             {product.isNew ? "New" : "Bestseller"}
           </div>
         )}
+
+        <div className="absolute top-3 right-3 bg-background/80 backdrop-blur rounded-full p-2 text-foreground/80 hover:text-foreground">
+          <WishlistButton productId={product.id} size={16} />
+        </div>
 
         <button
           type="button"
