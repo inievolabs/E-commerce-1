@@ -52,7 +52,7 @@ export function Header() {
         }`}
       >
         <div className="mx-auto max-w-[1500px] px-5 lg:px-10 h-16 md:h-20">
-          {/* Mobile: flex layout with centered logo */}
+          {/* Mobile: hamburger + centered logo only (icons moved to bottom nav) */}
           <div className="flex md:hidden items-center h-full">
             <button
               type="button"
@@ -77,41 +77,10 @@ export function Header() {
               </Link>
             </div>
 
-            <div className="flex items-center shrink-0 gap-3">
-              <button
-                type="button"
-                onClick={() => setSearchOpen(true)}
-                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
-                aria-label="Search"
-              >
-                <Search className={ICON_SIZE} />
-              </button>
-              <Link
-                to={isAuthenticated ? "/account" : "/login"}
-                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
-                aria-label={isAuthenticated ? "My account" : "Sign in"}
-              >
-                <User className={ICON_SIZE} />
-              </Link>
-              <Link
-                to="/wishlist"
-                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
-                aria-label="Wishlist"
-              >
-                <Heart className={ICON_SIZE} />
-                {wishCount > 0 && <Badge count={wishCount} />}
-              </Link>
-              <button
-                type="button"
-                onClick={open}
-                className="relative grid place-items-center w-10 h-10 shrink-0 text-foreground/80 hover:text-foreground transition-colors"
-                aria-label="Cart"
-              >
-                <ShoppingBag className={ICON_SIZE} />
-                {count > 0 && <Badge count={count} />}
-              </button>
-            </div>
+            {/* Spacer to balance the hamburger and keep logo centered */}
+            <div className="w-10 h-10 shrink-0 -mr-2" aria-hidden="true" />
           </div>
+
 
           {/* Desktop: grid layout with centered logo */}
           <div className="hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-full">

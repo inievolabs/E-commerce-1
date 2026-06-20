@@ -14,6 +14,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { CartDrawer } from "../components/CartDrawer";
+import { MobileBottomNav } from "../components/MobileBottomNav";
+
 import { CartProvider } from "../lib/cart";
 import { AuthProvider } from "../lib/auth";
 import { WishlistProvider } from "../lib/wishlist";
@@ -146,8 +148,16 @@ function RootComponent() {
                 <Outlet />
               </main>
               <Footer />
+              {/* Spacer so fixed mobile bottom nav doesn't overlap footer content */}
+              <div
+                className="md:hidden"
+                aria-hidden="true"
+                style={{ height: "calc(60px + env(safe-area-inset-bottom))" }}
+              />
               <CartDrawer />
+              <MobileBottomNav />
             </div>
+
           </CartProvider>
         </WishlistProvider>
       </AuthProvider>
