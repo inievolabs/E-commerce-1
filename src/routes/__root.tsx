@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -134,6 +135,15 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function RouteTransition({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <div key={pathname} className="animate-route-fade">
+      {children}
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -145,7 +155,9 @@ function RootComponent() {
             <div className="min-h-screen flex flex-col bg-background text-foreground">
               <Header />
               <main className="flex-1">
-                <Outlet />
+                <RouteTransition>
+                  <Outlet />
+                </RouteTransition>
               </main>
               <Footer />
               {/* Spacer so fixed mobile bottom nav doesn't overlap footer content */}
