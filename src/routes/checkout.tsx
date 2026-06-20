@@ -59,20 +59,30 @@ function Checkout() {
 
   const setF = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((s) => ({ ...s, [k]: e.target.value }));
+
+  return (
+    <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-12 lg:py-20">
+      <header className="mb-12">
+        <p className="eyebrow">Checkout</p>
+        <h1 className="mt-3 font-serif text-4xl md:text-5xl">Complete your order</h1>
+      </header>
+
+      <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20">
+        <form className="space-y-12" onSubmit={onSubmit}>
           <section>
             <h2 className="font-serif text-2xl mb-6">Contact</h2>
-            <Field label="Email" type="email" placeholder="you@example.com" required />
+            <Field label="Email" type="email" placeholder="you@example.com" required value={form.email} onChange={setF("email")} />
           </section>
 
           <section>
             <h2 className="font-serif text-2xl mb-6">Shipping address</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              <Field label="First name" required />
-              <Field label="Last name" required />
-              <Field label="Address" className="sm:col-span-2" required />
-              <Field label="Apartment, suite (optional)" className="sm:col-span-2" />
-              <Field label="City" required />
-              <Field label="Postal code" required />
+              <Field label="First name" required value={form.firstName} onChange={setF("firstName")} />
+              <Field label="Last name" required value={form.lastName} onChange={setF("lastName")} />
+              <Field label="Address" className="sm:col-span-2" required value={form.address} onChange={setF("address")} />
+              <Field label="Apartment, suite (optional)" className="sm:col-span-2" value={form.apt} onChange={setF("apt")} />
+              <Field label="City" required value={form.city} onChange={setF("city")} />
+              <Field label="Postal code" required value={form.postal} onChange={setF("postal")} />
               <Field label="Country" defaultValue="France" className="sm:col-span-2" required />
               <Field label="Phone" type="tel" className="sm:col-span-2" />
             </div>
