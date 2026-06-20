@@ -35,6 +35,7 @@ export interface Order {
 interface AuthContextValue {
   user: User | null;
   isAuthenticated: boolean;
+  isReady: boolean;
   orders: Order[];
   addresses: Address[];
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
