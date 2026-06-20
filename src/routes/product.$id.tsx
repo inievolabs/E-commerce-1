@@ -42,7 +42,7 @@ export const Route = createFileRoute("/product/$id")({
 const SIZES = ["S", "M", "L"];
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: Product };
   const { add, open } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [size, setSize] = useState("M");
