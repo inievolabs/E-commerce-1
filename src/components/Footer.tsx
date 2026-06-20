@@ -110,7 +110,9 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Velin Studio. All rights reserved.</p>
           <div className="flex items-center gap-2 opacity-70">
             <span>Developed by</span>
-            <img src={INIEVO} alt="Inievo" className="h-5 w-auto" />
+            <a href="https://inievo.com" target="_blank" rel="noopener noreferrer" aria-label="Inievo">
+              <img src={INIEVO} alt="Inievo" className="h-5 w-auto" />
+            </a>
           </div>
         </div>
       </div>

@@ -31,14 +31,15 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 function AccountPage() {
-  const { user, isAuthenticated, orders, logout } = useAuth();
+  const { user, isAuthenticated, isReady, orders, logout } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("orders");
 
   useEffect(() => {
-    if (!isAuthenticated) navigate({ to: "/login" });
-  }, [isAuthenticated, navigate]);
+    if (isReady && !isAuthenticated) navigate({ to: "/login" });
+  }, [isReady, isAuthenticated, navigate]);
 
+  if (!isReady) return <div className="mx-auto max-w-md px-5 py-24 text-center text-sm text-muted-foreground">Loading…</div>;
   if (!user) return null;
 
   return (
