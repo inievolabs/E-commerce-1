@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { formatPrice, getProductById, useCart } from "@/lib/cart";
+import { useAdminStore } from "@/lib/admin-store";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -14,12 +15,50 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function Checkout() {
-  const { items, subtotal } = useCart();
+  const { items, subtotal, clear } = useCart();
+  const { addOrder, adjustStock } = useAdminStore();
+  const navigate = useNavigate();
   const [shipping, setShipping] = useState("standard");
   const [payment, setPayment] = useState("card");
+  const [form, setForm] = useState({
+    email: "", firstName: "", lastName: "", address: "", apt: "",
+    city: "", postal: "", country: "Bangladesh", phone: "",
+  });
 
   const shippingCost = shipping === "express" ? 25 : 0;
   const total = subtotal + shippingCost;
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (items.length === 0) return;
+    const order = addOrder({
+      customerName: `${form.firstName} ${form.lastName}`.trim() || "Guest",
+      customerEmail: form.email,
+      shippingAddress: [form.address, form.apt, `${form.city} ${form.postal}`, form.country]
+        .filter(Boolean).join("\n"),
+      items: items.map((it) => {
+        const p = getProductById(it.productId);
+        return {
+          productId: it.productId,
+          name: p?.name ?? it.productId,
+          price: p?.price ?? 0,
+          qty: it.qty,
+          color: it.color,
+          size: it.size,
+        };
+      }),
+      subtotal,
+      shipping: shippingCost,
+      total,
+    });
+    items.forEach((it) => adjustStock(it.productId, -it.qty));
+    clear();
+    alert(`Order ${order.id} placed (demo).`);
+    navigate({ to: "/" });
+  };
+
+  const setF = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((s) => ({ ...s, [k]: e.target.value }));
 
   return (
     <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-12 lg:py-20">
@@ -29,23 +68,23 @@ function Checkout() {
       </header>
 
       <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20">
-        <form className="space-y-12" onSubmit={(e) => { e.preventDefault(); alert("This is a demo checkout."); }}>
+        <form className="space-y-12" onSubmit={onSubmit}>
           <section>
             <h2 className="font-serif text-2xl mb-6">Contact</h2>
-            <Field label="Email" type="email" placeholder="you@example.com" required />
+            <Field label="Email" type="email" placeholder="you@example.com" required value={form.email} onChange={setF("email")} />
           </section>
 
           <section>
             <h2 className="font-serif text-2xl mb-6">Shipping address</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              <Field label="First name" required />
-              <Field label="Last name" required />
-              <Field label="Address" className="sm:col-span-2" required />
-              <Field label="Apartment, suite (optional)" className="sm:col-span-2" />
-              <Field label="City" required />
-              <Field label="Postal code" required />
-              <Field label="Country" defaultValue="France" className="sm:col-span-2" required />
-              <Field label="Phone" type="tel" className="sm:col-span-2" />
+              <Field label="First name" required value={form.firstName} onChange={setF("firstName")} />
+              <Field label="Last name" required value={form.lastName} onChange={setF("lastName")} />
+              <Field label="Address" className="sm:col-span-2" required value={form.address} onChange={setF("address")} />
+              <Field label="Apartment, suite (optional)" className="sm:col-span-2" value={form.apt} onChange={setF("apt")} />
+              <Field label="City" required value={form.city} onChange={setF("city")} />
+              <Field label="Postal code" required value={form.postal} onChange={setF("postal")} />
+              <Field label="Country" className="sm:col-span-2" required value={form.country} onChange={setF("country")} />
+              <Field label="Phone" type="tel" className="sm:col-span-2" value={form.phone} onChange={setF("phone")} />
             </div>
           </section>
 

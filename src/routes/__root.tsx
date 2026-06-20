@@ -20,6 +20,7 @@ import { MobileBottomNav } from "../components/MobileBottomNav";
 import { CartProvider } from "../lib/cart";
 import { AuthProvider } from "../lib/auth";
 import { WishlistProvider } from "../lib/wishlist";
+import { AdminStoreProvider } from "../lib/admin-store";
 
 const LOGO_URL =
   "https://res.cloudinary.com/dgcnhseqm/image/upload/q_auto/f_auto/v1781984765/velin_studio_logo_zujxjx.svg";
@@ -146,30 +147,39 @@ function RouteTransition({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <WishlistProvider>
           <CartProvider>
-            <div className="min-h-screen flex flex-col bg-background text-foreground">
-              <Header />
-              <main className="flex-1">
+            <AdminStoreProvider>
+              {isAdmin ? (
                 <RouteTransition>
                   <Outlet />
                 </RouteTransition>
-              </main>
-              <Footer />
-              {/* Spacer so fixed mobile bottom nav doesn't overlap footer content */}
-              <div
-                className="md:hidden"
-                aria-hidden="true"
-                style={{ height: "calc(60px + env(safe-area-inset-bottom))" }}
-              />
-              <CartDrawer />
-              <MobileBottomNav />
-            </div>
-
+              ) : (
+                <div className="min-h-screen flex flex-col bg-background text-foreground">
+                  <Header />
+                  <main className="flex-1">
+                    <RouteTransition>
+                      <Outlet />
+                    </RouteTransition>
+                  </main>
+                  <Footer />
+                  {/* Spacer so fixed mobile bottom nav doesn't overlap footer content */}
+                  <div
+                    className="md:hidden"
+                    aria-hidden="true"
+                    style={{ height: "calc(60px + env(safe-area-inset-bottom))" }}
+                  />
+                  <CartDrawer />
+                  <MobileBottomNav />
+                </div>
+              )}
+            </AdminStoreProvider>
           </CartProvider>
         </WishlistProvider>
       </AuthProvider>
