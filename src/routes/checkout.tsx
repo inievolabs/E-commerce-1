@@ -83,8 +83,8 @@ function Checkout() {
               <Field label="Apartment, suite (optional)" className="sm:col-span-2" value={form.apt} onChange={setF("apt")} />
               <Field label="City" required value={form.city} onChange={setF("city")} />
               <Field label="Postal code" required value={form.postal} onChange={setF("postal")} />
-              <Field label="Country" defaultValue="France" className="sm:col-span-2" required />
-              <Field label="Phone" type="tel" className="sm:col-span-2" />
+              <Field label="Country" className="sm:col-span-2" required value={form.country} onChange={setF("country")} />
+              <Field label="Phone" type="tel" className="sm:col-span-2" value={form.phone} onChange={setF("phone")} />
             </div>
           </section>
 
