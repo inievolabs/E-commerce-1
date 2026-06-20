@@ -173,3 +173,11 @@
 @utility animate-route-fade {
   animation: route-fade 180ms ease-out both;
 }
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
