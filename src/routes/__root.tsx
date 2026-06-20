@@ -148,8 +148,16 @@ function RootComponent() {
                 <Outlet />
               </main>
               <Footer />
+              {/* Spacer so fixed mobile bottom nav doesn't overlap footer content */}
+              <div
+                className="md:hidden"
+                aria-hidden="true"
+                style={{ height: "calc(60px + env(safe-area-inset-bottom))" }}
+              />
               <CartDrawer />
+              <MobileBottomNav />
             </div>
+
           </CartProvider>
         </WishlistProvider>
       </AuthProvider>
