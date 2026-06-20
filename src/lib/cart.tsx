@@ -92,5 +92,4 @@ export function getProductById(id: string): Product | undefined {
   return products.find((p) => p.id === id);
 }
 
-export const formatPrice = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
+export const formatPrice = (n: number) => `৳${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(n)}`;
