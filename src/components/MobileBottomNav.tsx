@@ -15,17 +15,14 @@ function NavBadge({ count }: { count: number }) {
 }
 
 export function MobileBottomNav() {
-  const { count, open: openCart } = useCart();
+  const { count } = useCart();
   const { isAuthenticated } = useAuth();
   const { count: wishCount } = useWishlist();
   const [searchOpen, setSearchOpen] = useState(false);
 
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const isActive = (path: string) =>
-    path === "/" ? pathname === "/" : pathname.startsWith(path);
-
-  const accountTo = isAuthenticated ? "/account" : "/login";
+  const accountPath = isAuthenticated ? "/account" : "/login";
 
   const items: {
     key: string;
@@ -35,8 +32,15 @@ export function MobileBottomNav() {
     onClick?: () => void;
     to?: string;
     badge?: number;
+    filled?: boolean;
   }[] = [
-    { key: "home", label: "Home", icon: Home, to: "/", active: isActive("/") && pathname === "/" },
+    {
+      key: "home",
+      label: "Home",
+      icon: Home,
+      to: "/",
+      active: pathname === "/",
+    },
     {
       key: "search",
       label: "Search",
@@ -49,23 +53,27 @@ export function MobileBottomNav() {
       label: "Wishlist",
       icon: Heart,
       to: "/wishlist",
-      active: isActive("/wishlist"),
+      active: pathname.startsWith("/wishlist"),
       badge: wishCount,
+      filled: true,
     },
     {
       key: "cart",
       label: "Bag",
       icon: ShoppingBag,
-      active: isActive("/cart"),
-      onClick: openCart,
+      to: "/cart",
+      active: pathname.startsWith("/cart") || pathname.startsWith("/checkout"),
       badge: count,
     },
     {
       key: "account",
       label: "Account",
       icon: User,
-      to: accountTo,
-      active: isActive("/account") || isActive("/login"),
+      to: accountPath,
+      active:
+        pathname.startsWith("/account") ||
+        pathname.startsWith("/login") ||
+        pathname.startsWith("/signup"),
     },
   ];
 
@@ -79,18 +87,18 @@ export function MobileBottomNav() {
         <ul className="flex items-stretch justify-around h-[60px]">
           {items.map((item) => {
             const Icon = item.icon;
-            const content = (
-              <div className="relative flex flex-col items-center justify-center gap-1 h-full w-full">
-                <div className="relative">
+            const inner = (
+              <span className="relative flex flex-col items-center justify-center gap-1 h-full w-full transition-transform duration-150 ease-out active:scale-[0.88]">
+                <span className="relative">
                   <Icon
                     className={`h-[22px] w-[22px] transition-colors ${
                       item.active ? "text-foreground" : "text-foreground/45"
                     }`}
                     strokeWidth={item.active ? 2.2 : 1.6}
-                    fill={item.active && (item.key === "wishlist" || item.key === "home") ? "currentColor" : "none"}
+                    fill={item.active && item.filled ? "currentColor" : "none"}
                   />
                   {item.badge && item.badge > 0 ? <NavBadge count={item.badge} /> : null}
-                </div>
+                </span>
                 <span
                   className={`text-[9.5px] tracking-[0.14em] uppercase leading-none ${
                     item.active ? "text-foreground font-medium" : "text-foreground/55 font-light"
@@ -101,23 +109,28 @@ export function MobileBottomNav() {
                 {item.active && (
                   <span className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-8 bg-foreground rounded-full" />
                 )}
-              </div>
+              </span>
             );
 
             return (
               <li key={item.key} className="flex-1">
                 {item.to ? (
-                  <Link to={item.to} className="block h-full w-full" aria-label={item.label}>
-                    {content}
+                  <Link
+                    to={item.to}
+                    className="block h-full w-full select-none touch-manipulation"
+                    aria-label={item.label}
+                    aria-current={item.active ? "page" : undefined}
+                  >
+                    {inner}
                   </Link>
                 ) : (
                   <button
                     type="button"
                     onClick={item.onClick}
-                    className="block h-full w-full"
+                    className="block h-full w-full select-none touch-manipulation"
                     aria-label={item.label}
                   >
-                    {content}
+                    {inner}
                   </button>
                 )}
               </li>
