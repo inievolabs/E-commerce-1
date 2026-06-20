@@ -15,11 +15,6 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { CartDrawer } from "../components/CartDrawer";
 import { CartProvider } from "../lib/cart";
-import { AuthProvider } from "../lib/auth";
-import { WishlistProvider } from "../lib/wishlist";
-
-const LOGO_URL =
-  "https://res.cloudinary.com/dgcnhseqm/image/upload/q_auto/f_auto/v1781984765/velin_studio_logo_zujxjx.svg";
 
 function NotFoundComponent() {
   return (
@@ -102,8 +97,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: LOGO_URL },
-      { rel: "apple-touch-icon", href: LOGO_URL },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -137,20 +130,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <WishlistProvider>
-          <CartProvider>
-            <div className="min-h-screen flex flex-col bg-background text-foreground">
-              <Header />
-              <main className="flex-1">
-                <Outlet />
-              </main>
-              <Footer />
-              <CartDrawer />
-            </div>
-          </CartProvider>
-        </WishlistProvider>
-      </AuthProvider>
+      <CartProvider>
+        <div className="min-h-screen flex flex-col bg-background text-foreground">
+          <Header />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+          <CartDrawer />
+        </div>
+      </CartProvider>
     </QueryClientProvider>
   );
 }

@@ -1,10 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, Star } from "lucide-react";
+import { ChevronDown, Heart, Star } from "lucide-react";
 import { getProduct, products, type Product } from "@/data/products";
 import { formatPrice, useCart } from "@/lib/cart";
 import { ProductCard } from "@/components/ProductCard";
-import { WishlistButton } from "@/components/WishlistButton";
 
 export const Route = createFileRoute("/product/$id")({
   loader: ({ params }): { product: Product } => {
@@ -156,9 +155,9 @@ function ProductPage() {
               <span className="px-4 text-sm tabular-nums">{qty}</span>
               <button onClick={() => setQty(qty + 1)} className="px-4 py-3">+</button>
             </div>
-            <div className="p-3 border border-border">
-              <WishlistButton productId={product.id} size={16} />
-            </div>
+            <button className="p-3 border border-border" aria-label="Save">
+              <Heart className="h-4 w-4" />
+            </button>
           </div>
 
           <div className="mt-6 space-y-3">

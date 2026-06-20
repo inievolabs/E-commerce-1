@@ -34,20 +34,12 @@ const cols = [
       { label: "Journal", to: "/about" },
     ],
   },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", to: "/privacy" },
-      { label: "Terms & Conditions", to: "/terms" },
-      { label: "Shipping & Returns", to: "/shipping-returns" },
-    ],
-  },
 ];
 
 export function Footer() {
   return (
     <footer className="mt-32 border-t border-border bg-card text-card-foreground">
-      <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-16 lg:py-20 grid gap-12 lg:grid-cols-[1fr_2.4fr_1fr]">
+      <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-16 lg:py-20 grid gap-12 lg:grid-cols-[1.2fr_2fr_1fr]">
         <div>
           <h3 className="font-serif text-3xl">Velin Studio</h3>
           <p className="mt-4 text-sm text-muted-foreground max-w-xs leading-relaxed">
@@ -60,7 +52,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
           {cols.map((col) => (
             <div key={col.title}>
               <p className="eyebrow mb-5">{col.title}</p>
