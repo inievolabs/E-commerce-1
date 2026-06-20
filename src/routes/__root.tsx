@@ -146,7 +146,9 @@ function RootComponent() {
             <div className="min-h-screen flex flex-col bg-background text-foreground">
               <Header />
               <main className="flex-1">
-                <Outlet />
+                <RouteTransition>
+                  <Outlet />
+                </RouteTransition>
               </main>
               <Footer />
               {/* Spacer so fixed mobile bottom nav doesn't overlap footer content */}
