@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, User, ShoppingBag, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
+import { useAuth } from "@/lib/auth";
+import { useWishlist } from "@/lib/wishlist";
+import { SearchOverlay } from "@/components/SearchOverlay";
 
 const LOGO =
   "https://res.cloudinary.com/dgcnhseqm/image/upload/q_auto/f_auto/v1781984765/velin_studio_logo_zujxjx.svg";
@@ -15,6 +18,8 @@ const NAV: { label: string; to: string; search?: Record<string, string> }[] = [
 
 export function Header() {
   const { count, open } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { count: wishCount } = useWishlist();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -59,11 +64,11 @@ export function Header() {
             <Menu className="h-5 w-5" />
           </button>
 
-          <Link to="/" className="justify-self-center flex items-center">
+          <Link to="/" className="justify-self-center flex items-center" aria-label="Velin Studio — home">
             <img src={LOGO} alt="Velin Studio" className="h-8 lg:h-10 w-auto" />
           </Link>
 
-          <div className="justify-self-end flex items-center gap-1 lg:gap-3">
+          <div className="justify-self-end flex items-center gap-1 lg:gap-2">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -72,9 +77,25 @@ export function Header() {
             >
               <Search className="h-[18px] w-[18px]" />
             </button>
-            <button className="hidden lg:inline-flex p-2 text-foreground/80 hover:text-foreground" aria-label="Account">
+            <Link
+              to={isAuthenticated ? "/account" : "/login"}
+              className="p-2 text-foreground/80 hover:text-foreground"
+              aria-label={isAuthenticated ? "My account" : "Sign in"}
+            >
               <User className="h-[18px] w-[18px]" />
-            </button>
+            </Link>
+            <Link
+              to="/wishlist"
+              className="relative p-2 text-foreground/80 hover:text-foreground"
+              aria-label="Wishlist"
+            >
+              <Heart className="h-[18px] w-[18px]" />
+              {wishCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-foreground text-background text-[10px] h-4 min-w-4 px-1 rounded-full grid place-items-center">
+                  {wishCount}
+                </span>
+              )}
+            </Link>
             <button
               type="button"
               onClick={open}
@@ -114,45 +135,23 @@ export function Header() {
               </Link>
             ))}
             <div className="h-px bg-border my-4" />
-            <Link to="/contact" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
-              Contact
+            <Link to={isAuthenticated ? "/account" : "/login"} onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+              {isAuthenticated ? "My account" : "Sign in"}
+            </Link>
+            <Link to="/wishlist" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+              Wishlist {wishCount > 0 && `(${wishCount})`}
             </Link>
             <Link to="/cart" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
               Bag
+            </Link>
+            <Link to="/contact" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+              Contact
             </Link>
           </nav>
         </div>
       )}
 
-      {/* Search overlay */}
-      {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur animate-fade-in-slow">
-          <div className="flex items-center justify-end px-5 h-16">
-            <button onClick={() => setSearchOpen(false)} aria-label="Close search" className="p-2">
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <div className="mx-auto max-w-3xl px-6 mt-20">
-            <p className="eyebrow mb-6">Search</p>
-            <input
-              autoFocus
-              placeholder="What are you looking for?"
-              className="w-full bg-transparent border-b border-foreground/40 py-4 text-2xl md:text-4xl font-serif placeholder:text-muted-foreground/60 focus:outline-none focus:border-foreground"
-            />
-            <p className="eyebrow mt-8">Popular</p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              {["Shoulder bag", "Weekender", "Cardholder", "Mule"].map((t) => (
-                <button
-                  key={t}
-                  className="border border-border px-4 py-2 text-xs tracking-widest uppercase hover:bg-foreground hover:text-background transition-colors"
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

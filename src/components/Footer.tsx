@@ -34,6 +34,14 @@ const cols = [
       { label: "Journal", to: "/about" },
     ],
   },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", to: "/privacy" },
+      { label: "Terms & Conditions", to: "/terms" },
+      { label: "Shipping & Returns", to: "/shipping-returns" },
+    ],
+  },
 ];
 
 export function Footer() {
@@ -52,7 +60,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
           {cols.map((col) => (
             <div key={col.title}>
               <p className="eyebrow mb-5">{col.title}</p>
