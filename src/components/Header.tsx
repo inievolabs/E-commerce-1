@@ -42,7 +42,7 @@ export function Header() {
         }`}
       >
         <div className="mx-auto max-w-[1500px] px-5 lg:px-10 h-16 lg:h-20 grid grid-cols-[1fr_auto_1fr] items-center">
-          <nav className="hidden lg:flex items-center gap-8 text-[12px] tracking-[0.18em] uppercase">
+          <nav className="hidden md:flex items-center gap-8 text-[12px] tracking-[0.18em] uppercase">
             {NAV.map((item) => (
               <Link
                 key={item.label}
@@ -58,7 +58,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden justify-self-start p-2 -ml-2 text-foreground"
+            className="md:hidden justify-self-start p-2 -ml-2 text-foreground"
             aria-label="Open menu"
           >
             <Menu className="h-5 w-5" />
