@@ -47,7 +47,7 @@ const cols = [
 export function Footer() {
   return (
     <footer className="mt-32 border-t border-border bg-card text-card-foreground">
-      <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-16 lg:py-20 grid gap-12 lg:grid-cols-[1.2fr_2fr_1fr]">
+      <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-16 lg:py-20 grid gap-12 lg:grid-cols-[1fr_2.4fr_1fr]">
         <div>
           <h3 className="font-serif text-3xl">Velin Studio</h3>
           <p className="mt-4 text-sm text-muted-foreground max-w-xs leading-relaxed">
