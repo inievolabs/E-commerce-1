@@ -66,7 +66,7 @@ export function Header() {
             <div className="flex-1 flex justify-center min-w-0 px-2">
               <Link
                 to="/"
-                className="flex items-center"
+                className="flex items-center transition-opacity duration-150 hover:opacity-70 active:scale-95 active:opacity-80"
                 aria-label="Velin Studio — home"
               >
                 <img
