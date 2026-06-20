@@ -145,16 +145,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user,
       isAuthenticated: !!user,
+      isReady: hydrated,
       orders: user ? MOCK_ORDERS : [],
       addresses,
       login: async (email, password) => {
-        if (!email || !password) return { ok: false, error: "Please enter both email and password." };
-        setUser({ id: "u-1", name: email.split("@")[0] || "Client", email });
+        const e = email.trim();
+        if (!e || !password) return { ok: false, error: "Please enter both email and password." };
+        if (!/^\S+@\S+\.\S+$/.test(e)) return { ok: false, error: "Please enter a valid email address." };
+        if (password.length < 6) return { ok: false, error: "Password must be at least 6 characters." };
+        setUser({ id: "u-1", name: e.split("@")[0] || "Client", email: e });
         return { ok: true };
       },
       signup: async (name, email, password) => {
-        if (!name || !email || !password) return { ok: false, error: "All fields are required." };
-        setUser({ id: "u-1", name, email });
+        const n = name.trim();
+        const e = email.trim();
+        if (!n || !e || !password) return { ok: false, error: "All fields are required." };
+        if (!/^\S+@\S+\.\S+$/.test(e)) return { ok: false, error: "Please enter a valid email address." };
+        if (password.length < 6) return { ok: false, error: "Password must be at least 6 characters." };
+        setUser({ id: "u-1", name: n, email: e });
         return { ok: true };
       },
       logout: () => setUser(null),
@@ -162,7 +170,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       addAddress: (a) => setAddresses((prev) => [...prev, { ...a, id: `addr-${Date.now()}` }]),
       removeAddress: (id) => setAddresses((prev) => prev.filter((a) => a.id !== id)),
     }),
-    [user, addresses],
+    [user, addresses, hydrated],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
