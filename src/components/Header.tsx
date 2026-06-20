@@ -99,7 +99,7 @@ export function Header() {
 
             <Link
               to="/"
-              className="flex items-center"
+              className="flex items-center transition-opacity duration-150 hover:opacity-70 active:scale-95"
               aria-label="Velin Studio — home"
             >
               <img
