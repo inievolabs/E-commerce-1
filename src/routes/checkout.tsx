@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { formatPrice, getProductById, useCart } from "@/lib/cart";
+import { useAdminStore } from "@/lib/admin-store";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -14,22 +15,50 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function Checkout() {
-  const { items, subtotal } = useCart();
+  const { items, subtotal, clear } = useCart();
+  const { addOrder, adjustStock } = useAdminStore();
+  const navigate = useNavigate();
   const [shipping, setShipping] = useState("standard");
   const [payment, setPayment] = useState("card");
+  const [form, setForm] = useState({
+    email: "", firstName: "", lastName: "", address: "", apt: "",
+    city: "", postal: "", country: "Bangladesh", phone: "",
+  });
 
   const shippingCost = shipping === "express" ? 25 : 0;
   const total = subtotal + shippingCost;
 
-  return (
-    <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-12 lg:py-20">
-      <header className="mb-12">
-        <p className="eyebrow">Checkout</p>
-        <h1 className="mt-3 font-serif text-4xl md:text-5xl">Complete your order</h1>
-      </header>
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (items.length === 0) return;
+    const order = addOrder({
+      customerName: `${form.firstName} ${form.lastName}`.trim() || "Guest",
+      customerEmail: form.email,
+      shippingAddress: [form.address, form.apt, `${form.city} ${form.postal}`, form.country]
+        .filter(Boolean).join("\n"),
+      items: items.map((it) => {
+        const p = getProductById(it.productId);
+        return {
+          productId: it.productId,
+          name: p?.name ?? it.productId,
+          price: p?.price ?? 0,
+          qty: it.qty,
+          color: it.color,
+          size: it.size,
+        };
+      }),
+      subtotal,
+      shipping: shippingCost,
+      total,
+    });
+    items.forEach((it) => adjustStock(it.productId, -it.qty));
+    clear();
+    alert(`Order ${order.id} placed (demo).`);
+    navigate({ to: "/" });
+  };
 
-      <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20">
-        <form className="space-y-12" onSubmit={(e) => { e.preventDefault(); alert("This is a demo checkout."); }}>
+  const setF = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((s) => ({ ...s, [k]: e.target.value }));
           <section>
             <h2 className="font-serif text-2xl mb-6">Contact</h2>
             <Field label="Email" type="email" placeholder="you@example.com" required />
