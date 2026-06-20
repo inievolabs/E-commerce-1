@@ -77,8 +77,18 @@ export function Header() {
               </Link>
             </div>
 
-            {/* Spacer to balance the hamburger and keep logo centered */}
-            <div className="w-10 h-10 shrink-0 -mr-2" aria-hidden="true" />
+            <Link
+              to="/cart"
+              className="relative grid place-items-center w-10 h-10 shrink-0 -mr-2 text-foreground"
+              aria-label="Cart"
+            >
+              <ShoppingBag className="h-5 w-5" />
+              {count > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-foreground text-background text-[10px] h-4 min-w-4 px-1 rounded-full grid place-items-center">
+                  {count}
+                </span>
+              )}
+            </Link>
           </div>
 
 
