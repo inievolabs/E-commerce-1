@@ -39,11 +39,22 @@ export interface Order {
   status: OrderStatus;
 }
 
+export interface MediaItem {
+  id: string;
+  name: string;
+  dataUrl: string;
+  width: number;
+  height: number;
+  createdAt: string;
+  productIds: string[];
+}
+
 interface AdminState {
   products: Product[];
   categories: CategoryDef[];
   inventory: Record<string, InventoryRecord>;
   orders: Order[];
+  media: MediaItem[];
 }
 
 interface AdminContextValue extends AdminState {
@@ -61,6 +72,11 @@ interface AdminContextValue extends AdminState {
   addOrder: (o: Omit<Order, "id" | "createdAt" | "status"> & { status?: OrderStatus }) => Order;
   setOrderStatus: (id: string, status: OrderStatus) => void;
   deleteOrder: (id: string) => void;
+  // media
+  addMedia: (m: Omit<MediaItem, "id" | "createdAt" | "productIds"> & { productIds?: string[] }) => MediaItem;
+  deleteMedia: (id: string) => void;
+  renameMedia: (id: string, name: string) => void;
+  setMediaProducts: (id: string, productIds: string[]) => void;
 }
 
 const STORAGE_KEY = "velin:admin:v1";
@@ -142,6 +158,7 @@ const defaultState = (): AdminState => ({
   categories: DEFAULT_CATEGORIES,
   inventory: DEFAULT_INVENTORY(seedProducts),
   orders: DEFAULT_ORDERS,
+  media: [],
 });
 
 const AdminContext = createContext<AdminContextValue | null>(null);
@@ -160,6 +177,7 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
           categories: parsed.categories ?? prev.categories,
           inventory: parsed.inventory ?? prev.inventory,
           orders: parsed.orders ?? prev.orders,
+          media: parsed.media ?? prev.media,
         }));
       }
     } catch {}
