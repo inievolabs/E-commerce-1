@@ -24,6 +24,8 @@ const NAV = [
   { to: "/admin/inventory", label: "Inventory" },
   { to: "/admin/orders", label: "Orders" },
   { to: "/admin/media", label: "Media" },
+  { to: "/admin/posts", label: "Posts" },
+  { to: "/admin/post-categories", label: "Post categories" },
 ];
 
 function AdminLayout() {

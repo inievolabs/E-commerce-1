@@ -39,6 +39,25 @@ export interface Order {
   status: OrderStatus;
 }
 
+export interface PostCategory {
+  id: string;
+  label: string;
+  description?: string;
+}
+
+export interface Post {
+  id: string; // slug
+  title: string;
+  excerpt: string;
+  body: string;
+  cover?: string;
+  categoryId: string;
+  tags: string[];
+  author: string;
+  published: boolean;
+  publishedAt: string; // ISO
+}
+
 export interface MediaItem {
   id: string;
   name: string;
@@ -55,6 +74,8 @@ interface AdminState {
   inventory: Record<string, InventoryRecord>;
   orders: Order[];
   media: MediaItem[];
+  posts: Post[];
+  postCategories: PostCategory[];
 }
 
 interface AdminContextValue extends AdminState {
@@ -78,6 +99,12 @@ interface AdminContextValue extends AdminState {
   deleteMedia: (id: string) => void;
   renameMedia: (id: string, name: string) => void;
   setMediaProducts: (id: string, productIds: string[]) => void;
+  // posts
+  upsertPost: (p: Post) => void;
+  deletePost: (id: string) => void;
+  // post categories
+  upsertPostCategory: (c: PostCategory) => void;
+  deletePostCategory: (id: string) => void;
 }
 
 const STORAGE_KEY = "velin:admin:v1";
@@ -155,12 +182,58 @@ const DEFAULT_ORDERS: Order[] = [
   },
 ];
 
+const DEFAULT_POST_CATEGORIES: PostCategory[] = [
+  { id: "journal", label: "Journal", description: "Stories from the atelier." },
+  { id: "style", label: "Style", description: "How to wear and pair our pieces." },
+  { id: "craft", label: "Craft", description: "Materials, makers, and process." },
+];
+
+const DEFAULT_POSTS: Post[] = [
+  {
+    id: "marais-behind-the-bag",
+    title: "Behind the Marais Shoulder Bag",
+    excerpt: "A close look at the leather, hardware, and silhouette of our signature shoulder bag.",
+    body: "We started sketching the Marais in a small studio in Florence...",
+    cover: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1600&q=80",
+    categoryId: "craft",
+    tags: ["leather", "bags", "atelier"],
+    author: "Velin Studio",
+    published: true,
+    publishedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
+  },
+  {
+    id: "five-ways-to-wear-camel",
+    title: "Five ways to wear camel",
+    excerpt: "A neutral that does the heavy lifting from morning to evening.",
+    body: "Camel pairs beautifully with cream, ivory, deep navy, and forest green...",
+    cover: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1600&q=80",
+    categoryId: "style",
+    tags: ["styling", "neutrals", "autumn"],
+    author: "Sofia R.",
+    published: true,
+    publishedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10).toISOString(),
+  },
+  {
+    id: "notes-from-the-atelier",
+    title: "Notes from the atelier",
+    excerpt: "What we learned shipping the autumn collection.",
+    body: "Every season teaches us something new about pacing, materials, and patience...",
+    categoryId: "journal",
+    tags: ["studio", "process"],
+    author: "Velin Studio",
+    published: true,
+    publishedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21).toISOString(),
+  },
+];
+
 const defaultState = (): AdminState => ({
   products: seedProducts,
   categories: DEFAULT_CATEGORIES,
   inventory: DEFAULT_INVENTORY(seedProducts),
   orders: DEFAULT_ORDERS,
   media: [],
+  posts: DEFAULT_POSTS,
+  postCategories: DEFAULT_POST_CATEGORIES,
 });
 
 const AdminContext = createContext<AdminContextValue | null>(null);
@@ -181,6 +254,8 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
         inventory: parsed.inventory ?? prev.inventory,
         orders: parsed.orders ?? prev.orders,
         media: parsedMedia ?? parsed.media ?? prev.media,
+        posts: parsed.posts ?? prev.posts,
+        postCategories: parsed.postCategories ?? prev.postCategories,
       }));
     } catch {}
     setHydrated(true);
@@ -348,6 +423,31 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
           });
           return { ...s, media, products };
         }),
+      upsertPost: (p) =>
+        setState((s) => {
+          const exists = s.posts.some((x) => x.id === p.id);
+          return {
+            ...s,
+            posts: exists ? s.posts.map((x) => (x.id === p.id ? p : x)) : [p, ...s.posts],
+          };
+        }),
+      deletePost: (id) =>
+        setState((s) => ({ ...s, posts: s.posts.filter((p) => p.id !== id) })),
+      upsertPostCategory: (c) =>
+        setState((s) => {
+          const exists = s.postCategories.some((x) => x.id === c.id);
+          return {
+            ...s,
+            postCategories: exists
+              ? s.postCategories.map((x) => (x.id === c.id ? c : x))
+              : [...s.postCategories, c],
+          };
+        }),
+      deletePostCategory: (id) =>
+        setState((s) => ({
+          ...s,
+          postCategories: s.postCategories.filter((c) => c.id !== id),
+        })),
     }),
     [state],
   );
