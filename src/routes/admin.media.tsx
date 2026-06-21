@@ -72,17 +72,40 @@ function AdminMedia() {
         </div>
       </header>
 
-      <div
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          const f = e.dataTransfer.files?.[0];
-          if (f) handleFile(f);
-        }}
-        className="mb-6 border border-dashed border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground"
-      >
-        Drag &amp; drop an image here, or use Upload to add to your library.
+      <div className="flex gap-1 mb-6 border-b border-border">
+        {(["library", "galleries"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-2 text-xs tracking-[0.22em] uppercase border-b-2 -mb-px transition-colors ${
+              tab === t ? "border-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t === "library" ? "Library" : "Product galleries"}
+          </button>
+        ))}
       </div>
+
+      {tab === "library" && (
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const f = e.dataTransfer.files?.[0];
+            if (f) handleFile(f);
+          }}
+          className="mb-6 border border-dashed border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground"
+        >
+          Drag &amp; drop an image here, or use Upload to add to your library.
+        </div>
+      )}
+
+      {tab === "galleries" && (
+        <GalleriesPanel products={products} onReorder={setProductImages} />
+      )}
+
+      {tab === "library" && (<>
+
 
       {media.length === 0 ? (
         <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
