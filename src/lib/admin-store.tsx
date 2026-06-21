@@ -81,6 +81,7 @@ interface AdminContextValue extends AdminState {
 }
 
 const STORAGE_KEY = "velin:admin:v1";
+const MEDIA_STORAGE_KEY = "velin:admin:media:v1";
 
 const DEFAULT_CATEGORIES: CategoryDef[] = [
   { id: "bags", label: "Bags", description: "Shoulder bags, totes, hobos and crossbodies." },
