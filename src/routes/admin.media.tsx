@@ -104,51 +104,51 @@ function AdminMedia() {
         <GalleriesPanel products={products} onReorder={setProductImages} />
       )}
 
-      {tab === "library" && (<>
-
-
-      {media.length === 0 ? (
-        <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
-          No media yet. Upload your first image to get started.
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {media.map((m) => {
-            const linked = usageByMedia.get(m.id) ?? [];
-            return (
-              <div key={m.id} className="bg-background border border-border group">
-                <button
-                  onClick={() => setEditing(m)}
-                  className="block w-full aspect-square bg-muted overflow-hidden"
-                >
-                  <img src={m.dataUrl} alt={m.name} className="w-full h-full object-cover" />
-                </button>
-                <div className="p-3">
-                  <p className="text-sm truncate font-medium">{m.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {m.width}×{m.height} · {linked.length} linked
-                  </p>
-                  <div className="flex gap-3 mt-3">
-                    <button onClick={() => setEditing(m)} className="eyebrow link-underline">
-                      Manage
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm("Delete this image? It will be removed from any linked products.")) {
-                          deleteMedia(m.id);
-                        }
-                      }}
-                      className="eyebrow text-destructive link-underline"
-                    >
-                      Delete
-                    </button>
+      {tab === "library" && (
+        media.length === 0 ? (
+          <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
+            No media yet. Upload your first image to get started.
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {media.map((m) => {
+              const linked = usageByMedia.get(m.id) ?? [];
+              return (
+                <div key={m.id} className="bg-background border border-border group">
+                  <button
+                    onClick={() => setEditing(m)}
+                    className="block w-full aspect-square bg-muted overflow-hidden"
+                  >
+                    <img src={m.dataUrl} alt={m.name} className="w-full h-full object-cover" />
+                  </button>
+                  <div className="p-3">
+                    <p className="text-sm truncate font-medium">{m.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {m.width}×{m.height} · {linked.length} linked
+                    </p>
+                    <div className="flex gap-3 mt-3">
+                      <button onClick={() => setEditing(m)} className="eyebrow link-underline">
+                        Manage
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm("Delete this image? It will be removed from any linked products.")) {
+                            deleteMedia(m.id);
+                          }
+                        }}
+                        className="eyebrow text-destructive link-underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )
       )}
+
 
       {pending && (
         <CropDialog
