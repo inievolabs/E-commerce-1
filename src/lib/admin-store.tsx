@@ -39,6 +39,25 @@ export interface Order {
   status: OrderStatus;
 }
 
+export interface PostCategory {
+  id: string;
+  label: string;
+  description?: string;
+}
+
+export interface Post {
+  id: string; // slug
+  title: string;
+  excerpt: string;
+  body: string;
+  cover?: string;
+  categoryId: string;
+  tags: string[];
+  author: string;
+  published: boolean;
+  publishedAt: string; // ISO
+}
+
 export interface MediaItem {
   id: string;
   name: string;
