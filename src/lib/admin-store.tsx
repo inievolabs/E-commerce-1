@@ -99,6 +99,12 @@ interface AdminContextValue extends AdminState {
   deleteMedia: (id: string) => void;
   renameMedia: (id: string, name: string) => void;
   setMediaProducts: (id: string, productIds: string[]) => void;
+  // posts
+  upsertPost: (p: Post) => void;
+  deletePost: (id: string) => void;
+  // post categories
+  upsertPostCategory: (c: PostCategory) => void;
+  deletePostCategory: (id: string) => void;
 }
 
 const STORAGE_KEY = "velin:admin:v1";
