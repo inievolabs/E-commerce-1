@@ -22,9 +22,10 @@ interface PendingFile {
 }
 
 function AdminMedia() {
-  const { media, products, addMedia, deleteMedia, renameMedia, setMediaProducts } = useAdminStore();
+  const { media, products, addMedia, deleteMedia, renameMedia, setMediaProducts, setProductImages } = useAdminStore();
   const [pending, setPending] = useState<PendingFile | null>(null);
   const [editing, setEditing] = useState<MediaItem | null>(null);
+  const [tab, setTab] = useState<"library" | "galleries">("library");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
@@ -71,60 +72,83 @@ function AdminMedia() {
         </div>
       </header>
 
-      <div
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          const f = e.dataTransfer.files?.[0];
-          if (f) handleFile(f);
-        }}
-        className="mb-6 border border-dashed border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground"
-      >
-        Drag &amp; drop an image here, or use Upload to add to your library.
+      <div className="flex gap-1 mb-6 border-b border-border">
+        {(["library", "galleries"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-2 text-xs tracking-[0.22em] uppercase border-b-2 -mb-px transition-colors ${
+              tab === t ? "border-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t === "library" ? "Library" : "Product galleries"}
+          </button>
+        ))}
       </div>
 
-      {media.length === 0 ? (
-        <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
-          No media yet. Upload your first image to get started.
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {media.map((m) => {
-            const linked = usageByMedia.get(m.id) ?? [];
-            return (
-              <div key={m.id} className="bg-background border border-border group">
-                <button
-                  onClick={() => setEditing(m)}
-                  className="block w-full aspect-square bg-muted overflow-hidden"
-                >
-                  <img src={m.dataUrl} alt={m.name} className="w-full h-full object-cover" />
-                </button>
-                <div className="p-3">
-                  <p className="text-sm truncate font-medium">{m.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {m.width}×{m.height} · {linked.length} linked
-                  </p>
-                  <div className="flex gap-3 mt-3">
-                    <button onClick={() => setEditing(m)} className="eyebrow link-underline">
-                      Manage
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm("Delete this image? It will be removed from any linked products.")) {
-                          deleteMedia(m.id);
-                        }
-                      }}
-                      className="eyebrow text-destructive link-underline"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+      {tab === "library" && (
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const f = e.dataTransfer.files?.[0];
+            if (f) handleFile(f);
+          }}
+          className="mb-6 border border-dashed border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground"
+        >
+          Drag &amp; drop an image here, or use Upload to add to your library.
         </div>
       )}
+
+      {tab === "galleries" && (
+        <GalleriesPanel products={products} onReorder={setProductImages} />
+      )}
+
+      {tab === "library" && (
+        media.length === 0 ? (
+          <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
+            No media yet. Upload your first image to get started.
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {media.map((m) => {
+              const linked = usageByMedia.get(m.id) ?? [];
+              return (
+                <div key={m.id} className="bg-background border border-border group">
+                  <button
+                    onClick={() => setEditing(m)}
+                    className="block w-full aspect-square bg-muted overflow-hidden"
+                  >
+                    <img src={m.dataUrl} alt={m.name} className="w-full h-full object-cover" />
+                  </button>
+                  <div className="p-3">
+                    <p className="text-sm truncate font-medium">{m.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {m.width}×{m.height} · {linked.length} linked
+                    </p>
+                    <div className="flex gap-3 mt-3">
+                      <button onClick={() => setEditing(m)} className="eyebrow link-underline">
+                        Manage
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm("Delete this image? It will be removed from any linked products.")) {
+                            deleteMedia(m.id);
+                          }
+                        }}
+                        className="eyebrow text-destructive link-underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      )}
+
 
       {pending && (
         <CropDialog
@@ -370,7 +394,157 @@ function ManageDialog({
   );
 }
 
+/* ─── Galleries: drag-to-reorder per product ─── */
+
+function GalleriesPanel({
+  products,
+  onReorder,
+}: {
+  products: { id: string; name: string; images: string[] }[];
+  onReorder: (id: string, images: string[]) => void;
+}) {
+  const [openId, setOpenId] = useState<string | null>(products[0]?.id ?? null);
+  const withImages = products.filter((p) => p.images.length > 0);
+
+  if (withImages.length === 0) {
+    return (
+      <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
+        No product galleries yet. Add images to products from the Library tab or Products page.
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-background border border-border divide-y divide-border">
+      {withImages.map((p) => {
+        const open = openId === p.id;
+        return (
+          <div key={p.id}>
+            <button
+              onClick={() => setOpenId(open ? null : p.id)}
+              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-secondary"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <img src={p.images[0]} alt="" className="w-10 h-12 object-cover bg-muted" />
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">{p.images.length} images</p>
+                </div>
+              </div>
+              <span className="eyebrow text-muted-foreground">{open ? "Hide" : "Reorder"}</span>
+            </button>
+            {open && (
+              <div className="px-4 pb-4">
+                <GalleryReorder
+                  images={p.images}
+                  onChange={(next) => onReorder(p.id, next)}
+                />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function GalleryReorder({
+  images,
+  onChange,
+}: {
+  images: string[];
+  onChange: (next: string[]) => void;
+}) {
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [overIdx, setOverIdx] = useState<number | null>(null);
+
+  const move = (from: number, to: number) => {
+    if (from === to || to < 0 || to >= images.length) return;
+    const next = images.slice();
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    onChange(next);
+  };
+
+  return (
+    <>
+      <p className="text-xs text-muted-foreground mb-3">
+        Drag tiles to reorder. The first image is used as the product's primary thumbnail.
+      </p>
+      <ul className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+        {images.map((src, i) => (
+          <li
+            key={`${src}-${i}`}
+            draggable
+            onDragStart={(e) => {
+              setDragIdx(i);
+              e.dataTransfer.effectAllowed = "move";
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setOverIdx(i);
+            }}
+            onDragLeave={() => setOverIdx((cur) => (cur === i ? null : cur))}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragIdx !== null) move(dragIdx, i);
+              setDragIdx(null);
+              setOverIdx(null);
+            }}
+            onDragEnd={() => {
+              setDragIdx(null);
+              setOverIdx(null);
+            }}
+            className={`relative border bg-muted aspect-[3/4] cursor-grab active:cursor-grabbing transition-all ${
+              overIdx === i && dragIdx !== i ? "border-foreground ring-2 ring-foreground/30" : "border-border"
+            } ${dragIdx === i ? "opacity-40" : ""}`}
+          >
+            <img src={src} alt="" className="w-full h-full object-cover pointer-events-none" />
+            <span className="absolute top-1 left-1 bg-background/90 text-foreground text-[10px] tracking-[0.18em] uppercase px-1.5 py-0.5">
+              {i + 1}
+            </span>
+            {i === 0 && (
+              <span className="absolute top-1 right-1 bg-foreground text-background text-[10px] tracking-[0.18em] uppercase px-1.5 py-0.5">
+                Cover
+              </span>
+            )}
+            <div className="absolute bottom-1 right-1 flex gap-1">
+              <button
+                type="button"
+                onClick={() => move(i, i - 1)}
+                disabled={i === 0}
+                className="bg-background/90 hover:bg-background border border-border w-6 h-6 text-xs disabled:opacity-30"
+                aria-label="Move left"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => move(i, i + 1)}
+                disabled={i === images.length - 1}
+                className="bg-background/90 hover:bg-background border border-border w-6 h-6 text-xs disabled:opacity-30"
+                aria-label="Move right"
+              >
+                ›
+              </button>
+              <button
+                type="button"
+                onClick={() => onChange(images.filter((_, j) => j !== i))}
+                className="bg-background/90 hover:bg-destructive hover:text-destructive-foreground border border-border w-6 h-6 text-xs"
+                aria-label="Remove"
+              >
+                ×
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
 /* ─── helpers ─── */
+
 
 function renderCrop(src: string, pixels: Area | null): Promise<{ dataUrl: string; width: number; height: number }> {
   return new Promise((resolve, reject) => {

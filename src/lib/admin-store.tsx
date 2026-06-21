@@ -61,6 +61,7 @@ interface AdminContextValue extends AdminState {
   // products
   upsertProduct: (p: Product) => void;
   deleteProduct: (id: string) => void;
+  setProductImages: (id: string, images: string[]) => void;
   // categories
   upsertCategory: (c: CategoryDef) => void;
   deleteCategory: (id: string) => void;
@@ -210,6 +211,11 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
           const { [id]: _, ...rest } = s.inventory;
           return { ...s, products: s.products.filter((p) => p.id !== id), inventory: rest };
         }),
+      setProductImages: (id, images) =>
+        setState((s) => ({
+          ...s,
+          products: s.products.map((p) => (p.id === id ? { ...p, images } : p)),
+        })),
       upsertCategory: (c) =>
         setState((s) => {
           const exists = s.categories.some((x) => x.id === c.id);
