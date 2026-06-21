@@ -74,6 +74,8 @@ interface AdminState {
   inventory: Record<string, InventoryRecord>;
   orders: Order[];
   media: MediaItem[];
+  posts: Post[];
+  postCategories: PostCategory[];
 }
 
 interface AdminContextValue extends AdminState {
