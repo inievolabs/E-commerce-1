@@ -74,7 +74,7 @@ function BlogPage() {
           <span className="eyebrow mr-2">Category:</span>
           <Link
             to="/blog"
-            search={(prev) => ({ ...prev, category: undefined })}
+            search={(prev: BlogSearch) => ({ ...prev, category: undefined })}
             className={`text-xs uppercase tracking-wider px-3 py-1.5 border ${!category ? "bg-foreground text-background border-foreground" : "border-border hover:bg-secondary"}`}
           >
             All
@@ -83,7 +83,7 @@ function BlogPage() {
             <Link
               key={c.id}
               to="/blog"
-              search={(prev) => ({ ...prev, category: c.id })}
+              search={(prev: BlogSearch) => ({ ...prev, category: c.id })}
               className={`text-xs uppercase tracking-wider px-3 py-1.5 border ${category === c.id ? "bg-foreground text-background border-foreground" : "border-border hover:bg-secondary"}`}
             >
               {c.label}
@@ -98,7 +98,7 @@ function BlogPage() {
             {tag && (
               <Link
                 to="/blog"
-                search={(prev) => ({ ...prev, tag: undefined })}
+                search={(prev: BlogSearch) => ({ ...prev, tag: undefined })}
                 className="text-[10px] uppercase tracking-wider px-2 py-1 border border-border hover:bg-secondary"
               >
                 Clear ×
@@ -108,7 +108,7 @@ function BlogPage() {
               <Link
                 key={t}
                 to="/blog"
-                search={(prev) => ({ ...prev, tag: prev.tag === t ? undefined : t })}
+                search={(prev: BlogSearch) => ({ ...prev, tag: prev.tag === t ? undefined : t })}
                 className={`text-[10px] uppercase tracking-wider px-2 py-1 border ${tag === t ? "bg-foreground text-background border-foreground" : "border-border hover:bg-secondary"}`}
               >
                 #{t}
@@ -165,7 +165,7 @@ function BlogPage() {
                 {cat && (
                   <Link
                     to="/blog"
-                    search={(prev) => ({ ...prev, category: cat.id })}
+                    search={(prev: BlogSearch) => ({ ...prev, category: cat.id })}
                     className="eyebrow link-underline"
                   >
                     {cat.label}
@@ -178,7 +178,7 @@ function BlogPage() {
                     <Link
                       key={t}
                       to="/blog"
-                      search={(prev) => ({ ...prev, tag: t })}
+                      search={(prev: BlogSearch) => ({ ...prev, tag: t })}
                       className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-secondary border border-border hover:bg-foreground hover:text-background"
                     >
                       #{t}
