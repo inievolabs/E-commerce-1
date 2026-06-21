@@ -81,6 +81,7 @@ interface AdminContextValue extends AdminState {
 }
 
 const STORAGE_KEY = "velin:admin:v1";
+const MEDIA_STORAGE_KEY = "velin:admin:media:v1";
 
 const DEFAULT_CATEGORIES: CategoryDef[] = [
   { id: "bags", label: "Bags", description: "Shoulder bags, totes, hobos and crossbodies." },
@@ -171,26 +172,40 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = typeof window !== "undefined" && window.localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<AdminState>;
-        setState((prev) => ({
-          products: parsed.products ?? prev.products,
-          categories: parsed.categories ?? prev.categories,
-          inventory: parsed.inventory ?? prev.inventory,
-          orders: parsed.orders ?? prev.orders,
-          media: parsed.media ?? prev.media,
-        }));
-      }
+      const rawMedia = typeof window !== "undefined" && window.localStorage.getItem(MEDIA_STORAGE_KEY);
+      const parsed = raw ? (JSON.parse(raw) as Partial<AdminState>) : {};
+      const parsedMedia = rawMedia ? (JSON.parse(rawMedia) as MediaItem[]) : null;
+      setState((prev) => ({
+        products: parsed.products ?? prev.products,
+        categories: parsed.categories ?? prev.categories,
+        inventory: parsed.inventory ?? prev.inventory,
+        orders: parsed.orders ?? prev.orders,
+        media: parsedMedia ?? parsed.media ?? prev.media,
+      }));
     } catch {}
     setHydrated(true);
   }, []);
 
+  // Persist non-media state. Kept small so quota errors from media uploads
+  // never block product order, inventory, or order persistence.
   useEffect(() => {
     if (!hydrated) return;
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const { media, ...rest } = state;
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(rest));
     } catch {}
-  }, [state, hydrated]);
+  }, [state.products, state.categories, state.inventory, state.orders, hydrated]);
+
+  // Persist media separately — large data URLs may exceed quota; failures here
+  // must not prevent the rest of the admin state from being saved.
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      window.localStorage.setItem(MEDIA_STORAGE_KEY, JSON.stringify(state.media));
+    } catch (err) {
+      console.warn("[admin] media storage quota exceeded; media library not persisted", err);
+    }
+  }, [state.media, hydrated]);
 
   const value = useMemo<AdminContextValue>(
     () => ({
