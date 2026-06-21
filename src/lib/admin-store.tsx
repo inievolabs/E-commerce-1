@@ -423,6 +423,31 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
           });
           return { ...s, media, products };
         }),
+      upsertPost: (p) =>
+        setState((s) => {
+          const exists = s.posts.some((x) => x.id === p.id);
+          return {
+            ...s,
+            posts: exists ? s.posts.map((x) => (x.id === p.id ? p : x)) : [p, ...s.posts],
+          };
+        }),
+      deletePost: (id) =>
+        setState((s) => ({ ...s, posts: s.posts.filter((p) => p.id !== id) })),
+      upsertPostCategory: (c) =>
+        setState((s) => {
+          const exists = s.postCategories.some((x) => x.id === c.id);
+          return {
+            ...s,
+            postCategories: exists
+              ? s.postCategories.map((x) => (x.id === c.id ? c : x))
+              : [...s.postCategories, c],
+          };
+        }),
+      deletePostCategory: (id) =>
+        setState((s) => ({
+          ...s,
+          postCategories: s.postCategories.filter((c) => c.id !== id),
+        })),
     }),
     [state],
   );
