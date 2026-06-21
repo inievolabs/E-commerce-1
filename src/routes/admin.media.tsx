@@ -22,9 +22,10 @@ interface PendingFile {
 }
 
 function AdminMedia() {
-  const { media, products, addMedia, deleteMedia, renameMedia, setMediaProducts } = useAdminStore();
+  const { media, products, addMedia, deleteMedia, renameMedia, setMediaProducts, setProductImages } = useAdminStore();
   const [pending, setPending] = useState<PendingFile | null>(null);
   const [editing, setEditing] = useState<MediaItem | null>(null);
+  const [tab, setTab] = useState<"library" | "galleries">("library");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
