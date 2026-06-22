@@ -22,7 +22,8 @@ Your PC (primary)
   D:\Backups\velinstudio\    ← optional: occasional zip copy
 
 GitHub (remote backup)
-  https://github.com/abumdselim/velinstudio.git
+  https://github.com/inievolabs/E-commerce-1.git   ← primary (inievo)
+  https://github.com/abumdselim/velinstudio.git    ← Lovable sync (origin)
 ```
 
 **Rule:** Code lives in Git. Secrets live outside Git.
@@ -71,7 +72,10 @@ git status
 git add .
 git commit -m "Describe what changed and why"
 
-# 3. Push backup to GitHub
+# 3. Push backup to GitHub (Inievo Labs)
+git push inievo main
+
+# Optional: also push to Lovable-connected repo
 git push origin main
 ```
 
