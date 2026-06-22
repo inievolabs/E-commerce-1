@@ -13,7 +13,10 @@ export const Route = createFileRoute("/account")({
   head: () => ({
     meta: [
       { title: "My account — Velin Studio" },
-      { name: "description", content: "Manage your Velin Studio orders, wishlist, addresses and account details." },
+      {
+        name: "description",
+        content: "Manage your Velin Studio orders, wishlist, addresses and account details.",
+      },
       { property: "og:title", content: "My account — Velin Studio" },
       { property: "og:url", content: "/account" },
       { name: "robots", content: "noindex" },
@@ -41,7 +44,12 @@ function AccountPage() {
     if (isReady && !isAuthenticated) navigate({ to: "/login" });
   }, [isReady, isAuthenticated, navigate]);
 
-  if (!isReady) return <div className="mx-auto max-w-md px-5 py-24 text-center text-sm text-muted-foreground">Loading…</div>;
+  if (!isReady)
+    return (
+      <div className="mx-auto max-w-md px-5 py-24 text-center text-sm text-muted-foreground">
+        Loading…
+      </div>
+    );
   if (!user) return null;
 
   return (
@@ -96,7 +104,9 @@ function OrdersTab({ orders }: { orders: Order[] }) {
       <div className="text-center py-20 border border-border">
         <Package className="mx-auto h-8 w-8 text-muted-foreground" />
         <p className="mt-4 font-serif text-2xl">No orders yet.</p>
-        <Link to="/shop" className="mt-6 inline-block eyebrow link-underline">Discover the collection</Link>
+        <Link to="/shop" className="mt-6 inline-block eyebrow link-underline">
+          Discover the collection
+        </Link>
       </div>
     );
   }
@@ -105,35 +115,46 @@ function OrdersTab({ orders }: { orders: Order[] }) {
       {orders.map((o) => {
         const cover = getProductById(o.items[0].productId)?.images[0];
         return (
-        <li key={o.id} className="py-6 grid grid-cols-[64px_1fr_auto] sm:grid-cols-[80px_1fr_auto] gap-5 items-center">
-          <div className="aspect-square bg-muted overflow-hidden">
-            <img
-              src={cover ? productImageUrl(cover, "thumb") : "/pwa/icon-192.png"}
-              alt={o.items[0].name}
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="eyebrow">Order {o.id}</p>
-              <OrderStatusBadge status={o.status} />
+          <li
+            key={o.id}
+            className="py-6 grid grid-cols-[64px_1fr_auto] sm:grid-cols-[80px_1fr_auto] gap-5 items-center"
+          >
+            <div className="aspect-square bg-muted overflow-hidden">
+              <img
+                src={cover ? productImageUrl(cover, "thumb") : "/pwa/icon-192.png"}
+                alt={o.items[0].name}
+                className="h-full w-full object-cover"
+              />
             </div>
-            <p className="mt-2 font-serif text-lg truncate">{o.items[0].name}{o.items.length > 1 ? ` + ${o.items.length - 1} more` : ""}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Placed {new Date(o.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="tabular-nums">{formatPrice(o.total)}</p>
-            <Link
-              to="/account/orders/$orderId"
-              params={{ orderId: o.id }}
-              className="mt-2 inline-block text-[10px] tracking-[0.22em] uppercase link-underline"
-            >
-              View details
-            </Link>
-          </div>
-        </li>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="eyebrow">Order {o.id}</p>
+                <OrderStatusBadge status={o.status} />
+              </div>
+              <p className="mt-2 font-serif text-lg truncate">
+                {o.items[0].name}
+                {o.items.length > 1 ? ` + ${o.items.length - 1} more` : ""}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Placed{" "}
+                {new Date(o.date).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="tabular-nums">{formatPrice(o.total)}</p>
+              <Link
+                to="/account/orders/$orderId"
+                params={{ orderId: o.id }}
+                className="mt-2 inline-block text-[10px] tracking-[0.22em] uppercase link-underline"
+              >
+                View details
+              </Link>
+            </div>
+          </li>
         );
       })}
     </ul>
@@ -151,8 +172,12 @@ function WishlistTab() {
     return (
       <div className="text-center py-20 border border-border">
         <p className="font-serif text-2xl">Your wishlist is empty.</p>
-        <p className="mt-3 text-sm text-muted-foreground">Save pieces you love to return to later.</p>
-        <Link to="/shop" className="mt-6 inline-block eyebrow link-underline">Browse the shop</Link>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Save pieces you love to return to later.
+        </p>
+        <Link to="/shop" className="mt-6 inline-block eyebrow link-underline">
+          Browse the shop
+        </Link>
       </div>
     );
   }
@@ -208,7 +233,13 @@ function DetailsTab() {
 function AddressesTab() {
   const { addresses, addAddress, removeAddress } = useAuth();
   const [adding, setAdding] = useState(false);
-  const [draft, setDraft] = useState({ label: "", line1: "", city: "", postalCode: "", country: "" });
+  const [draft, setDraft] = useState({
+    label: "",
+    line1: "",
+    city: "",
+    postalCode: "",
+    country: "",
+  });
 
   return (
     <div className="space-y-8">
@@ -217,10 +248,16 @@ function AddressesTab() {
           <li key={a.id} className="border border-border p-6">
             <div className="flex items-center justify-between">
               <p className="eyebrow">{a.label}</p>
-              {a.isDefault && <span className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground">Default</span>}
+              {a.isDefault && (
+                <span className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
+                  Default
+                </span>
+              )}
             </div>
             <p className="mt-3 font-serif text-lg">{a.line1}</p>
-            <p className="text-sm text-muted-foreground">{a.postalCode} {a.city}</p>
+            <p className="text-sm text-muted-foreground">
+              {a.postalCode} {a.city}
+            </p>
             <p className="text-sm text-muted-foreground">{a.country}</p>
             <button
               onClick={async () => {
@@ -257,8 +294,14 @@ function AddressesTab() {
             </label>
           ))}
           <div className="flex gap-2">
-            <button className="bg-foreground text-background px-6 py-3 text-xs tracking-[0.22em] uppercase">Save</button>
-            <button type="button" onClick={() => setAdding(false)} className="px-6 py-3 text-xs tracking-[0.22em] uppercase border border-border">
+            <button className="bg-foreground text-background px-6 py-3 text-xs tracking-[0.22em] uppercase">
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setAdding(false)}
+              className="px-6 py-3 text-xs tracking-[0.22em] uppercase border border-border"
+            >
               Cancel
             </button>
           </div>

@@ -64,8 +64,7 @@ function ordersForCustomer(row: CustomerRow, orders: OrderRow[]): CustomerOrderS
   return orders
     .filter(
       (o) =>
-        (row.user_id && o.user_id === row.user_id) ||
-        normalizeEmail(o.customer_email) === emailKey,
+        (row.user_id && o.user_id === row.user_id) || normalizeEmail(o.customer_email) === emailKey,
     )
     .map(mapOrderSummary);
 }
@@ -110,7 +109,9 @@ export async function fetchAdminCustomers(): Promise<Customer[]> {
       .from("orders")
       .select("id, user_id, customer_email, total, status, created_at")
       .order("created_at", { ascending: false }),
-    admin.from("addresses").select("id, user_id, label, line1, city, postal_code, country, is_default"),
+    admin
+      .from("addresses")
+      .select("id, user_id, label, line1, city, postal_code, country, is_default"),
   ]);
 
   if (customersRes.error) throw customersRes.error;

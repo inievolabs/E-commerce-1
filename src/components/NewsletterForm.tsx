@@ -40,7 +40,11 @@ export function NewsletterForm({ source, variant = "light", className = "" }: Ne
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: trimmed, source }),
           });
-          const result = (await res.json()) as { ok: boolean; error?: string; alreadySubscribed?: boolean };
+          const result = (await res.json()) as {
+            ok: boolean;
+            error?: string;
+            alreadySubscribed?: boolean;
+          };
           if (!result.ok) {
             toast.error(result.error ?? "Unable to subscribe.");
             return;

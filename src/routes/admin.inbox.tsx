@@ -65,7 +65,13 @@ function AdminInbox() {
   const newContactCount = contacts.filter((c) => c.status === "new").length;
 
   const statusMutation = useMutation({
-    mutationFn: async ({ contactId, status }: { contactId: string; status: ContactSubmission["status"] }) => {
+    mutationFn: async ({
+      contactId,
+      status,
+    }: {
+      contactId: string;
+      status: ContactSubmission["status"];
+    }) => {
       const res = await fetch("/api/admin/inbox", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -86,8 +92,8 @@ function AdminInbox() {
         <p className="eyebrow">Inbox</p>
         <h1 className="font-serif text-3xl md:text-4xl mt-2">Newsletter &amp; Contact forms</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {contacts.length} contact message{contacts.length === 1 ? "" : "s"} · {newsletters.length} newsletter
-          subscriber{newsletters.length === 1 ? "" : "s"}
+          {contacts.length} contact message{contacts.length === 1 ? "" : "s"} · {newsletters.length}{" "}
+          newsletter subscriber{newsletters.length === 1 ? "" : "s"}
           {newContactCount > 0 && (
             <span className="ml-2 text-foreground">· {newContactCount} new</span>
           )}
@@ -139,7 +145,9 @@ function AdminInbox() {
 
       {isLoading && <p className="text-sm text-muted-foreground">Loading inbox…</p>}
       {isError && (
-        <p className="text-sm text-destructive">{error instanceof Error ? error.message : "Failed to load."}</p>
+        <p className="text-sm text-destructive">
+          {error instanceof Error ? error.message : "Failed to load."}
+        </p>
       )}
 
       {!isLoading && !isError && tab === "contact" && (
@@ -163,9 +171,7 @@ function AdminInbox() {
                         {c.firstName} {c.lastName}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">{c.email}</p>
-                      {c.subject && (
-                        <p className="text-xs mt-1 truncate">{c.subject}</p>
-                      )}
+                      {c.subject && <p className="text-xs mt-1 truncate">{c.subject}</p>}
                     </div>
                     <div className="shrink-0 text-right">
                       <StatusBadge status={c.status} />
@@ -195,14 +201,18 @@ function AdminInbox() {
                     >
                       {selectedContact.email}
                     </a>
-                    <p className="text-xs text-muted-foreground mt-1">{formatDate(selectedContact.createdAt)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDate(selectedContact.createdAt)}
+                    </p>
                   </div>
                   <StatusBadge status={selectedContact.status} />
                 </div>
                 {selectedContact.subject && (
                   <p className="text-sm font-medium mb-3">Subject: {selectedContact.subject}</p>
                 )}
-                <p className="text-sm whitespace-pre-wrap leading-relaxed">{selectedContact.message}</p>
+                <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                  {selectedContact.message}
+                </p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {selectedContact.status !== "read" && (
                     <button
@@ -266,14 +276,19 @@ function AdminInbox() {
                 </tr>
               ) : (
                 filteredNewsletters.map((n) => (
-                  <tr key={n.id} className="border-b border-border last:border-0 hover:bg-secondary/50">
+                  <tr
+                    key={n.id}
+                    className="border-b border-border last:border-0 hover:bg-secondary/50"
+                  >
                     <td className="p-3">
                       <a href={`mailto:${n.email}`} className="link-underline">
                         {n.email}
                       </a>
                     </td>
                     <td className="p-3 text-muted-foreground capitalize">{n.source ?? "—"}</td>
-                    <td className="p-3 text-muted-foreground tabular-nums">{formatDate(n.createdAt)}</td>
+                    <td className="p-3 text-muted-foreground tabular-nums">
+                      {formatDate(n.createdAt)}
+                    </td>
                   </tr>
                 ))
               )}

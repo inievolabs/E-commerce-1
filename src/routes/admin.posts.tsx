@@ -7,7 +7,11 @@ export const Route = createFileRoute("/admin/posts")({
 });
 
 const slug = (s: string) =>
-  s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 const blankPost = (): Post => ({
   id: "",
@@ -33,10 +37,7 @@ function PostsPage() {
       if (catFilter !== "all" && p.categoryId !== catFilter) return false;
       if (filter) {
         const q = filter.toLowerCase();
-        return (
-          p.title.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.toLowerCase().includes(q))
-        );
+        return p.title.toLowerCase().includes(q) || p.tags.some((t) => t.toLowerCase().includes(q));
       }
       return true;
     });
@@ -50,7 +51,9 @@ function PostsPage() {
           <h1 className="font-serif text-3xl mt-1">Posts</h1>
         </div>
         <div className="flex items-center gap-3">
-          <Link to="/blog" className="eyebrow link-underline">View blog →</Link>
+          <Link to="/blog" className="eyebrow link-underline">
+            View blog →
+          </Link>
           <button
             onClick={() => setEditing(blankPost())}
             className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase"
@@ -74,7 +77,9 @@ function PostsPage() {
         >
           <option value="all">All categories</option>
           {postCategories.map((c) => (
-            <option key={c.id} value={c.id}>{c.label}</option>
+            <option key={c.id} value={c.id}>
+              {c.label}
+            </option>
           ))}
         </select>
       </div>
@@ -100,17 +105,26 @@ function PostsPage() {
                     <div className="font-medium">{p.title}</div>
                     <div className="text-xs text-muted-foreground font-mono mt-0.5">{p.id}</div>
                   </td>
-                  <td className="px-4 py-3">{cat?.label ?? <span className="text-muted-foreground">—</span>}</td>
+                  <td className="px-4 py-3">
+                    {cat?.label ?? <span className="text-muted-foreground">—</span>}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
                       {p.tags.map((t) => (
-                        <span key={t} className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-secondary border border-border">{t}</span>
+                        <span
+                          key={t}
+                          className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-secondary border border-border"
+                        >
+                          {t}
+                        </span>
                       ))}
                       {p.tags.length === 0 && <span className="text-muted-foreground">—</span>}
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-[10px] uppercase tracking-wider px-2 py-1 ${p.published ? "bg-foreground text-background" : "bg-secondary border border-border"}`}>
+                    <span
+                      className={`text-[10px] uppercase tracking-wider px-2 py-1 ${p.published ? "bg-foreground text-background" : "bg-secondary border border-border"}`}
+                    >
                       {p.published ? "Published" : "Draft"}
                     </span>
                   </td>
@@ -118,9 +132,13 @@ function PostsPage() {
                     {new Date(p.publishedAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-right space-x-3 whitespace-nowrap">
-                    <button onClick={() => setEditing(p)} className="eyebrow link-underline">Edit</button>
+                    <button onClick={() => setEditing(p)} className="eyebrow link-underline">
+                      Edit
+                    </button>
                     <button
-                      onClick={() => { if (confirm(`Delete "${p.title}"?`)) deletePost(p.id); }}
+                      onClick={() => {
+                        if (confirm(`Delete "${p.title}"?`)) deletePost(p.id);
+                      }}
                       className="eyebrow link-underline text-destructive"
                     >
                       Delete
@@ -130,7 +148,11 @@ function PostsPage() {
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">No posts match.</td></tr>
+              <tr>
+                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
+                  No posts match.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -154,7 +176,10 @@ function PostsPage() {
 }
 
 function PostEditor({
-  initial, isNew, onSave, onCancel,
+  initial,
+  isNew,
+  onSave,
+  onCancel,
 }: {
   initial: Post;
   isNew: boolean;
@@ -167,17 +192,26 @@ function PostEditor({
 
   const addTag = () => {
     const t = tagInput.trim().toLowerCase();
-    if (!t || p.tags.includes(t)) { setTagInput(""); return; }
+    if (!t || p.tags.includes(t)) {
+      setTagInput("");
+      return;
+    }
     setP({ ...p, tags: [...p.tags, t] });
     setTagInput("");
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-foreground/40 grid place-items-center p-4 overflow-y-auto" onClick={onCancel}>
+    <div
+      className="fixed inset-0 z-50 bg-foreground/40 grid place-items-center p-4 overflow-y-auto"
+      onClick={onCancel}
+    >
       <form
         className="bg-background w-full max-w-3xl border border-border p-6 space-y-5 my-8"
         onClick={(e) => e.stopPropagation()}
-        onSubmit={(e) => { e.preventDefault(); onSave(p); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSave(p);
+        }}
       >
         <h2 className="font-serif text-2xl">{isNew ? "New post" : "Edit post"}</h2>
 
@@ -211,7 +245,9 @@ function PostEditor({
             >
               <option value="">Choose…</option>
               {postCategories.map((c) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
               ))}
             </select>
           </label>
@@ -280,12 +316,21 @@ function PostEditor({
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTag(); }
+                if (e.key === "Enter" || e.key === ",") {
+                  e.preventDefault();
+                  addTag();
+                }
               }}
               placeholder="Add tag and press Enter"
               className="flex-1 bg-transparent border-b border-foreground/30 py-2 text-sm focus:outline-none focus:border-foreground"
             />
-            <button type="button" onClick={addTag} className="text-xs tracking-[0.22em] uppercase px-3 border border-border">Add</button>
+            <button
+              type="button"
+              onClick={addTag}
+              className="text-xs tracking-[0.22em] uppercase px-3 border border-border"
+            >
+              Add
+            </button>
           </div>
         </div>
 
@@ -299,8 +344,19 @@ function PostEditor({
         </label>
 
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onCancel} className="px-4 py-2 text-xs tracking-[0.22em] uppercase border border-border">Cancel</button>
-          <button type="submit" className="px-4 py-2 text-xs tracking-[0.22em] uppercase bg-foreground text-background">Save</button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-xs tracking-[0.22em] uppercase border border-border"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-xs tracking-[0.22em] uppercase bg-foreground text-background"
+          >
+            Save
+          </button>
         </div>
       </form>
     </div>

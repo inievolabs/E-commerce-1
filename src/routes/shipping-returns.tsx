@@ -5,7 +5,11 @@ export const Route = createFileRoute("/shipping-returns")({
   head: () => ({
     meta: [
       { title: "Shipping & Returns — Velin Studio" },
-      { name: "description", content: "Shipping timelines, costs, return windows, conditions and refund process for Velin Studio orders." },
+      {
+        name: "description",
+        content:
+          "Shipping timelines, costs, return windows, conditions and refund process for Velin Studio orders.",
+      },
       { property: "og:title", content: "Shipping & Returns — Velin Studio" },
       { property: "og:url", content: "/shipping-returns" },
     ],
@@ -25,11 +29,24 @@ function ShippingReturns() {
 
       <LegalSection title="Shipping timelines & costs">
         <ul className="list-disc pl-6 space-y-2">
-          <li><strong>Europe</strong> — Standard express, 2–4 business days. Complimentary.</li>
-          <li><strong>United Kingdom & Switzerland</strong> — 3–5 business days. Complimentary; duties prepaid.</li>
-          <li><strong>United States & Canada</strong> — 3–5 business days. Complimentary; duties prepaid.</li>
-          <li><strong>Asia, Middle East, Oceania</strong> — 4–7 business days. Complimentary; duties may apply on delivery.</li>
-          <li><strong>Express priority (24–48h within Bangladesh)</strong> — ৳25 at checkout.</li>
+          <li>
+            <strong>Europe</strong> — Standard express, 2–4 business days. Complimentary.
+          </li>
+          <li>
+            <strong>United Kingdom & Switzerland</strong> — 3–5 business days. Complimentary; duties
+            prepaid.
+          </li>
+          <li>
+            <strong>United States & Canada</strong> — 3–5 business days. Complimentary; duties
+            prepaid.
+          </li>
+          <li>
+            <strong>Asia, Middle East, Oceania</strong> — 4–7 business days. Complimentary; duties
+            may apply on delivery.
+          </li>
+          <li>
+            <strong>Express priority (24–48h within Bangladesh)</strong> — ৳25 at checkout.
+          </li>
         </ul>
         <p>
           Orders are processed within 24 hours on business days. You will receive a tracking link by
@@ -61,18 +78,18 @@ function ShippingReturns() {
       <LegalSection title="Refund process">
         <p>
           Once your return arrives at the atelier, our team inspects the piece within 3 business
-          days. Approved refunds are issued to the original payment method within 5–7 business
-          days; depending on your bank, the credit may take an additional cycle to appear.
-          Original shipping (where applicable) and duties are non-refundable, in line with EU
-          consumer regulations.
+          days. Approved refunds are issued to the original payment method within 5–7 business days;
+          depending on your bank, the credit may take an additional cycle to appear. Original
+          shipping (where applicable) and duties are non-refundable, in line with EU consumer
+          regulations.
         </p>
       </LegalSection>
 
       <LegalSection title="Exchanges & repairs">
         <p>
-          For size or colour exchanges, we recommend placing a new order and returning the
-          original. Our atelier also offers complimentary lifetime repairs on manufacturing
-          defects — please contact clientservices@velinstudiobd.com.
+          For size or colour exchanges, we recommend placing a new order and returning the original.
+          Our atelier also offers complimentary lifetime repairs on manufacturing defects — please
+          contact clientservices@velinstudiobd.com.
         </p>
       </LegalSection>
     </LegalLayout>

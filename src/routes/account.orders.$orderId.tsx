@@ -119,7 +119,9 @@ function AccountOrderDetailPage() {
                     {item.size ? ` · Size ${item.size}` : ""}
                   </p>
                 </div>
-                <p className="text-sm tabular-nums shrink-0">{formatPrice(item.price * item.qty)}</p>
+                <p className="text-sm tabular-nums shrink-0">
+                  {formatPrice(item.price * item.qty)}
+                </p>
               </li>
             );
           })}

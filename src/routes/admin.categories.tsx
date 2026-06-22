@@ -45,7 +45,9 @@ function AdminCategories() {
             </div>
             {c.description && <p className="text-sm text-muted-foreground mt-3">{c.description}</p>}
             <div className="mt-4 flex gap-4">
-              <button onClick={() => setEditing(c)} className="eyebrow link-underline">Edit</button>
+              <button onClick={() => setEditing(c)} className="eyebrow link-underline">
+                Edit
+              </button>
               <button
                 onClick={() => {
                   if ((countByCat[c.id] ?? 0) > 0) {
@@ -68,7 +70,10 @@ function AdminCategories() {
           initial={editing}
           existingIds={categories.map((c) => c.id)}
           onClose={() => setEditing(null)}
-          onSave={(c) => { upsertCategory(c); setEditing(null); }}
+          onSave={(c) => {
+            upsertCategory(c);
+            setEditing(null);
+          }}
         />
       )}
     </div>
@@ -76,7 +81,10 @@ function AdminCategories() {
 }
 
 function CategoryEditor({
-  initial, existingIds, onClose, onSave,
+  initial,
+  existingIds,
+  onClose,
+  onSave,
 }: {
   initial: CategoryDef;
   existingIds: string[];
@@ -86,7 +94,10 @@ function CategoryEditor({
   const [c, setC] = useState<CategoryDef>(initial);
   const isNew = !initial.id;
   return (
-    <div className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full grid place-items-center p-4">
         <form
           onClick={(e) => e.stopPropagation()}
@@ -106,7 +117,12 @@ function CategoryEditor({
             <span className="eyebrow block mb-2">ID (slug)</span>
             <input
               value={c.id}
-              onChange={(e) => setC((s) => ({ ...s, id: e.target.value.toLowerCase().replace(/\s+/g, "-") as Category }))}
+              onChange={(e) =>
+                setC((s) => ({
+                  ...s,
+                  id: e.target.value.toLowerCase().replace(/\s+/g, "-") as Category,
+                }))
+              }
               disabled={!isNew}
               required
               className="w-full bg-transparent border-b border-foreground/30 py-2 text-sm focus:outline-none focus:border-foreground font-mono disabled:opacity-50"
@@ -131,10 +147,17 @@ function CategoryEditor({
             />
           </label>
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background">
+            <button
+              type="button"
+              onClick={onClose}
+              className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background"
+            >
               Cancel
             </button>
-            <button type="submit" className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90">
+            <button
+              type="submit"
+              className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90"
+            >
               Save
             </button>
           </div>

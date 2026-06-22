@@ -133,20 +133,56 @@ function Checkout() {
         <form className="space-y-12" onSubmit={onSubmit}>
           <section>
             <h2 className="font-serif text-2xl mb-6">Contact</h2>
-            <Field label="Email" type="email" placeholder="you@example.com" required value={form.email} onChange={setF("email")} />
+            <Field
+              label="Email"
+              type="email"
+              placeholder="you@example.com"
+              required
+              value={form.email}
+              onChange={setF("email")}
+            />
           </section>
 
           <section>
             <h2 className="font-serif text-2xl mb-6">Shipping address</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              <Field label="First name" required value={form.firstName} onChange={setF("firstName")} />
+              <Field
+                label="First name"
+                required
+                value={form.firstName}
+                onChange={setF("firstName")}
+              />
               <Field label="Last name" required value={form.lastName} onChange={setF("lastName")} />
-              <Field label="Address" className="sm:col-span-2" required value={form.address} onChange={setF("address")} />
-              <Field label="Apartment, suite (optional)" className="sm:col-span-2" value={form.apt} onChange={setF("apt")} />
+              <Field
+                label="Address"
+                className="sm:col-span-2"
+                required
+                value={form.address}
+                onChange={setF("address")}
+              />
+              <Field
+                label="Apartment, suite (optional)"
+                className="sm:col-span-2"
+                value={form.apt}
+                onChange={setF("apt")}
+              />
               <Field label="City" required value={form.city} onChange={setF("city")} />
               <Field label="Postal code" required value={form.postal} onChange={setF("postal")} />
-              <Field label="Country" className="sm:col-span-2" required value={form.country} onChange={setF("country")} />
-              <Field label="Phone" type="tel" className="sm:col-span-2" required value={form.phone} onChange={setF("phone")} />
+              <Field
+                label="Country"
+                className="sm:col-span-2"
+                required
+                value={form.country}
+                onChange={setF("country")}
+              />
+              <Field
+                label="Phone"
+                type="tel"
+                className="sm:col-span-2"
+                required
+                value={form.phone}
+                onChange={setF("phone")}
+              />
             </div>
           </section>
 
@@ -176,7 +212,9 @@ function Checkout() {
           {items.length === 0 ? (
             <div>
               <p className="text-sm text-muted-foreground">Your bag is empty.</p>
-              <Link to="/shop" className="mt-4 inline-block eyebrow link-underline">Continue shopping</Link>
+              <Link to="/shop" className="mt-4 inline-block eyebrow link-underline">
+                Continue shopping
+              </Link>
             </div>
           ) : (
             <>
@@ -192,7 +230,9 @@ function Checkout() {
                           alt={p.name}
                           className="h-full w-full object-cover"
                         />
-                        <span className="absolute -top-1 -right-1 bg-foreground text-background text-[10px] h-4 w-4 grid place-items-center rounded-full">{it.qty}</span>
+                        <span className="absolute -top-1 -right-1 bg-foreground text-background text-[10px] h-4 w-4 grid place-items-center rounded-full">
+                          {it.qty}
+                        </span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm truncate">{p.name}</p>
@@ -204,8 +244,14 @@ function Checkout() {
                 })}
               </ul>
               <dl className="mt-6 pt-6 border-t border-border space-y-2 text-sm">
-                <div className="flex justify-between"><dt>Subtotal</dt><dd className="tabular-nums">{formatPrice(subtotal)}</dd></div>
-                <div className="flex justify-between"><dt>Shipping</dt><dd className="tabular-nums">Free</dd></div>
+                <div className="flex justify-between">
+                  <dt>Subtotal</dt>
+                  <dd className="tabular-nums">{formatPrice(subtotal)}</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt>Shipping</dt>
+                  <dd className="tabular-nums">Free</dd>
+                </div>
               </dl>
               <div className="mt-4 pt-4 border-t border-border flex justify-between text-base">
                 <span>Total</span>

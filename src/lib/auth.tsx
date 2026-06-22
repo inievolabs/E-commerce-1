@@ -66,9 +66,16 @@ interface AuthContextValue {
   addresses: Address[];
   addressesLoading: boolean;
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
-  signup: (name: string, email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  signup: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<{ ok: boolean; error?: string }>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+  ) => Promise<{ ok: boolean; error?: string }>;
   requestPasswordReset: (email: string) => Promise<{ ok: boolean; error?: string }>;
   updateUser: (patch: Partial<User>) => Promise<{ ok: boolean; error?: string }>;
   addAddress: (a: Omit<Address, "id">) => Promise<{ ok: boolean; error?: string }>;
@@ -108,7 +115,11 @@ function mapOrderStatus(status: Tables<"orders">["status"]): OrderStatusLabel {
 
 async function fetchProfile(userId: string) {
   const supabase = createSupabaseBrowserClient();
-  const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
   if (error) throw error;
   return data;
 }
@@ -252,7 +263,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const n = name.trim();
         const e = email.trim();
         if (!n || !e || !password) return { ok: false, error: "All fields are required." };
-        if (password.length < 8) return { ok: false, error: "Password must be at least 8 characters." };
+        if (password.length < 8)
+          return { ok: false, error: "Password must be at least 8 characters." };
         try {
           await assertPasswordNotPwned(password);
         } catch (err) {
@@ -311,7 +323,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const updates: { full_name?: string } = {};
         if (patch.name != null) updates.full_name = patch.name;
         if (Object.keys(updates).length) {
-          const { error } = await supabase.from("profiles").update(updates).eq("id", session.user.id);
+          const { error } = await supabase
+            .from("profiles")
+            .update(updates)
+            .eq("id", session.user.id);
           if (error) return { ok: false, error: error.message };
           setProfile((p) => (p ? { ...p, ...updates } : p));
         }

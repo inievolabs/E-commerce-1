@@ -7,10 +7,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
-    meta: [
-      { title: "Reset password — Velin Studio" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Reset password — Velin Studio" }, { name: "robots", content: "noindex" }],
     links: [{ rel: "canonical", href: "/reset-password" }],
   }),
   component: ResetPasswordPage,
@@ -43,8 +40,7 @@ function ResetPasswordPage() {
         setInvalidLink(false);
       } else {
         const hash = window.location.hash;
-        const hasRecoveryToken =
-          hash.includes("type=recovery") || hash.includes("access_token=");
+        const hasRecoveryToken = hash.includes("type=recovery") || hash.includes("access_token=");
         if (!hasRecoveryToken) {
           setInvalidLink(true);
         }
@@ -68,7 +64,8 @@ function ResetPasswordPage() {
         <p className="eyebrow">Account</p>
         <h1 className="mt-4 font-serif text-4xl">Link expired</h1>
         <p className="mt-4 text-sm text-muted-foreground">
-          This password reset link is invalid or has expired. Request a new one from the sign-in page.
+          This password reset link is invalid or has expired. Request a new one from the sign-in
+          page.
         </p>
         <Link
           to="/login"
@@ -120,11 +117,19 @@ function ResetPasswordPage() {
             toast.error("Could not reset password", { description: updateError.message });
             return;
           }
-          toast.success("Password reset", { description: "You can now sign in with your new password." });
+          toast.success("Password reset", {
+            description: "You can now sign in with your new password.",
+          });
           navigate({ to: "/login" });
         }}
       >
-        <PasswordField label="New password" value={password} onChange={setPassword} autoComplete="new-password" required />
+        <PasswordField
+          label="New password"
+          value={password}
+          onChange={setPassword}
+          autoComplete="new-password"
+          required
+        />
         <PasswordField
           label="Confirm password"
           value={confirmPassword}

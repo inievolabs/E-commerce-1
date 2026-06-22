@@ -20,7 +20,9 @@ export interface UploadMediaFailure {
 
 export type UploadMediaResponse = UploadMediaSuccess | UploadMediaFailure;
 
-async function requireAdmin(request: Request): Promise<{ ok: true } | { ok: false; error: string; status: number }> {
+async function requireAdmin(
+  request: Request,
+): Promise<{ ok: true } | { ok: false; error: string; status: number }> {
   const supabase = createSupabaseServerClient(request);
   const {
     data: { user },

@@ -60,7 +60,12 @@ export function CartDrawer() {
                 if (!p) return null;
                 return (
                   <li key={it.productId} className="p-6 flex gap-4">
-                    <Link to="/product/$id" params={{ id: p.id }} onClick={close} className="shrink-0">
+                    <Link
+                      to="/product/$id"
+                      params={{ id: p.id }}
+                      onClick={close}
+                      className="shrink-0"
+                    >
                       <img
                         src={productImageUrl(p.images[0], "thumb")}
                         alt={p.name}
@@ -69,7 +74,12 @@ export function CartDrawer() {
                     </Link>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between gap-3">
-                        <Link to="/product/$id" params={{ id: p.id }} onClick={close} className="text-sm truncate">
+                        <Link
+                          to="/product/$id"
+                          params={{ id: p.id }}
+                          onClick={close}
+                          className="text-sm truncate"
+                        >
                           {p.name}
                         </Link>
                         <p className="text-sm tabular-nums">{formatPrice(p.price * it.qty)}</p>
@@ -77,11 +87,19 @@ export function CartDrawer() {
                       <p className="text-xs text-muted-foreground mt-1">{it.color ?? p.color}</p>
                       <div className="mt-4 flex items-center justify-between">
                         <div className="inline-flex items-center border border-border">
-                          <button onClick={() => setQty(p.id, it.qty - 1)} className="p-2" aria-label="Decrease">
+                          <button
+                            onClick={() => setQty(p.id, it.qty - 1)}
+                            className="p-2"
+                            aria-label="Decrease"
+                          >
                             <Minus className="h-3 w-3" />
                           </button>
                           <span className="px-3 text-xs tabular-nums">{it.qty}</span>
-                          <button onClick={() => setQty(p.id, it.qty + 1)} className="p-2" aria-label="Increase">
+                          <button
+                            onClick={() => setQty(p.id, it.qty + 1)}
+                            className="p-2"
+                            aria-label="Increase"
+                          >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>

@@ -24,7 +24,8 @@ function AdminSettings() {
     if (!currentPassword) return "Please enter your current password.";
     if (newPassword.length < 6) return "New password must be at least 6 characters.";
     if (newPassword !== confirmPassword) return "New passwords do not match.";
-    if (currentPassword === newPassword) return "New password must be different from your current password.";
+    if (currentPassword === newPassword)
+      return "New password must be different from your current password.";
     return null;
   };
 
@@ -33,9 +34,7 @@ function AdminSettings() {
       <header className="mb-8">
         <p className="eyebrow">Admin</p>
         <h1 className="font-serif text-3xl md:text-4xl mt-2">Settings</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Manage your admin account security.
-        </p>
+        <p className="text-sm text-muted-foreground mt-1">Manage your admin account security.</p>
       </header>
 
       <section className="bg-background border border-border p-6 max-w-lg">

@@ -27,7 +27,9 @@ loadEnvLocal();
 
 const token = process.env.SUPABASE_ACCESS_TOKEN;
 if (!token) {
-  console.error("Missing SUPABASE_ACCESS_TOKEN. Create one at https://supabase.com/dashboard/account/tokens");
+  console.error(
+    "Missing SUPABASE_ACCESS_TOKEN. Create one at https://supabase.com/dashboard/account/tokens",
+  );
   process.exit(1);
 }
 

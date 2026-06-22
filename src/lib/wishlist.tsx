@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useAuth } from "@/lib/auth";
 import { mergeWishlistIds } from "@/lib/user-sync";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -19,7 +27,9 @@ function readLocalWishlist(): string[] {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as string[];
-  } catch {}
+  } catch {
+    /* ignore */
+  }
   return [];
 }
 
@@ -39,7 +49,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, [ids, hydrated]);
 
   useEffect(() => {

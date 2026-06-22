@@ -39,10 +39,7 @@ export function createSupabaseServerClient(
       setAll(cookiesToSet: CookieToSet[]) {
         if (!responseHeaders) return;
         cookiesToSet.forEach(({ name, value, options }) => {
-          responseHeaders.append(
-            "Set-Cookie",
-            serializeCookie(name, value, options),
-          );
+          responseHeaders.append("Set-Cookie", serializeCookie(name, value, options));
         });
       },
     },

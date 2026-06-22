@@ -54,9 +54,15 @@ export function Footer() {
             Quietly considered leather goods, designed in Paris and crafted by hand in Italy.
           </p>
           <div className="mt-6 flex gap-4 text-foreground/70">
-            <a href="#" aria-label="Instagram" className="hover:text-foreground"><Instagram className="h-4 w-4" /></a>
-            <a href="#" aria-label="Facebook" className="hover:text-foreground"><Facebook className="h-4 w-4" /></a>
-            <a href="#" aria-label="Youtube" className="hover:text-foreground"><Youtube className="h-4 w-4" /></a>
+            <a href="#" aria-label="Instagram" className="hover:text-foreground">
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="Facebook" className="hover:text-foreground">
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="Youtube" className="hover:text-foreground">
+              <Youtube className="h-4 w-4" />
+            </a>
           </div>
         </div>
 

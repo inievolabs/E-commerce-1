@@ -8,7 +8,9 @@ import {
 
 const store: RateLimitStore = new Map();
 
-export function checkApiRateLimit(request: Request): { ok: true } | { ok: false; retryAfterSec: number } {
+export function checkApiRateLimit(
+  request: Request,
+): { ok: true } | { ok: false; retryAfterSec: number } {
   const url = new URL(request.url);
   if (!url.pathname.startsWith("/api/")) {
     return { ok: true };

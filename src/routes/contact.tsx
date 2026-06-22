@@ -7,7 +7,11 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Velin Studio" },
-      { name: "description", content: "Reach the Velin Studio client services team, or visit our boutiques in Paris and Milan." },
+      {
+        name: "description",
+        content:
+          "Reach the Velin Studio client services team, or visit our boutiques in Paris and Milan.",
+      },
       { property: "og:title", content: "Contact — Velin Studio" },
       { property: "og:url", content: "/contact" },
     ],
@@ -27,8 +31,9 @@ function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const setF = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((s) => ({ ...s, [key]: e.target.value }));
+  const setF =
+    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm((s) => ({ ...s, [key]: e.target.value }));
 
   return (
     <div className="mx-auto max-w-[1200px] px-5 lg:px-10 py-16 lg:py-24">
@@ -36,7 +41,8 @@ function Contact() {
         <p className="eyebrow">Client services</p>
         <h1 className="mt-4 font-serif text-5xl md:text-6xl">Get in touch</h1>
         <p className="mt-4 text-sm text-muted-foreground">
-          Our team is available Monday through Saturday, 10am – 7pm CET, and replies within one business day.
+          Our team is available Monday through Saturday, 10am – 7pm CET, and replies within one
+          business day.
         </p>
       </header>
 
@@ -93,10 +99,21 @@ function Contact() {
             }}
           >
             <div className="grid sm:grid-cols-2 gap-6">
-              <Field label="First name" required value={form.firstName} onChange={setF("firstName")} />
+              <Field
+                label="First name"
+                required
+                value={form.firstName}
+                onChange={setF("firstName")}
+              />
               <Field label="Last name" required value={form.lastName} onChange={setF("lastName")} />
             </div>
-            <Field label="Email" type="email" required value={form.email} onChange={setF("email")} />
+            <Field
+              label="Email"
+              type="email"
+              required
+              value={form.email}
+              onChange={setF("email")}
+            />
             <Field label="Subject" value={form.subject} onChange={setF("subject")} />
             <label className="block">
               <span className="block eyebrow mb-2">Message</span>
@@ -141,18 +158,30 @@ function Contact() {
           <div>
             <p className="eyebrow mb-4">Direct</p>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-3"><Mail className="h-4 w-4" /> clients@velin.studio</li>
-              <li className="flex items-center gap-3"><Phone className="h-4 w-4" /> +33 1 44 78 12 00</li>
+              <li className="flex items-center gap-3">
+                <Mail className="h-4 w-4" /> clients@velin.studio
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4" /> +33 1 44 78 12 00
+              </li>
             </ul>
           </div>
 
           <div>
             <p className="eyebrow mb-4">Follow</p>
             <div className="flex gap-4">
-              <a href="#" aria-label="Instagram" className="p-2 border border-border hover:border-foreground">
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="p-2 border border-border hover:border-foreground"
+              >
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Facebook" className="p-2 border border-border hover:border-foreground">
+              <a
+                href="#"
+                aria-label="Facebook"
+                className="p-2 border border-border hover:border-foreground"
+              >
                 <Facebook className="h-4 w-4" />
               </a>
             </div>

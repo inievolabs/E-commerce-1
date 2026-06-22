@@ -15,11 +15,11 @@ Applied on every response via `src/server.ts` and static `public/_headers`:
 
 ## API rate limits (per IP)
 
-| Route | Limit |
-|-------|-------|
-| `POST /api/orders` | 12 / 15 min |
-| `POST /api/upload-media` | 40 / hour |
-| `GET /api/admin/customers` | 60 / min |
+| Route                      | Limit       |
+| -------------------------- | ----------- |
+| `POST /api/orders`         | 12 / 15 min |
+| `POST /api/upload-media`   | 40 / hour   |
+| `GET /api/admin/customers` | 60 / min    |
 
 ## Supabase advisors
 

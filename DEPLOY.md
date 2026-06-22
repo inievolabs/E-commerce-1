@@ -4,14 +4,14 @@ Deploy the TanStack Start + Nitro (Cloudflare module) app to Cloudflare Workers.
 
 ## Production (live)
 
-| Item | Value |
-|------|-------|
-| **Site URL** | https://velinstudiobd.com |
-| **WWW** | https://www.velinstudiobd.com |
-| **Worker name** | `velinstudio` |
-| **Cloudflare account** | velinsac@outlook.com |
-| **Supabase project** | `xkqkwoxrwezywnoillgf` |
-| **Latest deploy** | 2026-06-22 — Version `b426a957-2047-4519-8265-9335c04a5cea` |
+| Item                   | Value                                                       |
+| ---------------------- | ----------------------------------------------------------- |
+| **Site URL**           | https://velinstudiobd.com                                   |
+| **WWW**                | https://www.velinstudiobd.com                               |
+| **Worker name**        | `velinstudio`                                               |
+| **Cloudflare account** | velinsac@outlook.com                                        |
+| **Supabase project**   | `xkqkwoxrwezywnoillgf`                                      |
+| **Latest deploy**      | 2026-06-22 — Version `b426a957-2047-4519-8265-9335c04a5cea` |
 
 Custom domains are attached via Wrangler (`--domain velinstudiobd.com` and `--domain www.velinstudiobd.com`). Cloudflare creates/proxies the needed DNS records (A/AAAA to Cloudflare anycast).
 
@@ -34,15 +34,15 @@ cp .env.example .env.local
 
 Required variables:
 
-| Variable | Where | Notes |
-|----------|-------|-------|
-| `VITE_SITE_URL` | Client + Worker | Production URL (no trailing slash) |
-| `VITE_SUPABASE_URL` | Client + Worker | `https://xkqkwoxrwezywnoillgf.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Client + Worker | Anon or publishable key — set as Worker **secret** in production |
-| `SUPABASE_SERVICE_ROLE_KEY` | Worker only | Server-side admin operations — Worker **secret** |
-| `CLOUDINARY_CLOUD_NAME` | Worker only | From [Cloudinary dashboard](https://console.cloudinary.com/settings/api-keys) |
-| `CLOUDINARY_API_KEY` | Worker only | Cloudinary API key — Worker **secret** |
-| `CLOUDINARY_API_SECRET` | Worker only | Cloudinary API secret — Worker **secret** (never expose to client) |
+| Variable                    | Where           | Notes                                                                         |
+| --------------------------- | --------------- | ----------------------------------------------------------------------------- |
+| `VITE_SITE_URL`             | Client + Worker | Production URL (no trailing slash)                                            |
+| `VITE_SUPABASE_URL`         | Client + Worker | `https://xkqkwoxrwezywnoillgf.supabase.co`                                    |
+| `VITE_SUPABASE_ANON_KEY`    | Client + Worker | Anon or publishable key — set as Worker **secret** in production              |
+| `SUPABASE_SERVICE_ROLE_KEY` | Worker only     | Server-side admin operations — Worker **secret**                              |
+| `CLOUDINARY_CLOUD_NAME`     | Worker only     | From [Cloudinary dashboard](https://console.cloudinary.com/settings/api-keys) |
+| `CLOUDINARY_API_KEY`        | Worker only     | Cloudinary API key — Worker **secret**                                        |
+| `CLOUDINARY_API_SECRET`     | Worker only     | Cloudinary API secret — Worker **secret** (never expose to client)            |
 
 ## 2. Build
 
@@ -120,12 +120,12 @@ SSL is automatic when the zone is proxied through Cloudflare.
 In Supabase Dashboard → **Authentication → URL Configuration**  
 ([project settings](https://supabase.com/dashboard/project/xkqkwoxrwezywnoillgf/auth/url-configuration)):
 
-| Setting | Value |
-|---------|-------|
-| **Site URL** | `https://velinstudiobd.com` |
-| **Redirect URLs** | `https://velinstudiobd.com/**` |
-| | `https://www.velinstudiobd.com/**` |
-| | `http://localhost:5173/**` |
+| Setting           | Value                              |
+| ----------------- | ---------------------------------- |
+| **Site URL**      | `https://velinstudiobd.com`        |
+| **Redirect URLs** | `https://velinstudiobd.com/**`     |
+|                   | `https://www.velinstudiobd.com/**` |
+|                   | `http://localhost:5173/**`         |
 
 ## 7. Database migrations
 
@@ -148,19 +148,19 @@ supabase db push
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
+| Issue                                 | Fix                                                                                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Deploy asks for workers.dev subdomain | Use `--domain` flags (included in `npm run deploy`) or register workers.dev in dashboard |
-| Build fails on Windows path | Run `npm run build` from project root |
-| 500 on site | `npx wrangler tail --config .output/server/wrangler.json` |
-| Local DNS cannot resolve domain | Use `1.1.1.1`; flush local DNS cache; public DNS may be ahead of ISP cache |
-| Env vars missing in Worker | `wrangler secret put` or dashboard Variables |
+| Build fails on Windows path           | Run `npm run build` from project root                                                    |
+| 500 on site                           | `npx wrangler tail --config .output/server/wrangler.json`                                |
+| Local DNS cannot resolve domain       | Use `1.1.1.1`; flush local DNS cache; public DNS may be ahead of ISP cache               |
+| Env vars missing in Worker            | `wrangler secret put` or dashboard Variables                                             |
 
 ## Scripts reference
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Vite dev server |
-| `npm run build` | Production build + PWA service worker |
-| `npm run preview:cf` | Wrangler dev against built output |
-| `npm run deploy` | Build + deploy to Cloudflare with custom domains |
+| Script               | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `npm run dev`        | Vite dev server                                  |
+| `npm run build`      | Production build + PWA service worker            |
+| `npm run preview:cf` | Wrangler dev against built output                |
+| `npm run deploy`     | Build + deploy to Cloudflare with custom domains |

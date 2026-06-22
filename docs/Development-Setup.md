@@ -6,11 +6,11 @@ How to keep **Velin Studio** safe for future work: local development on your PC 
 
 ## Short answer
 
-| Question | Answer |
-|----------|--------|
-| Keep developing from `D:\Failed\velinstudio`? | **Yes** — this is your main working copy |
-| Need GitHub too? | **Yes** — backup, history, second machine, disaster recovery |
-| Is `.env.local` backed up to GitHub? | **No** (and it must not be) — keep a separate secure copy |
+| Question                                      | Answer                                                       |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| Keep developing from `D:\Failed\velinstudio`? | **Yes** — this is your main working copy                     |
+| Need GitHub too?                              | **Yes** — backup, history, second machine, disaster recovery |
+| Is `.env.local` backed up to GitHub?          | **No** (and it must not be) — keep a separate secure copy    |
 
 ---
 
@@ -49,13 +49,13 @@ GitHub (remote backup)
 
 Copy these to a password manager or encrypted folder:
 
-| Item | Why |
-|------|-----|
-| `.env.local` | Local + deploy secrets |
-| Supabase dashboard login | Database access |
-| Cloudflare account | Production deploy |
-| Cloudinary credentials | Media upload |
-| Admin user email/password | Store admin |
+| Item                      | Why                    |
+| ------------------------- | ---------------------- |
+| `.env.local`              | Local + deploy secrets |
+| Supabase dashboard login  | Database access        |
+| Cloudflare account        | Production deploy      |
+| Cloudinary credentials    | Media upload           |
+| Admin user email/password | Store admin            |
 
 ---
 
@@ -164,11 +164,11 @@ If you see many `??` or `M` files, work is **only on your PC** until you commit 
 
 ## Quick commands reference
 
-| Task | Command |
-|------|---------|
-| Dev server | `npm run dev` |
-| Tests | `npm run test` |
-| Build | `npm run build` |
-| Deploy live | `npm run deploy` |
-| Git status | `git status` |
+| Task        | Command                |
+| ----------- | ---------------------- |
+| Dev server  | `npm run dev`          |
+| Tests       | `npm run test`         |
+| Build       | `npm run build`        |
+| Deploy live | `npm run deploy`       |
+| Git status  | `git status`           |
 | Push backup | `git push origin main` |

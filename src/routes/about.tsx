@@ -5,7 +5,11 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "Our story — Velin Studio" },
-      { name: "description", content: "Velin Studio is a quiet maison of leather goods designed in Paris and crafted by hand in Italy." },
+      {
+        name: "description",
+        content:
+          "Velin Studio is a quiet maison of leather goods designed in Paris and crafted by hand in Italy.",
+      },
       { property: "og:title", content: "Our story — Velin Studio" },
       { property: "og:url", content: "/about" },
       { property: "og:image", content: craftImage },
@@ -31,7 +35,11 @@ function About() {
       </section>
 
       <section className="relative h-[70vh] min-h-[480px] overflow-hidden">
-        <img src={craftImage} alt="Atelier" className="absolute inset-0 h-full w-full object-cover" />
+        <img
+          src={craftImage}
+          alt="Atelier"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
       </section>
 
       <section className="mx-auto max-w-3xl px-5 lg:px-10 py-20 lg:py-28">

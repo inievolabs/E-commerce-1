@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useCatalog } from "@/lib/use-catalog";
 import { useAuth } from "@/lib/auth";
 import { mergeCartItems } from "@/lib/user-sync";
@@ -32,7 +40,9 @@ function readLocalCart(): CartItem[] {
   try {
     const raw = typeof window !== "undefined" && window.localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as CartItem[];
-  } catch {}
+  } catch {
+    /* ignore */
+  }
   return [];
 }
 
@@ -54,7 +64,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, [items, hydrated]);
 
   useEffect(() => {
@@ -138,9 +150,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems((prev) => {
           const existing = prev.find((i) => i.productId === productId);
           if (existing) {
-            return prev.map((i) =>
-              i.productId === productId ? { ...i, qty: i.qty + qty } : i,
-            );
+            return prev.map((i) => (i.productId === productId ? { ...i, qty: i.qty + qty } : i));
           }
           return [...prev, { productId, qty, ...opts }];
         }),

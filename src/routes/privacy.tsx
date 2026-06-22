@@ -5,7 +5,10 @@ export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "Privacy Policy — Velin Studio" },
-      { name: "description", content: "How Velin Studio collects, uses and protects your personal data." },
+      {
+        name: "description",
+        content: "How Velin Studio collects, uses and protects your personal data.",
+      },
       { property: "og:title", content: "Privacy Policy — Velin Studio" },
       { property: "og:url", content: "/privacy" },
     ],
@@ -18,18 +21,18 @@ function Privacy() {
   return (
     <LegalLayout title="Privacy Policy">
       <p>
-        Velin Studio ("we", "our", "us") respects your privacy. This policy explains what
-        personal data we collect when you visit velinstudiobd.com or place an order, how we use it,
-        and the rights you have over it.
+        Velin Studio ("we", "our", "us") respects your privacy. This policy explains what personal
+        data we collect when you visit velinstudiobd.com or place an order, how we use it, and the
+        rights you have over it.
       </p>
 
       <LegalSection title="Information we collect">
         <p>
           We collect information you provide directly — your name, shipping and billing address,
-          email, phone number, and payment details — when you create an account, place an order
-          or contact our client services team. We also collect technical information automatically,
-          including IP address, device type, browser, and pages visited, through cookies and
-          similar technologies.
+          email, phone number, and payment details — when you create an account, place an order or
+          contact our client services team. We also collect technical information automatically,
+          including IP address, device type, browser, and pages visited, through cookies and similar
+          technologies.
         </p>
       </LegalSection>
 
@@ -80,8 +83,8 @@ function Privacy() {
 
       <LegalSection title="Contact">
         <p>
-          For any privacy question, please write to privacy@velinstudiobd.com or Velin Studio,
-          12 Rue des Archives, 75004 Paris, France.
+          For any privacy question, please write to privacy@velinstudiobd.com or Velin Studio, 12
+          Rue des Archives, 75004 Paris, France.
         </p>
       </LegalSection>
     </LegalLayout>

@@ -14,7 +14,10 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Sign in — Velin Studio" },
-      { name: "description", content: "Sign in to your Velin Studio account to view orders, wishlist and addresses." },
+      {
+        name: "description",
+        content: "Sign in to your Velin Studio account to view orders, wishlist and addresses.",
+      },
       { property: "og:title", content: "Sign in — Velin Studio" },
       { property: "og:url", content: "/login" },
       { name: "robots", content: "noindex" },
@@ -109,7 +112,13 @@ function LoginPage() {
           }}
         >
           <Field label="Email" type="email" value={email} onChange={setEmail} required />
-          <PasswordField label="Password" value={password} onChange={setPassword} autoComplete="current-password" required />
+          <PasswordField
+            label="Password"
+            value={password}
+            onChange={setPassword}
+            autoComplete="current-password"
+            required
+          />
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -143,7 +152,9 @@ function LoginPage() {
       {!forgotOpen && (
         <p className="mt-10 text-center text-sm text-muted-foreground">
           New to Velin Studio?{" "}
-          <Link to="/signup" className="text-foreground link-underline">Create an account</Link>
+          <Link to="/signup" className="text-foreground link-underline">
+            Create an account
+          </Link>
         </p>
       )}
     </div>

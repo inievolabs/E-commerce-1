@@ -41,9 +41,7 @@ export function createSupabaseBrowserClient(): TypedSupabaseClient {
 }
 
 /** Generic client for scripts or server-only contexts with an explicit key. */
-export function createSupabaseClient(
-  supabaseKey = getSupabaseAnonKey(),
-): TypedSupabaseClient {
+export function createSupabaseClient(supabaseKey = getSupabaseAnonKey()): TypedSupabaseClient {
   return createClient<Database>(getSupabaseUrl(), supabaseKey, {
     auth: {
       autoRefreshToken: false,

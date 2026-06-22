@@ -51,14 +51,16 @@ export function revenueForPeriod(orders: Order[], period: RevenuePeriod, now = n
   return ordersInPeriod(orders, period, now).reduce((sum, o) => sum + o.total, 0);
 }
 
-export function orderCountForPeriod(orders: Order[], period: RevenuePeriod, now = new Date()): number {
+export function orderCountForPeriod(
+  orders: Order[],
+  period: RevenuePeriod,
+  now = new Date(),
+): number {
   return ordersInPeriod(orders, period, now).length;
 }
 
 export function pendingOrders(orders: Order[]): Order[] {
-  return orders
-    .filter((o) => o.status === "pending")
-    .sort((a, b) => orderTime(b) - orderTime(a));
+  return orders.filter((o) => o.status === "pending").sort((a, b) => orderTime(b) - orderTime(a));
 }
 
 export function ordersNeedingAction(orders: Order[]): Order[] {

@@ -7,7 +7,10 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "Create account — Velin Studio" },
-      { name: "description", content: "Create a Velin Studio account to track orders, save pieces and check out faster." },
+      {
+        name: "description",
+        content: "Create a Velin Studio account to track orders, save pieces and check out faster.",
+      },
       { property: "og:title", content: "Create account — Velin Studio" },
       { property: "og:url", content: "/signup" },
       { name: "robots", content: "noindex" },
@@ -32,9 +35,7 @@ function SignupPage() {
       <header className="text-center mb-12">
         <p className="eyebrow">Account</p>
         <h1 className="mt-4 font-serif text-4xl md:text-5xl">Create account</h1>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Join the Velin Studio circle.
-        </p>
+        <p className="mt-4 text-sm text-muted-foreground">Join the Velin Studio circle.</p>
       </header>
 
       <form
@@ -53,15 +54,33 @@ function SignupPage() {
       >
         <Field label="Full name" value={name} onChange={setName} required />
         <Field label="Email" type="email" value={email} onChange={setEmail} required />
-        <PasswordField label="Password" value={password} onChange={setPassword} autoComplete="new-password" required />
-        <PasswordField label="Confirm password" value={confirm} onChange={setConfirm} autoComplete="new-password" required />
+        <PasswordField
+          label="Password"
+          value={password}
+          onChange={setPassword}
+          autoComplete="new-password"
+          required
+        />
+        <PasswordField
+          label="Confirm password"
+          value={confirm}
+          onChange={setConfirm}
+          autoComplete="new-password"
+          required
+        />
 
         {error && <p className="text-sm text-destructive">{error}</p>}
 
         <p className="text-xs text-muted-foreground leading-relaxed">
           By creating an account you agree to our{" "}
-          <Link to="/terms" className="link-underline text-foreground">Terms</Link> and{" "}
-          <Link to="/privacy" className="link-underline text-foreground">Privacy Policy</Link>.
+          <Link to="/terms" className="link-underline text-foreground">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link to="/privacy" className="link-underline text-foreground">
+            Privacy Policy
+          </Link>
+          .
         </p>
 
         <button
@@ -75,7 +94,9 @@ function SignupPage() {
 
       <p className="mt-10 text-center text-sm text-muted-foreground">
         Already with us?{" "}
-        <Link to="/login" className="text-foreground link-underline">Sign in</Link>
+        <Link to="/login" className="text-foreground link-underline">
+          Sign in
+        </Link>
       </p>
     </div>
   );

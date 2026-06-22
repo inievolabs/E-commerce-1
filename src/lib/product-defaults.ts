@@ -5,11 +5,9 @@ export type TrustBadge = { icon: string; label: string };
 
 export const DEFAULT_TAX_LABEL = "Tax included";
 
-export const DEFAULT_SHIPPING_INFO =
-  "Complimentary express shipping nationwide.";
+export const DEFAULT_SHIPPING_INFO = "Complimentary express shipping nationwide.";
 
-export const DEFAULT_RETURNS_INFO =
-  "Free 30-day returns on unworn pieces in original packaging.";
+export const DEFAULT_RETURNS_INFO = "Free 30-day returns on unworn pieces in original packaging.";
 
 export const DEFAULT_SIZE_GUIDE_TITLE = "European sizing";
 

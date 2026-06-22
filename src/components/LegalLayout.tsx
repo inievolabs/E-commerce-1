@@ -7,7 +7,12 @@ interface Props {
   children: ReactNode;
 }
 
-export function LegalLayout({ eyebrow = "Information", title, updated = "Updated June 2026", children }: Props) {
+export function LegalLayout({
+  eyebrow = "Information",
+  title,
+  updated = "Updated June 2026",
+  children,
+}: Props) {
   return (
     <article className="mx-auto max-w-3xl px-5 lg:px-10 py-16 lg:py-24">
       <header className="text-center mb-16">

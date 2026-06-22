@@ -28,9 +28,7 @@ export function WishlistButton({ productId, className = "", size = 16, label = f
         className={`transition-colors ${active ? "fill-current text-foreground" : ""}`}
       />
       {label && (
-        <span className="text-xs tracking-[0.22em] uppercase">
-          {active ? "Saved" : "Save"}
-        </span>
+        <span className="text-xs tracking-[0.22em] uppercase">{active ? "Saved" : "Save"}</span>
       )}
     </button>
   );

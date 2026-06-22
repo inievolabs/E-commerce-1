@@ -29,7 +29,9 @@ function WishlistPage() {
           <p className="eyebrow">Saved</p>
           <h1 className="mt-3 font-serif text-4xl md:text-5xl">Your wishlist</h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            {items.length === 0 ? "Nothing saved yet." : `${items.length} piece${items.length === 1 ? "" : "s"} saved.`}
+            {items.length === 0
+              ? "Nothing saved yet."
+              : `${items.length} piece${items.length === 1 ? "" : "s"} saved.`}
           </p>
         </div>
         {items.length > 0 && (
@@ -44,7 +46,9 @@ function WishlistPage() {
       ) : items.length === 0 ? (
         <div className="text-center py-24 border-y border-border">
           <p className="font-serif text-3xl">Begin curating your own edit.</p>
-          <p className="mt-3 text-sm text-muted-foreground">Tap the heart on any piece to save it here.</p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Tap the heart on any piece to save it here.
+          </p>
           <Link
             to="/shop"
             className="mt-8 inline-flex items-center bg-foreground text-background px-8 py-4 text-xs tracking-[0.22em] uppercase"

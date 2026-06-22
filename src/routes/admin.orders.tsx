@@ -11,7 +11,14 @@ export const Route = createFileRoute("/admin/orders")({
   component: AdminOrders,
 });
 
-const STATUSES: OrderStatus[] = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
+const STATUSES: OrderStatus[] = [
+  "pending",
+  "confirmed",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+];
 
 function AdminOrders() {
   const { orders, setOrderStatus, deleteOrder } = useAdminStore();
@@ -84,13 +91,21 @@ function AdminOrders() {
                     onChange={(e) => setOrderStatus(o.id, e.target.value as OrderStatus)}
                     className="bg-transparent border border-border px-2 py-1 text-xs uppercase tracking-wider focus:outline-none focus:border-foreground"
                   >
-                    {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    {STATUSES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
                   </select>
                 </td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
-                  <button onClick={() => setSelected(o)} className="eyebrow link-underline mr-3">View</button>
+                  <button onClick={() => setSelected(o)} className="eyebrow link-underline mr-3">
+                    View
+                  </button>
                   <button
-                    onClick={() => { if (confirm(`Delete ${o.id}?`)) deleteOrder(o.id); }}
+                    onClick={() => {
+                      if (confirm(`Delete ${o.id}?`)) deleteOrder(o.id);
+                    }}
                     className="eyebrow text-destructive link-underline"
                   >
                     Delete
@@ -99,7 +114,11 @@ function AdminOrders() {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-10 text-center text-muted-foreground text-sm">No orders.</td></tr>
+              <tr>
+                <td colSpan={6} className="px-4 py-10 text-center text-muted-foreground text-sm">
+                  No orders.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -112,16 +131,26 @@ function AdminOrders() {
 
 function OrderDetail({ order, onClose }: { order: Order; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full grid place-items-center p-4">
-        <div onClick={(e) => e.stopPropagation()} className="bg-background border border-border w-full max-w-2xl p-6 lg:p-8">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-background border border-border w-full max-w-2xl p-6 lg:p-8"
+        >
           <header className="flex items-start justify-between gap-4 mb-6">
             <div>
               <p className="eyebrow">Order</p>
               <h2 className="font-serif text-2xl mt-1">{order.id}</h2>
-              <p className="text-xs text-muted-foreground mt-1">{new Date(order.createdAt).toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {new Date(order.createdAt).toLocaleString()}
+              </p>
             </div>
-            <button onClick={onClose} className="eyebrow link-underline">Close</button>
+            <button onClick={onClose} className="eyebrow link-underline">
+              Close
+            </button>
           </header>
 
           <div className="grid sm:grid-cols-2 gap-6 mb-6">
@@ -144,7 +173,9 @@ function OrderDetail({ order, onClose }: { order: Order; onClose: () => void }) 
                   <div>
                     <p className="text-sm font-medium">{it.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      Qty {it.qty}{it.color ? ` · ${it.color}` : ""}{it.size ? ` · ${it.size}` : ""}
+                      Qty {it.qty}
+                      {it.color ? ` · ${it.color}` : ""}
+                      {it.size ? ` · ${it.size}` : ""}
                     </p>
                   </div>
                   <p className="text-sm tabular-nums">{formatPrice(it.price * it.qty)}</p>
@@ -154,10 +185,19 @@ function OrderDetail({ order, onClose }: { order: Order; onClose: () => void }) 
           </div>
 
           <dl className="mt-6 pt-6 border-t border-border space-y-2 text-sm">
-            <div className="flex justify-between"><dt>Subtotal</dt><dd className="tabular-nums">{formatPrice(order.subtotal)}</dd></div>
-            <div className="flex justify-between"><dt>Shipping</dt><dd className="tabular-nums">{order.shipping === 0 ? "Free" : formatPrice(order.shipping)}</dd></div>
+            <div className="flex justify-between">
+              <dt>Subtotal</dt>
+              <dd className="tabular-nums">{formatPrice(order.subtotal)}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt>Shipping</dt>
+              <dd className="tabular-nums">
+                {order.shipping === 0 ? "Free" : formatPrice(order.shipping)}
+              </dd>
+            </div>
             <div className="flex justify-between text-base pt-2 border-t border-border">
-              <dt>Total</dt><dd className="tabular-nums">{formatPrice(order.total)}</dd>
+              <dt>Total</dt>
+              <dd className="tabular-nums">{formatPrice(order.total)}</dd>
             </div>
           </dl>
         </div>

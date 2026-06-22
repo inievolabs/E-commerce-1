@@ -49,7 +49,9 @@ export function mapCategory(row: Tables<"categories">): CategoryDef {
   };
 }
 
-export function categoryToDbRow(c: CategoryDef): Database["public"]["Tables"]["categories"]["Insert"] {
+export function categoryToDbRow(
+  c: CategoryDef,
+): Database["public"]["Tables"]["categories"]["Insert"] {
   return {
     id: c.id,
     label: c.label,
@@ -140,10 +142,7 @@ function mapOrderLine(row: Tables<"order_items">): OrderLine {
   };
 }
 
-export function mapOrder(
-  row: Tables<"orders">,
-  items: Tables<"order_items">[],
-): Order {
+export function mapOrder(row: Tables<"orders">, items: Tables<"order_items">[]): Order {
   return {
     id: row.id,
     createdAt: row.created_at,

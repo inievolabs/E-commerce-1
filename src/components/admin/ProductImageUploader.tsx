@@ -71,12 +71,16 @@ export function ProductImageUploader({
       const dataUrls = await Promise.all(batch.map((file) => prepareImageFileForUpload(file)));
 
       let completed = 0;
-      const results = await runWithConcurrency(dataUrls, IMAGE_UPLOAD_CONCURRENCY, async (dataUrl) => {
-        const result = await uploadMediaImage(dataUrl);
-        completed += 1;
-        setUploadProgress(`Uploading ${completed} of ${batch.length}…`);
-        return result;
-      });
+      const results = await runWithConcurrency(
+        dataUrls,
+        IMAGE_UPLOAD_CONCURRENCY,
+        async (dataUrl) => {
+          const result = await uploadMediaImage(dataUrl);
+          completed += 1;
+          setUploadProgress(`Uploading ${completed} of ${batch.length}…`);
+          return result;
+        },
+      );
 
       uploaded.push(...results.map((r) => r.secure_url));
       onChange([...value, ...uploaded]);
@@ -102,7 +106,7 @@ export function ProductImageUploader({
         </span>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
-        Add up to         {maxImages} photos (max {formatMaxImageSizeMb()} MB each). Images are resized to{" "}
+        Add up to {maxImages} photos (max {formatMaxImageSizeMb()} MB each). Images are resized to{" "}
         {IMAGE_MAX_DIMENSION}px, optimized, then stored on Cloudinary.
       </p>
 
@@ -233,7 +237,8 @@ export function ProductImageUploader({
                   + Add images
                 </button>
                 <p className="text-xs text-muted-foreground mt-3">
-                  {maxImages - value.length} slot{maxImages - value.length === 1 ? "" : "s"} remaining
+                  {maxImages - value.length} slot{maxImages - value.length === 1 ? "" : "s"}{" "}
+                  remaining
                 </p>
               </>
             )}

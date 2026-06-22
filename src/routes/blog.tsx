@@ -30,7 +30,10 @@ function BlogPage() {
   const { category, tag, q } = Route.useSearch();
 
   const published = useMemo(
-    () => posts.filter((p) => p.published).sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt)),
+    () =>
+      posts
+        .filter((p) => p.published)
+        .sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt)),
     [posts],
   );
 
@@ -138,7 +141,12 @@ function BlogPage() {
             placeholder="Search posts..."
             className="flex-1 bg-transparent border-b border-foreground/30 py-2 text-sm focus:outline-none focus:border-foreground"
           />
-          <button type="submit" className="text-xs tracking-[0.22em] uppercase px-3 border border-border">Search</button>
+          <button
+            type="submit"
+            className="text-xs tracking-[0.22em] uppercase px-3 border border-border"
+          >
+            Search
+          </button>
         </form>
 
         <div className="text-xs text-muted-foreground">
@@ -186,7 +194,12 @@ function BlogPage() {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground mt-3">
-                  {new Date(p.publishedAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })} · {p.author}
+                  {new Date(p.publishedAt).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}{" "}
+                  · {p.author}
                 </p>
               </div>
             </article>
@@ -195,7 +208,9 @@ function BlogPage() {
         {filtered.length === 0 && (
           <p className="col-span-full text-center text-muted-foreground py-16">
             No posts match these filters.{" "}
-            <Link to="/blog" search={{}} className="link-underline">Clear filters</Link>
+            <Link to="/blog" search={{}} className="link-underline">
+              Clear filters
+            </Link>
           </p>
         )}
       </section>

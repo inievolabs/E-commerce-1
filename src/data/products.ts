@@ -50,7 +50,8 @@ export const products: Product[] = [
     color: "Camel",
     colorHex: "#b08458",
     images: [productImg("w-bag-01", 1), productImg("w-bag-01", 2)],
-    description: "A softly structured shoulder bag in supple Italian leather, finished with hand-burnished edges.",
+    description:
+      "A softly structured shoulder bag in supple Italian leather, finished with hand-burnished edges.",
     materials: "Full-grain calfskin, brass hardware, suede lining.",
     isNew: true,
     isBestseller: true,
@@ -64,7 +65,8 @@ export const products: Product[] = [
     color: "Ivory",
     colorHex: "#efe7d8",
     images: [productImg("w-bag-02", 1), productImg("w-bag-02", 2)],
-    description: "A miniature tote with subtle pleating, designed for the considered essentials of an unhurried day.",
+    description:
+      "A miniature tote with subtle pleating, designed for the considered essentials of an unhurried day.",
     materials: "Smooth nappa leather, lambskin lining.",
     isNew: true,
   },
@@ -77,7 +79,8 @@ export const products: Product[] = [
     color: "Noir",
     colorHex: "#1a1a1a",
     images: [productImg("w-bag-03", 1), productImg("w-bag-03", 2)],
-    description: "Slouched silhouette with a single curved handle, an everyday hobo refined to its essential form.",
+    description:
+      "Slouched silhouette with a single curved handle, an everyday hobo refined to its essential form.",
     materials: "Pebbled calfskin, woven cotton lining.",
     isBestseller: true,
   },
@@ -103,7 +106,8 @@ export const products: Product[] = [
     color: "Cognac",
     colorHex: "#8b4a2a",
     images: [productImg("w-lug-01", 1), productImg("w-lug-01", 2)],
-    description: "A spacious weekender hand-stitched in the Tuscan tradition, made for slow travel.",
+    description:
+      "A spacious weekender hand-stitched in the Tuscan tradition, made for slow travel.",
     materials: "Vegetable-tanned leather, solid brass feet.",
     isBestseller: true,
   },
@@ -116,7 +120,8 @@ export const products: Product[] = [
     color: "Ivory",
     colorHex: "#efe7d8",
     images: [productImg("w-lug-02", 1), productImg("w-lug-02", 2)],
-    description: "Cabin-sized trunk in featherweight aluminum with leather corners and a silent four-wheel system.",
+    description:
+      "Cabin-sized trunk in featherweight aluminum with leather corners and a silent four-wheel system.",
     materials: "Anodised aluminium, calfskin trim.",
     isNew: true,
   },
@@ -143,7 +148,8 @@ export const products: Product[] = [
     color: "Burgundy",
     colorHex: "#5c1a1b",
     images: [productImg("w-slp-02", 1), productImg("w-slp-02", 2)],
-    description: "Plush velvet slipper with embroidered emblem — refined comfort for evenings at home.",
+    description:
+      "Plush velvet slipper with embroidered emblem — refined comfort for evenings at home.",
     materials: "Silk velvet, leather sole, shearling lining.",
   },
   {
@@ -155,7 +161,8 @@ export const products: Product[] = [
     color: "Camel",
     colorHex: "#b08458",
     images: [productImg("w-slp-03", 1), productImg("w-slp-03", 2)],
-    description: "Unstructured leather flat that folds gently with the foot — an everyday companion.",
+    description:
+      "Unstructured leather flat that folds gently with the foot — an everyday companion.",
     materials: "Calfskin upper, padded leather insole.",
     isBestseller: true,
   },
@@ -169,7 +176,8 @@ export const products: Product[] = [
     color: "Noir",
     colorHex: "#1a1a1a",
     images: [productImg("m-bag-01", 1), productImg("m-bag-01", 2)],
-    description: "An architectural briefcase with hand-rolled handles and a discreet trolley sleeve.",
+    description:
+      "An architectural briefcase with hand-rolled handles and a discreet trolley sleeve.",
     materials: "Saffiano leather, palladium hardware.",
     isBestseller: true,
   },
@@ -182,7 +190,8 @@ export const products: Product[] = [
     color: "Cognac",
     colorHex: "#8b4a2a",
     images: [productImg("m-bag-02", 1), productImg("m-bag-02", 2)],
-    description: "Soft-construction messenger in vegetable-tanned leather that develops a unique patina over time.",
+    description:
+      "Soft-construction messenger in vegetable-tanned leather that develops a unique patina over time.",
     materials: "Vegetable-tanned leather, canvas lining.",
     isNew: true,
   },
@@ -208,7 +217,8 @@ export const products: Product[] = [
     color: "Noir",
     colorHex: "#1a1a1a",
     images: [productImg("m-wal-01", 1), productImg("m-wal-01", 2)],
-    description: "A slim bifold with six card slots and a full-length note compartment, edge-painted by hand.",
+    description:
+      "A slim bifold with six card slots and a full-length note compartment, edge-painted by hand.",
     materials: "Box calf leather, lambskin lining.",
     isBestseller: true,
   },
@@ -221,7 +231,8 @@ export const products: Product[] = [
     color: "Cognac",
     colorHex: "#8b4a2a",
     images: [productImg("m-wal-02", 1), productImg("m-wal-02", 2)],
-    description: "Minimalist cardholder with four slots and a central pocket, debossed with our quiet monogram.",
+    description:
+      "Minimalist cardholder with four slots and a central pocket, debossed with our quiet monogram.",
     materials: "Vegetable-tanned calfskin.",
     isNew: true,
   },
@@ -234,7 +245,8 @@ export const products: Product[] = [
     color: "Burgundy",
     colorHex: "#5c1a1b",
     images: [productImg("m-wal-03", 1), productImg("m-wal-03", 2)],
-    description: "A travel-length wallet with twelve card slots, a zipped coin pocket, and a passport sleeve.",
+    description:
+      "A travel-length wallet with twelve card slots, a zipped coin pocket, and a passport sleeve.",
     materials: "Saffiano leather, satin lining.",
   },
   {
@@ -246,7 +258,8 @@ export const products: Product[] = [
     color: "Ivory",
     colorHex: "#efe7d8",
     images: [productImg("m-wal-04", 1), productImg("m-wal-04", 2)],
-    description: "A clean-lined zip pouch for documents, devices, and the quiet ceremony of arrival.",
+    description:
+      "A clean-lined zip pouch for documents, devices, and the quiet ceremony of arrival.",
     materials: "Smooth calfskin, brass zip.",
   },
 ];

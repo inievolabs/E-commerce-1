@@ -5,7 +5,10 @@ describe("user-sync", () => {
   it("merges cart items by product id and sums quantities", () => {
     const merged = mergeCartItems(
       [{ productId: "a", qty: 1 }],
-      [{ productId: "a", qty: 2 }, { productId: "b", qty: 1 }],
+      [
+        { productId: "a", qty: 2 },
+        { productId: "b", qty: 1 },
+      ],
     );
     expect(merged).toEqual([
       { productId: "a", qty: 3 },

@@ -1,15 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ComponentType } from "react";
-import {
-  ChevronDown,
-  X,
-  Truck,
-  Hammer,
-  RotateCcw,
-  Heart,
-  Package,
-  Shield,
-} from "lucide-react";
+import { ChevronDown, X, Truck, Hammer, RotateCcw, Heart, Package, Shield } from "lucide-react";
 import { type Product } from "@/data/products";
 import { fetchCatalogProductServer } from "@/lib/catalog";
 import { productImageUrl } from "@/lib/cloudinary-image";
@@ -47,7 +38,9 @@ export const Route = createFileRoute("/product/$id")({
   notFoundComponent: () => (
     <div className="px-5 py-32 text-center">
       <h1 className="font-serif text-4xl">Piece not found</h1>
-      <Link to="/shop" className="mt-6 inline-block eyebrow link-underline">Return to shop</Link>
+      <Link to="/shop" className="mt-6 inline-block eyebrow link-underline">
+        Return to shop
+      </Link>
     </div>
   ),
   errorComponent: ({ error }) => (
@@ -59,7 +52,10 @@ export const Route = createFileRoute("/product/$id")({
   component: ProductPage,
 });
 
-const TRUST_ICON_MAP: Record<string, ComponentType<{ className?: string; strokeWidth?: number }>> = {
+const TRUST_ICON_MAP: Record<
+  string,
+  ComponentType<{ className?: string; strokeWidth?: number }>
+> = {
   truck: Truck,
   hammer: Hammer,
   "rotate-ccw": RotateCcw,
@@ -80,14 +76,16 @@ function stockLabel(stock: number | undefined): string | null {
   return "In stock";
 }
 
-function ProductPage() {  const { product } = Route.useLoaderData() as { product: Product };
+function ProductPage() {
+  const { product } = Route.useLoaderData() as { product: Product };
   const { data: catalogProducts = [] } = useCatalog();
   const { add, open, count: cartCount } = useCart();
   const wishlist = useWishlist();
 
   const [activeImage, setActiveImage] = useState(0);
   const sizes = product.sizes ?? [];
-  const [size, setSize] = useState<string>(sizes[Math.floor(sizes.length / 2)] ?? "");  const [qty, setQty] = useState(1);
+  const [size, setSize] = useState<string>(sizes[Math.floor(sizes.length / 2)] ?? "");
+  const [qty, setQty] = useState(1);
   const [accordion, setAccordion] = useState<string | null>("desc");
   const [lightbox, setLightbox] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
@@ -97,7 +95,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
     setQty(1);
     const nextSizes = product.sizes ?? [];
     setSize(nextSizes[Math.floor(nextSizes.length / 2)] ?? "");
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    if (typeof window !== "undefined")
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [product.id, product.sizes]);
   // Mobile carousel — track active dot via scroll
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -113,7 +112,9 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
   }, [product.id]);
 
   const related = catalogProducts
-    .filter((p) => p.id !== product.id && p.category === product.category && p.gender === product.gender)
+    .filter(
+      (p) => p.id !== product.id && p.category === product.category && p.gender === product.gender,
+    )
     .slice(0, 6);
   const completeTheLook = catalogProducts
     .filter((p) => p.category !== product.category && p.gender === product.gender)
@@ -132,7 +133,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
 
   const handleAddToCart = () => {
     if (outOfStock) return;
-    if (sizes.length > 0 && !size) return;    add(product.id, qty, { color: product.color, size: size || undefined });
+    if (sizes.length > 0 && !size) return;
+    add(product.id, qty, { color: product.color, size: size || undefined });
     open();
   };
 
@@ -152,7 +154,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
       availability:
         product.stock === undefined || product.stock > 0
           ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",    },
+          : "https://schema.org/OutOfStock",
+    },
   };
 
   return (
@@ -164,7 +167,9 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
       <div className="mx-auto max-w-[1500px] px-5 lg:px-10 pt-6 lg:pt-10">
         {/* Breadcrumb */}
         <nav className="mb-6 lg:mb-10 text-[11px] tracking-widest uppercase text-muted-foreground">
-          <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+          <Link to="/" className="hover:text-foreground transition-colors">
+            Home
+          </Link>
           <span className="mx-2 opacity-60">/</span>
           <Link to="/shop" className="hover:text-foreground transition-colors capitalize">
             {product.category}
@@ -186,10 +191,17 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                     onClick={() => setActiveImage(i)}
                     aria-label={`View image ${i + 1}`}
                     className={`shrink-0 aspect-[3/4] overflow-hidden bg-muted border transition-all duration-200 ${
-                      activeImage === i ? "border-foreground opacity-100" : "border-transparent opacity-70 hover:opacity-100"
+                      activeImage === i
+                        ? "border-foreground opacity-100"
+                        : "border-transparent opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={deliveryImages.thumb[i]} alt="" className="h-full w-full object-cover" loading="lazy" />
+                    <img
+                      src={deliveryImages.thumb[i]}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
                   </button>
                 ))}
               </div>
@@ -237,7 +249,12 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                       activeImage === i ? "border-foreground" : "border-transparent opacity-70"
                     }`}
                   >
-                    <img src={deliveryImages.thumb[i]} alt="" className="h-full w-full object-cover" loading="lazy" />
+                    <img
+                      src={deliveryImages.thumb[i]}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
                   </button>
                 ))}
               </div>
@@ -296,13 +313,13 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
             <div className="mt-3 flex items-baseline gap-3 flex-wrap">
               <p className="text-xl tabular-nums">{formatPrice(product.price)}</p>
               {product.taxIncluded !== false && (
-                <span className="text-xs text-muted-foreground">{product.taxLabel ?? "Tax included"}</span>
+                <span className="text-xs text-muted-foreground">
+                  {product.taxLabel ?? "Tax included"}
+                </span>
               )}
               {stockStatus && (
                 <span
-                  className={`text-xs ${
-                    outOfStock ? "text-destructive" : "text-muted-foreground"
-                  }`}
+                  className={`text-xs ${outOfStock ? "text-destructive" : "text-muted-foreground"}`}
                 >
                   {stockStatus}
                 </span>
@@ -314,14 +331,19 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
 
             {/* Color */}
             <div className="mt-8">
-              <p className="eyebrow mb-3">Colour · <span className="text-foreground">{product.color}</span></p>
+              <p className="eyebrow mb-3">
+                Colour · <span className="text-foreground">{product.color}</span>
+              </p>
               <div className="flex gap-2.5">
                 <button
                   className="h-10 w-10 rounded-full border-2 border-foreground p-0.5 transition-transform hover:scale-105"
                   aria-label={product.color}
                   aria-pressed
                 >
-                  <span className="block h-full w-full rounded-full" style={{ background: product.colorHex }} />
+                  <span
+                    className="block h-full w-full rounded-full"
+                    style={{ background: product.colorHex }}
+                  />
                 </button>
               </div>
             </div>
@@ -330,7 +352,9 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
             {sizes.length > 0 && (
               <div className="mt-8">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="eyebrow">Size · <span className="text-foreground">EU</span></p>
+                  <p className="eyebrow">
+                    Size · <span className="text-foreground">EU</span>
+                  </p>
                   {product.showSizeGuide && (product.sizeGuide?.length ?? 0) > 0 && (
                     <button
                       onClick={() => setShowSizeGuide(true)}
@@ -339,7 +363,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                       Size guide
                     </button>
                   )}
-                </div>                <div className="grid grid-cols-6 gap-2">
+                </div>{" "}
+                <div className="grid grid-cols-6 gap-2">
                   {sizes.map((s) => (
                     <button
                       key={s}
@@ -387,7 +412,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                 className="flex-1 bg-foreground text-background py-4 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {outOfStock ? "Out of stock" : "Add to bag"}
-              </button>              <button
+              </button>{" "}
+              <button
                 onClick={() => wishlist.toggle(product.id)}
                 aria-pressed={isWished}
                 aria-label={isWished ? "Remove from wishlist" : "Add to wishlist"}
@@ -397,16 +423,25 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                     : "border-foreground hover:bg-foreground hover:text-background"
                 }`}
               >
-                <Heart className="h-5 w-5" fill={isWished ? "currentColor" : "none"} strokeWidth={1.5} />
+                <Heart
+                  className="h-5 w-5"
+                  fill={isWished ? "currentColor" : "none"}
+                  strokeWidth={1.5}
+                />
               </button>
             </div>
 
             {trustBadges.length > 0 && (
               <div className="mt-8 grid grid-cols-3 gap-4 border-y border-border py-5">
                 {trustBadges.map((badge) => (
-                  <div key={`${badge.icon}-${badge.label}`} className="flex flex-col items-center text-center gap-2">
+                  <div
+                    key={`${badge.icon}-${badge.label}`}
+                    className="flex flex-col items-center text-center gap-2"
+                  >
                     <TrustIcon badge={badge} />
-                    <p className="text-[10.5px] leading-snug tracking-wide text-muted-foreground">{badge.label}</p>
+                    <p className="text-[10.5px] leading-snug tracking-wide text-muted-foreground">
+                      {badge.label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -420,7 +455,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                   id: "ship",
                   label: "Shipping & returns",
                   body: shippingReturnsBody,
-                },              ].map((row) => {
+                },
+              ].map((row) => {
                 const isOpen = accordion === row.id;
                 return (
                   <div key={row.id}>
@@ -439,7 +475,9 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                       style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
                     >
                       <div className="overflow-hidden">
-                        <p className="pb-5 text-sm text-muted-foreground leading-relaxed">{row.body}</p>
+                        <p className="pb-5 text-sm text-muted-foreground leading-relaxed">
+                          {row.body}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -470,11 +508,16 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
             <div className="mb-8 lg:mb-10 flex items-end justify-between">
               <div>
                 <p className="eyebrow">You may also like</p>
-                <h2 className="mt-2 font-serif text-2xl md:text-3xl">More from {product.category}</h2>
+                <h2 className="mt-2 font-serif text-2xl md:text-3xl">
+                  More from {product.category}
+                </h2>
               </div>
             </div>
             {/* Mobile: horizontal scroll. Desktop: grid */}
-            <div className="md:hidden -mx-5 overflow-x-auto no-scrollbar" style={{ scrollbarWidth: "none" }}>
+            <div
+              className="md:hidden -mx-5 overflow-x-auto no-scrollbar"
+              style={{ scrollbarWidth: "none" }}
+            >
               <div className="flex gap-4 px-5 snap-x snap-mandatory">
                 {related.map((p) => (
                   <div key={p.id} className="shrink-0 w-[62vw] max-w-[260px] snap-start">
@@ -510,7 +553,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
             className="ml-auto flex-1 max-w-[60%] bg-foreground text-background py-3 text-[11px] tracking-[0.22em] uppercase hover:bg-foreground/90 transition-all active:scale-[0.98] disabled:opacity-50"
           >
             {outOfStock ? "Out of stock" : `Add to bag ${cartCount > 0 ? `· ${cartCount}` : ""}`}
-          </button>        </div>
+          </button>{" "}
+        </div>
       </div>
 
       {/* Lightbox */}
@@ -527,10 +571,7 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
           >
             <X className="h-5 w-5" />
           </button>
-          <div
-            className="h-full w-full overflow-auto"
-            style={{ touchAction: "pinch-zoom" }}
-          >
+          <div className="h-full w-full overflow-auto" style={{ touchAction: "pinch-zoom" }}>
             <div className="flex flex-col gap-2 p-2 md:gap-4 md:p-6 max-w-5xl mx-auto">
               {product.images.map((src, i) => (
                 <img
@@ -565,7 +606,9 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
               <X className="h-4 w-4" />
             </button>
             <p className="eyebrow">Size guide</p>
-            <h3 className="mt-2 font-serif text-2xl">{product.sizeGuideTitle ?? "European sizing"}</h3>
+            <h3 className="mt-2 font-serif text-2xl">
+              {product.sizeGuideTitle ?? "European sizing"}
+            </h3>
             <table className="mt-5 w-full text-sm">
               <thead>
                 <tr className="text-left text-xs uppercase tracking-widest text-muted-foreground border-b border-border">
@@ -585,7 +628,8 @@ function ProductPage() {  const { product } = Route.useLoaderData() as { product
                   </tr>
                 ))}
               </tbody>
-            </table>          </div>
+            </table>{" "}
+          </div>
         </div>
       )}
     </div>

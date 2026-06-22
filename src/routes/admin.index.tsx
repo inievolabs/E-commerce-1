@@ -80,9 +80,22 @@ function AdminOverview() {
       <section className="mb-8">
         <h2 className="eyebrow text-muted-foreground mb-4">Revenue</h2>
         <div className="grid sm:grid-cols-3 gap-4">
-          <MetricCard label="Today" value={formatPrice(metrics.revenueToday)} hint={`${metrics.ordersToday} order${metrics.ordersToday === 1 ? "" : "s"}`} />
-          <MetricCard label="This month" value={formatPrice(metrics.revenueMonth)} hint={`${metrics.ordersMonth} order${metrics.ordersMonth === 1 ? "" : "s"}`} highlight />
-          <MetricCard label="All time" value={formatPrice(metrics.revenueAll)} hint="Excludes cancelled" />
+          <MetricCard
+            label="Today"
+            value={formatPrice(metrics.revenueToday)}
+            hint={`${metrics.ordersToday} order${metrics.ordersToday === 1 ? "" : "s"}`}
+          />
+          <MetricCard
+            label="This month"
+            value={formatPrice(metrics.revenueMonth)}
+            hint={`${metrics.ordersMonth} order${metrics.ordersMonth === 1 ? "" : "s"}`}
+            highlight
+          />
+          <MetricCard
+            label="All time"
+            value={formatPrice(metrics.revenueAll)}
+            hint="Excludes cancelled"
+          />
         </div>
       </section>
 
@@ -109,7 +122,11 @@ function AdminOverview() {
                 {metrics.pendingCount} pending · {metrics.actionCount} awaiting fulfilment
               </p>
             </div>
-            <Link to="/admin/orders" search={{ filter: "pending" }} className="eyebrow link-underline">
+            <Link
+              to="/admin/orders"
+              search={{ filter: "pending" }}
+              className="eyebrow link-underline"
+            >
               Open orders
             </Link>
           </div>
@@ -130,7 +147,9 @@ function AdminOverview() {
         <section className="bg-background border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-serif text-xl">Recent orders</h2>
-            <Link to="/admin/orders" className="eyebrow link-underline">View all</Link>
+            <Link to="/admin/orders" className="eyebrow link-underline">
+              View all
+            </Link>
           </div>
           {metrics.recent.length === 0 ? (
             <p className="text-sm text-muted-foreground">No orders yet.</p>
@@ -157,7 +176,9 @@ function AdminOverview() {
         <section className="bg-background border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-serif text-xl">Low stock</h2>
-            <Link to="/admin/inventory" className="eyebrow link-underline">Manage</Link>
+            <Link to="/admin/inventory" className="eyebrow link-underline">
+              Manage
+            </Link>
           </div>
           {lowStock.length === 0 ? (
             <p className="text-sm text-muted-foreground">All items healthy.</p>
@@ -220,10 +241,14 @@ function StatusCount({
     <div
       className={`border px-4 py-3 ${accent ? "border-foreground/40 bg-secondary/20" : "border-border bg-background"}`}
     >
-      <p className={`text-[10px] tracking-[0.2em] uppercase ${muted ? "text-muted-foreground" : "text-muted-foreground"}`}>
+      <p
+        className={`text-[10px] tracking-[0.2em] uppercase ${muted ? "text-muted-foreground" : "text-muted-foreground"}`}
+      >
         {label}
       </p>
-      <p className={`font-serif text-2xl mt-1 tabular-nums ${accent && count > 0 ? "text-foreground" : ""}`}>
+      <p
+        className={`font-serif text-2xl mt-1 tabular-nums ${accent && count > 0 ? "text-foreground" : ""}`}
+      >
         {count}
       </p>
     </div>
@@ -276,7 +301,9 @@ function StatusBadge({ status }: { status: OrderStatus }) {
     cancelled: "bg-rose-100 text-rose-900",
   };
   return (
-    <span className={`inline-block mt-1 px-2 py-0.5 text-[10px] uppercase tracking-wider ${map[status]}`}>
+    <span
+      className={`inline-block mt-1 px-2 py-0.5 text-[10px] uppercase tracking-wider ${map[status]}`}
+    >
       {status}
     </span>
   );

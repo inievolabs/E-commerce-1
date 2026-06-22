@@ -65,9 +65,13 @@ function CartPage() {
                     </p>
                     <div className="mt-auto pt-4 flex items-center justify-between">
                       <div className="inline-flex items-center border border-border">
-                        <button onClick={() => setQty(p.id, it.qty - 1)} className="p-2"><Minus className="h-3 w-3" /></button>
+                        <button onClick={() => setQty(p.id, it.qty - 1)} className="p-2">
+                          <Minus className="h-3 w-3" />
+                        </button>
                         <span className="px-3 text-xs tabular-nums">{it.qty}</span>
-                        <button onClick={() => setQty(p.id, it.qty + 1)} className="p-2"><Plus className="h-3 w-3" /></button>
+                        <button onClick={() => setQty(p.id, it.qty + 1)} className="p-2">
+                          <Plus className="h-3 w-3" />
+                        </button>
                       </div>
                       <button
                         onClick={() => remove(p.id)}
@@ -85,9 +89,18 @@ function CartPage() {
           <aside className="lg:sticky lg:top-28 self-start bg-secondary p-8">
             <p className="eyebrow">Order summary</p>
             <dl className="mt-6 space-y-3 text-sm">
-              <div className="flex justify-between"><dt>Subtotal</dt><dd className="tabular-nums">{formatPrice(subtotal)}</dd></div>
-              <div className="flex justify-between text-muted-foreground"><dt>Shipping</dt><dd>Complimentary</dd></div>
-              <div className="flex justify-between text-muted-foreground"><dt>Taxes</dt><dd>Calculated at checkout</dd></div>
+              <div className="flex justify-between">
+                <dt>Subtotal</dt>
+                <dd className="tabular-nums">{formatPrice(subtotal)}</dd>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <dt>Shipping</dt>
+                <dd>Complimentary</dd>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
+                <dt>Taxes</dt>
+                <dd>Calculated at checkout</dd>
+              </div>
             </dl>
             <div className="mt-6 pt-6 border-t border-border flex justify-between text-base">
               <span>Total</span>
@@ -99,7 +112,10 @@ function CartPage() {
             >
               Proceed to checkout
             </Link>
-            <Link to="/shop" className="mt-3 block text-center text-xs tracking-widest uppercase link-underline">
+            <Link
+              to="/shop"
+              className="mt-3 block text-center text-xs tracking-widest uppercase link-underline"
+            >
               Continue shopping
             </Link>
           </aside>

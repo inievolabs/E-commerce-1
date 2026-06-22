@@ -53,9 +53,7 @@ export function OrderStatusTimeline({ status }: { status: OrderStatusLabel }) {
             </div>
             <div className={`pb-6 ${upcoming ? "text-muted-foreground" : "text-foreground"}`}>
               <p className={`text-sm ${active ? "font-medium" : ""}`}>{step}</p>
-              {active && (
-                <p className="text-xs text-muted-foreground mt-0.5">Current status</p>
-              )}
+              {active && <p className="text-xs text-muted-foreground mt-0.5">Current status</p>}
             </div>
           </li>
         );

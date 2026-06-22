@@ -22,12 +22,7 @@ import { CartProvider } from "../lib/cart";
 import { AuthProvider } from "../lib/auth";
 import { WishlistProvider } from "../lib/wishlist";
 import { AdminStoreProvider } from "../lib/admin-store";
-import {
-  PWA_APP_NAME,
-  PWA_ICONS,
-  PWA_SHORT_NAME,
-  PWA_THEME_COLOR,
-} from "../lib/pwa-config";
+import { PWA_APP_NAME, PWA_ICONS, PWA_SHORT_NAME, PWA_THEME_COLOR } from "../lib/pwa-config";
 
 function NotFoundComponent() {
   return (
@@ -103,7 +98,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Velin Studio" },
       {
         property: "og:description",
-        content: "Quietly considered leather goods, designed in Paris and crafted by hand in Italy.",
+        content:
+          "Quietly considered leather goods, designed in Paris and crafted by hand in Italy.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Velin Studio" },

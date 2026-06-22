@@ -18,11 +18,7 @@ export function ProductCard({ product, aspect = "portrait" }: Props) {
   const hoverImage = productImageUrl(second, "card");
 
   return (
-    <div
-      className="group"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
+    <div className="group" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <Link
         to="/product/$id"
         params={{ id: product.id }}

@@ -5,7 +5,10 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "Terms & Conditions — Velin Studio" },
-      { name: "description", content: "The terms governing your use of velinstudiobd.com and any purchase you make." },
+      {
+        name: "description",
+        content: "The terms governing your use of velinstudiobd.com and any purchase you make.",
+      },
       { property: "og:title", content: "Terms & Conditions — Velin Studio" },
       { property: "og:url", content: "/terms" },
     ],
@@ -34,15 +37,15 @@ function Terms() {
         <p>
           All orders are subject to acceptance and availability. Prices are shown in your local
           currency where available and may include or exclude taxes and duties depending on the
-          shipping destination, as indicated at checkout. We reserve the right to refuse or
-          cancel any order, including in cases of suspected fraud or pricing errors.
+          shipping destination, as indicated at checkout. We reserve the right to refuse or cancel
+          any order, including in cases of suspected fraud or pricing errors.
         </p>
       </LegalSection>
 
       <LegalSection title="Intellectual property">
         <p>
-          All content on the site — including images, text, designs, the Velin Studio name and
-          logo — is the property of Velin Studio or its licensors and is protected by intellectual
+          All content on the site — including images, text, designs, the Velin Studio name and logo
+          — is the property of Velin Studio or its licensors and is protected by intellectual
           property laws. No content may be reproduced, distributed or used commercially without
           prior written consent.
         </p>
@@ -75,7 +78,8 @@ function Terms() {
 
       <LegalSection title="Contact">
         <p>
-          For any question relating to these terms, please write to clientservices@velinstudiobd.com.
+          For any question relating to these terms, please write to
+          clientservices@velinstudiobd.com.
         </p>
       </LegalSection>
     </LegalLayout>

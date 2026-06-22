@@ -5,10 +5,7 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Admin — Velin Studio" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Admin — Velin Studio" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: AdminLayout,
 });
@@ -56,7 +53,9 @@ function AdminLayout() {
           <p className="text-sm text-muted-foreground mt-3">
             Your account does not have admin privileges.
           </p>
-          <Link to="/" className="mt-6 inline-block eyebrow link-underline">Back to store</Link>
+          <Link to="/" className="mt-6 inline-block eyebrow link-underline">
+            Back to store
+          </Link>
         </div>
       </div>
     );
@@ -75,7 +74,9 @@ function AdminLayout() {
 function Shell({ onSignOut }: { onSignOut: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const isActive = (to: string, exact?: boolean) =>
     exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
@@ -99,7 +100,9 @@ function Shell({ onSignOut }: { onSignOut: () => void }) {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/" className="hidden sm:inline eyebrow link-underline">View store</Link>
+            <Link to="/" className="hidden sm:inline eyebrow link-underline">
+              View store
+            </Link>
             <button onClick={onSignOut} className="eyebrow link-underline">
               Sign out
             </button>
@@ -115,9 +118,7 @@ function Shell({ onSignOut }: { onSignOut: () => void }) {
                 key={n.to}
                 to={n.to}
                 className={`block px-3 py-2 text-sm rounded transition-colors ${
-                  isActive(n.to, n.exact)
-                    ? "bg-foreground text-background"
-                    : "hover:bg-secondary"
+                  isActive(n.to, n.exact) ? "bg-foreground text-background" : "hover:bg-secondary"
                 }`}
               >
                 {n.label}
@@ -127,8 +128,14 @@ function Shell({ onSignOut }: { onSignOut: () => void }) {
         </aside>
 
         {mobileOpen && (
-          <div className="lg:hidden fixed inset-0 z-30 bg-background/80 backdrop-blur-sm" onClick={() => setMobileOpen(false)}>
-            <nav className="absolute top-14 left-0 right-0 bg-background border-b border-border p-4 space-y-1" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="lg:hidden fixed inset-0 z-30 bg-background/80 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          >
+            <nav
+              className="absolute top-14 left-0 right-0 bg-background border-b border-border p-4 space-y-1"
+              onClick={(e) => e.stopPropagation()}
+            >
               {NAV.map((n) => (
                 <Link
                   key={n.to}

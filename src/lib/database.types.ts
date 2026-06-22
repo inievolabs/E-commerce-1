@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   __InternalSupabase: {
@@ -413,13 +407,7 @@ export type Database = {
       };
     };
     Enums: {
-      order_status:
-        | "pending"
-        | "confirmed"
-        | "processing"
-        | "shipped"
-        | "delivered"
-        | "cancelled";
+      order_status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
       payment_method: "cod";
     };
     CompositeTypes: {
@@ -437,5 +425,4 @@ export type TablesInsert<T extends keyof Database["public"]["Tables"]> =
 export type TablesUpdate<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Update"];
 
-export type Enums<T extends keyof Database["public"]["Enums"]> =
-  Database["public"]["Enums"][T];
+export type Enums<T extends keyof Database["public"]["Enums"]> = Database["public"]["Enums"][T];

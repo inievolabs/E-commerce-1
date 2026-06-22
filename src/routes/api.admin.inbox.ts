@@ -19,10 +19,7 @@ export const Route = createFileRoute("/api/admin/inbox")({
           return Response.json({ ok: true, ...inbox });
         } catch (err) {
           console.error("[api/admin/inbox GET]", err);
-          return Response.json(
-            { ok: false, error: "Unable to load inbox." },
-            { status: 500 },
-          );
+          return Response.json({ ok: false, error: "Unable to load inbox." }, { status: 500 });
         }
       },
       PATCH: async ({ request }) => {
@@ -38,7 +35,10 @@ export const Route = createFileRoute("/api/admin/inbox")({
           };
 
           if (!body.contactId || !body.status) {
-            return Response.json({ ok: false, error: "contactId and status are required." }, { status: 400 });
+            return Response.json(
+              { ok: false, error: "contactId and status are required." },
+              { status: 400 },
+            );
           }
 
           const result = await updateContactSubmissionStatus(body.contactId, body.status);

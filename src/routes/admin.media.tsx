@@ -29,7 +29,15 @@ interface PendingFile {
 }
 
 function AdminMedia() {
-  const { media, products, addMedia, deleteMedia, renameMedia, setMediaProducts, setProductImages } = useAdminStore();
+  const {
+    media,
+    products,
+    addMedia,
+    deleteMedia,
+    renameMedia,
+    setMediaProducts,
+    setProductImages,
+  } = useAdminStore();
   const [pending, setPending] = useState<PendingFile | null>(null);
   const [editing, setEditing] = useState<MediaItem | null>(null);
   const [tab, setTab] = useState<"library" | "galleries">("library");
@@ -61,7 +69,8 @@ function AdminMedia() {
           <p className="eyebrow">Library</p>
           <h1 className="font-serif text-3xl md:text-4xl mt-2">Media</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {media.length} {media.length === 1 ? "asset" : "assets"} · Upload, crop, and link to products
+            {media.length} {media.length === 1 ? "asset" : "assets"} · Upload, crop, and link to
+            products
           </p>
         </div>
         <div className="flex gap-3">
@@ -91,7 +100,9 @@ function AdminMedia() {
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-xs tracking-[0.22em] uppercase border-b-2 -mb-px transition-colors ${
-              tab === t ? "border-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+              tab === t
+                ? "border-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {t === "library" ? "Library" : "Product galleries"}
@@ -109,16 +120,15 @@ function AdminMedia() {
           }}
           className="mb-6 border border-dashed border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground"
         >
-          Drag &amp; drop an image here (max {formatMaxImageSizeMb()} MB), or use Upload to add to your library.
+          Drag &amp; drop an image here (max {formatMaxImageSizeMb()} MB), or use Upload to add to
+          your library.
         </div>
       )}
 
-      {tab === "galleries" && (
-        <GalleriesPanel products={products} onReorder={setProductImages} />
-      )}
+      {tab === "galleries" && <GalleriesPanel products={products} onReorder={setProductImages} />}
 
-      {tab === "library" && (
-        media.length === 0 ? (
+      {tab === "library" &&
+        (media.length === 0 ? (
           <div className="bg-background border border-border p-12 text-center text-sm text-muted-foreground">
             No media yet. Upload your first image to get started.
           </div>
@@ -149,7 +159,11 @@ function AdminMedia() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm("Delete this image? It will be removed from any linked products.")) {
+                          if (
+                            confirm(
+                              "Delete this image? It will be removed from any linked products.",
+                            )
+                          ) {
                             deleteMedia(m.id);
                           }
                         }}
@@ -163,9 +177,7 @@ function AdminMedia() {
               );
             })}
           </div>
-        )
-      )}
-
+        ))}
 
       {pending && (
         <CropDialog
@@ -213,7 +225,13 @@ function CropDialog({
   file: PendingFile;
   products: { id: string; name: string }[];
   onClose: () => void;
-  onSave: (out: { dataUrl: string; width: number; height: number; name: string; productIds: string[] }) => Promise<void>;
+  onSave: (out: {
+    dataUrl: string;
+    width: number;
+    height: number;
+    name: string;
+    productIds: string[];
+  }) => Promise<void>;
 }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -244,7 +262,10 @@ function CropDialog({
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full grid place-items-center p-4">
         <div
           onClick={(e) => e.stopPropagation()}
@@ -252,7 +273,9 @@ function CropDialog({
         >
           <header className="flex items-center justify-between mb-6">
             <h2 className="font-serif text-2xl">Crop &amp; upload</h2>
-            <button onClick={onClose} className="eyebrow link-underline">Close</button>
+            <button onClick={onClose} className="eyebrow link-underline">
+              Close
+            </button>
           </header>
 
           <div className="grid lg:grid-cols-[1fr_280px] gap-6">
@@ -318,7 +341,10 @@ function CropDialog({
                     <p className="p-3 text-xs text-muted-foreground">No products available.</p>
                   )}
                   {products.map((p) => (
-                    <label key={p.id} className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-secondary">
+                    <label
+                      key={p.id}
+                      className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-secondary"
+                    >
                       <input
                         type="checkbox"
                         checked={selected.includes(p.id)}
@@ -336,9 +362,7 @@ function CropDialog({
           </div>
 
           <div className="flex flex-wrap justify-end gap-3 mt-8">
-            {error && (
-              <p className="w-full text-sm text-destructive text-right">{error}</p>
-            )}
+            {error && <p className="w-full text-sm text-destructive text-right">{error}</p>}
             <button
               onClick={onClose}
               disabled={saving}
@@ -382,12 +406,20 @@ function ManageDialog({
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full grid place-items-center p-4">
-        <div onClick={(e) => e.stopPropagation()} className="bg-background border border-border w-full max-w-3xl p-6 lg:p-8">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-background border border-border w-full max-w-3xl p-6 lg:p-8"
+        >
           <header className="flex items-center justify-between mb-6">
             <h2 className="font-serif text-2xl">Manage media</h2>
-            <button onClick={onClose} className="eyebrow link-underline">Close</button>
+            <button onClick={onClose} className="eyebrow link-underline">
+              Close
+            </button>
           </header>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -412,7 +444,10 @@ function ManageDialog({
                 <p className="eyebrow mb-2">Linked products</p>
                 <div className="max-h-72 overflow-y-auto border border-border divide-y divide-border">
                   {products.map((p) => (
-                    <label key={p.id} className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-secondary">
+                    <label
+                      key={p.id}
+                      className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-secondary"
+                    >
                       <input
                         type="checkbox"
                         checked={selected.includes(p.id)}
@@ -427,10 +462,16 @@ function ManageDialog({
           </div>
 
           <div className="flex flex-wrap justify-end gap-3 mt-8">
-            <button onClick={onClose} className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background">
+            <button
+              onClick={onClose}
+              className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background"
+            >
               Cancel
             </button>
-            <button onClick={() => onSaveLinks(selected)} className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90">
+            <button
+              onClick={() => onSaveLinks(selected)}
+              className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90"
+            >
               Save links
             </button>
           </div>
@@ -485,10 +526,7 @@ function GalleriesPanel({
             </button>
             {open && (
               <div className="px-4 pb-4">
-                <GalleryReorder
-                  images={p.images}
-                  onChange={(next) => onReorder(p.id, next)}
-                />
+                <GalleryReorder images={p.images} onChange={(next) => onReorder(p.id, next)} />
               </div>
             )}
           </div>
@@ -546,7 +584,9 @@ function GalleryReorder({
               setOverIdx(null);
             }}
             className={`relative border bg-muted aspect-[3/4] cursor-grab active:cursor-grabbing transition-all ${
-              overIdx === i && dragIdx !== i ? "border-foreground ring-2 ring-foreground/30" : "border-border"
+              overIdx === i && dragIdx !== i
+                ? "border-foreground ring-2 ring-foreground/30"
+                : "border-border"
             } ${dragIdx === i ? "opacity-40" : ""}`}
           >
             <img
@@ -599,8 +639,10 @@ function GalleryReorder({
 
 /* ─── helpers ─── */
 
-
-function renderCrop(src: string, pixels: Area | null): Promise<{ dataUrl: string; width: number; height: number }> {
+function renderCrop(
+  src: string,
+  pixels: Area | null,
+): Promise<{ dataUrl: string; width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";

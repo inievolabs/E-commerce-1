@@ -15,7 +15,12 @@ function AdminCustomers() {
   const [filter, setFilter] = useState<"all" | "registered" | "guest">("all");
   const [selected, setSelected] = useState<Customer | null>(null);
 
-  const { data: customers = [], isLoading, isError, error } = useQuery({
+  const {
+    data: customers = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ADMIN_QUERY_KEYS.customers,
     queryFn: fetchAdminCustomers,
     staleTime: 30_000,
@@ -181,7 +186,10 @@ function TypeBadge({ type }: { type: Customer["type"] }) {
 
 function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full grid place-items-center p-4">
         <div
           onClick={(e) => e.stopPropagation()}
@@ -262,7 +270,10 @@ function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: ()
                     </div>
                     <div className="text-right">
                       <p className="text-sm tabular-nums">{formatPrice(o.total)}</p>
-                      <Link to="/admin/orders" className="text-[10px] tracking-[0.2em] uppercase link-underline">
+                      <Link
+                        to="/admin/orders"
+                        className="text-[10px] tracking-[0.2em] uppercase link-underline"
+                      >
                         In orders
                       </Link>
                     </div>

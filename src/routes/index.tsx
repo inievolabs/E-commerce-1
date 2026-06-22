@@ -25,7 +25,10 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: absoluteUrl("/") },
       {
         property: "og:image",
-        content: typeof heroImage === "string" && heroImage.startsWith("http") ? heroImage : absoluteUrl(heroImage),
+        content:
+          typeof heroImage === "string" && heroImage.startsWith("http")
+            ? heroImage
+            : absoluteUrl(heroImage),
       },
     ],
     links: [{ rel: "canonical", href: absoluteUrl("/") }],
@@ -79,8 +82,18 @@ function Home() {
       <section className="mx-auto max-w-[1500px] px-5 lg:px-10 py-20 lg:py-28">
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {[
-            { img: womenBannerImage, label: "Women", search: { gender: "women" }, objectPosition: "center" },
-            { img: menBannerImage, label: "Men", search: { gender: "men" }, objectPosition: "center 55%" },
+            {
+              img: womenBannerImage,
+              label: "Women",
+              search: { gender: "women" },
+              objectPosition: "center",
+            },
+            {
+              img: menBannerImage,
+              label: "Men",
+              search: { gender: "men" },
+              objectPosition: "center 55%",
+            },
           ].map((b) => (
             <Link
               key={b.label}
@@ -100,7 +113,9 @@ function Home() {
                 aria-hidden
               />
               <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-10 lg:pb-12 text-background drop-shadow-[0_2px_16px_rgba(0,0,0,0.45)]">
-                <h2 className="font-serif text-2xl sm:text-4xl lg:text-6xl text-background">{b.label}</h2>
+                <h2 className="font-serif text-2xl sm:text-4xl lg:text-6xl text-background">
+                  {b.label}
+                </h2>
                 <span className="mt-2 sm:mt-3 text-[9px] sm:text-[0.7rem] font-medium tracking-[0.22em] uppercase text-background link-underline">
                   Shop now
                 </span>
@@ -117,7 +132,11 @@ function Home() {
             <p className="eyebrow">Just arrived</p>
             <h2 className="mt-3 font-serif text-3xl md:text-5xl">New arrivals</h2>
           </div>
-          <Link to="/shop" search={{ sort: "newest" } as never} className="hidden md:inline-block eyebrow link-underline">
+          <Link
+            to="/shop"
+            search={{ sort: "newest" } as never}
+            className="hidden md:inline-block eyebrow link-underline"
+          >
             View all
           </Link>
         </div>
@@ -159,8 +178,9 @@ function Home() {
               Made slowly, in the hands of a few.
             </h2>
             <p className="mt-6 text-sm md:text-base text-muted-foreground leading-relaxed">
-              Every Velin piece is finished by a small atelier outside Florence — leather selected by hand,
-              edges painted in seven passes, hardware cast in solid brass. We measure time in care, not output.
+              Every Velin piece is finished by a small atelier outside Florence — leather selected
+              by hand, edges painted in seven passes, hardware cast in solid brass. We measure time
+              in care, not output.
             </p>
             <Link
               to="/about"
@@ -183,7 +203,11 @@ function Home() {
         <div className="mx-auto max-w-[1500px] px-5 lg:px-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1">
           {editorialImages.map((src, i) => (
             <a key={i} href="#" className="block aspect-square overflow-hidden bg-muted">
-              <img src={src} alt="Editorial" className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
+              <img
+                src={src}
+                alt="Editorial"
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              />
             </a>
           ))}
         </div>

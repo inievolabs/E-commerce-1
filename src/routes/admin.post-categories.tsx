@@ -7,7 +7,11 @@ export const Route = createFileRoute("/admin/post-categories")({
 });
 
 const slug = (s: string) =>
-  s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 function PostCategoriesPage() {
   const { postCategories, posts, upsertPostCategory, deletePostCategory } = useAdminStore();
@@ -26,9 +30,7 @@ function PostCategoriesPage() {
           <h1 className="font-serif text-3xl mt-1">Post categories</h1>
         </div>
         <button
-          onClick={() =>
-            setEditing({ id: "", label: "", description: "" })
-          }
+          onClick={() => setEditing({ id: "", label: "", description: "" })}
           className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase"
         >
           New category
@@ -54,10 +56,16 @@ function PostCategoriesPage() {
                 <td className="px-4 py-3 text-muted-foreground">{c.description}</td>
                 <td className="px-4 py-3 text-right tabular-nums">{counts[c.id] ?? 0}</td>
                 <td className="px-4 py-3 text-right space-x-3 whitespace-nowrap">
-                  <button onClick={() => setEditing(c)} className="eyebrow link-underline">Edit</button>
+                  <button onClick={() => setEditing(c)} className="eyebrow link-underline">
+                    Edit
+                  </button>
                   <button
                     onClick={() => {
-                      if (confirm(`Delete "${c.label}"? Posts in this category will be unassigned visually.`)) {
+                      if (
+                        confirm(
+                          `Delete "${c.label}"? Posts in this category will be unassigned visually.`,
+                        )
+                      ) {
                         deletePostCategory(c.id);
                       }
                     }}
@@ -69,7 +77,11 @@ function PostCategoriesPage() {
               </tr>
             ))}
             {postCategories.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No categories yet.</td></tr>
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                  No categories yet.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -96,8 +108,14 @@ function PostCategoriesPage() {
 
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 bg-foreground/40 grid place-items-center p-4" onClick={onClose}>
-      <div className="bg-background w-full max-w-lg border border-border" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 bg-foreground/40 grid place-items-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-background w-full max-w-lg border border-border"
+        onClick={(e) => e.stopPropagation()}
+      >
         {children}
       </div>
     </div>
@@ -105,7 +123,10 @@ function Modal({ children, onClose }: { children: React.ReactNode; onClose: () =
 }
 
 function Form({
-  initial, isNew, onSave, onCancel,
+  initial,
+  isNew,
+  onSave,
+  onCancel,
 }: {
   initial: PostCategory;
   isNew: boolean;
@@ -116,7 +137,10 @@ function Form({
   return (
     <form
       className="p-6 space-y-4"
-      onSubmit={(e) => { e.preventDefault(); onSave(c); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSave(c);
+      }}
     >
       <h2 className="font-serif text-2xl">{isNew ? "New category" : "Edit category"}</h2>
       <label className="block">
@@ -148,8 +172,19 @@ function Form({
         />
       </label>
       <div className="flex justify-end gap-2 pt-2">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-xs tracking-[0.22em] uppercase border border-border">Cancel</button>
-        <button type="submit" className="px-4 py-2 text-xs tracking-[0.22em] uppercase bg-foreground text-background">Save</button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 text-xs tracking-[0.22em] uppercase border border-border"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 text-xs tracking-[0.22em] uppercase bg-foreground text-background"
+        >
+          Save
+        </button>
       </div>
     </form>
   );

@@ -16,7 +16,10 @@ function AdminInventory() {
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     return products
-      .map((p) => ({ p, r: inventory[p.id] ?? { productId: p.id, stock: 0, lowStockThreshold: 4 } }))
+      .map((p) => ({
+        p,
+        r: inventory[p.id] ?? { productId: p.id, stock: 0, lowStockThreshold: 4 },
+      }))
       .filter(({ p }) => (q ? p.name.toLowerCase().includes(q) || p.id.includes(q) : true))
       .filter(({ r }) => {
         if (filter === "low") return r.stock > 0 && r.stock <= r.lowStockThreshold;
@@ -26,10 +29,15 @@ function AdminInventory() {
   }, [products, inventory, filter, search]);
 
   const totals = useMemo(() => {
-    let units = 0, low = 0, out = 0;
+    let units = 0,
+      low = 0,
+      out = 0;
     for (const p of products) {
       const r = inventory[p.id];
-      if (!r) { out++; continue; }
+      if (!r) {
+        out++;
+        continue;
+      }
       units += r.stock;
       if (r.stock === 0) out++;
       else if (r.stock <= r.lowStockThreshold) low++;
@@ -97,20 +105,32 @@ function AdminInventory() {
                       />
                       <div>
                         <p className="font-medium">{p.name}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{p.category} · {p.gender}</p>
+                        <p className="text-xs text-muted-foreground capitalize">
+                          {p.category} · {p.gender}
+                        </p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => adjustStock(p.id, -1)} className="w-7 h-7 border border-border hover:bg-secondary">−</button>
+                      <button
+                        onClick={() => adjustStock(p.id, -1)}
+                        className="w-7 h-7 border border-border hover:bg-secondary"
+                      >
+                        −
+                      </button>
                       <input
                         type="number"
                         value={r.stock}
                         onChange={(e) => setStock(p.id, Number(e.target.value))}
                         className="w-16 bg-transparent border border-border px-2 py-1 text-sm text-center tabular-nums focus:outline-none focus:border-foreground"
                       />
-                      <button onClick={() => adjustStock(p.id, 1)} className="w-7 h-7 border border-border hover:bg-secondary">+</button>
+                      <button
+                        onClick={() => adjustStock(p.id, 1)}
+                        className="w-7 h-7 border border-border hover:bg-secondary"
+                      >
+                        +
+                      </button>
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -123,18 +143,28 @@ function AdminInventory() {
                   </td>
                   <td className="px-4 py-3">
                     {isOut ? (
-                      <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-rose-100 text-rose-900">Out</span>
+                      <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-rose-100 text-rose-900">
+                        Out
+                      </span>
                     ) : isLow ? (
-                      <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-amber-100 text-amber-900">Low</span>
+                      <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-amber-100 text-amber-900">
+                        Low
+                      </span>
                     ) : (
-                      <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-emerald-100 text-emerald-900">In stock</span>
+                      <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-emerald-100 text-emerald-900">
+                        In stock
+                      </span>
                     )}
                   </td>
                 </tr>
               );
             })}
             {rows.length === 0 && (
-              <tr><td colSpan={4} className="px-4 py-10 text-center text-muted-foreground text-sm">No items.</td></tr>
+              <tr>
+                <td colSpan={4} className="px-4 py-10 text-center text-muted-foreground text-sm">
+                  No items.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

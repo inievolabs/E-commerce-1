@@ -42,7 +42,9 @@ function signParams(params: Record<string, string | number>, apiSecret: string):
     .sort()
     .map((key) => `${key}=${params[key]}`)
     .join("&");
-  return createHash("sha1").update(sorted + apiSecret).digest("hex");
+  return createHash("sha1")
+    .update(sorted + apiSecret)
+    .digest("hex");
 }
 
 /** Signed server-side upload — API secret never leaves the Worker. */
@@ -52,7 +54,9 @@ export async function uploadImageToCloudinary(
 ): Promise<CloudinaryUploadResult> {
   const config = getCloudinaryConfig();
   if (!config) {
-    throw new Error("Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.");
+    throw new Error(
+      "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.",
+    );
   }
 
   const folder = options?.folder ?? UPLOAD_FOLDER;
@@ -78,10 +82,10 @@ export async function uploadImageToCloudinary(
   formData.append("fetch_format", "auto");
   if (options?.publicId) formData.append("public_id", options.publicId);
 
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`,
-    { method: "POST", body: formData },
-  );
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, {
+    method: "POST",
+    body: formData,
+  });
 
   if (!res.ok) {
     const body = await res.text();

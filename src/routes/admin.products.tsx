@@ -206,7 +206,10 @@ function ProductEditor({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose}
+    >
       <div className="min-h-full grid place-items-center p-4">
         <form
           onClick={(e) => e.stopPropagation()}
@@ -430,7 +433,10 @@ function ProductEditor({
                 <button
                   type="button"
                   onClick={() =>
-                    update("sizeGuide", [...(p.sizeGuide ?? []), { eu: "", uk: "", us: "", cm: "" }])
+                    update("sizeGuide", [
+                      ...(p.sizeGuide ?? []),
+                      { eu: "", uk: "", us: "", cm: "" },
+                    ])
                   }
                   className="w-full py-2 text-xs tracking-widest uppercase border-t border-border hover:bg-muted"
                 >

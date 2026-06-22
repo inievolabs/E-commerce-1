@@ -46,7 +46,11 @@ export function PasswordField({
           className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground transition-colors"
           aria-label={visible ? "Hide password" : "Show password"}
         >
-          {visible ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
+          {visible ? (
+            <EyeOff className="h-4 w-4" aria-hidden />
+          ) : (
+            <Eye className="h-4 w-4" aria-hidden />
+          )}
         </button>
       </div>
       {hint && <span className="block mt-1.5 text-xs text-muted-foreground">{hint}</span>}

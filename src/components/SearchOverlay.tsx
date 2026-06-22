@@ -78,17 +78,15 @@ export function SearchOverlay({ open, onClose }: Props) {
             <p className="mt-3 text-sm text-muted-foreground">
               Try a different keyword, or browse the full collection.
             </p>
-            <Link
-              to="/shop"
-              onClick={onClose}
-              className="mt-8 inline-block eyebrow link-underline"
-            >
+            <Link to="/shop" onClick={onClose} className="mt-8 inline-block eyebrow link-underline">
               View the shop
             </Link>
           </div>
         ) : (
           <div className="mt-10">
-            <p className="eyebrow mb-4">{results.length} result{results.length === 1 ? "" : "s"}</p>
+            <p className="eyebrow mb-4">
+              {results.length} result{results.length === 1 ? "" : "s"}
+            </p>
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-x-5 gap-y-8">
               {results.map((p) => (
                 <li key={p.id}>

@@ -34,12 +34,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: false,
-      includeAssets: [
-        "robots.txt",
-        PWA_ICONS.icon192,
-        PWA_ICONS.icon512,
-        PWA_ICONS.appleTouchIcon,
-      ],
+      includeAssets: ["robots.txt", PWA_ICONS.icon192, PWA_ICONS.icon512, PWA_ICONS.appleTouchIcon],
       manifest: {
         name: PWA_APP_NAME,
         short_name: PWA_SHORT_NAME,

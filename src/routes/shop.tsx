@@ -18,7 +18,11 @@ export const Route = createFileRoute("/shop")({
   head: () => ({
     meta: [
       { title: "Shop — Velin Studio" },
-      { name: "description", content: "Browse the full Velin Studio collection of handbags, luggage, wallets and slippers." },
+      {
+        name: "description",
+        content:
+          "Browse the full Velin Studio collection of handbags, luggage, wallets and slippers.",
+      },
       { property: "og:title", content: "Shop — Velin Studio" },
       { property: "og:url", content: absoluteUrl("/shop") },
     ],
@@ -48,15 +52,18 @@ function Shop() {
     list = list.filter((p) => p.price <= priceMax);
     if (search.sort === "price-asc") list.sort((a, b) => a.price - b.price);
     else if (search.sort === "price-desc") list.sort((a, b) => b.price - a.price);
-    else if (search.sort === "newest") list.sort((a, b) => Number(b.isNew ?? false) - Number(a.isNew ?? false));
+    else if (search.sort === "newest")
+      list.sort((a, b) => Number(b.isNew ?? false) - Number(a.isNew ?? false));
     return list;
   }, [products, search, color, priceMax]);
 
   const title = search.gender
-    ? search.gender === "women" ? "Women" : "Men"
+    ? search.gender === "women"
+      ? "Women"
+      : "Men"
     : search.category
-    ? search.category[0].toUpperCase() + search.category.slice(1)
-    : "All Collection";
+      ? search.category[0].toUpperCase() + search.category.slice(1)
+      : "All Collection";
 
   const Filters = (
     <div className="space-y-10">
@@ -85,7 +92,9 @@ function Shop() {
             <li key={c}>
               <button
                 onClick={() =>
-                  navigate({ search: { ...search, category: search.category === c ? undefined : c } })
+                  navigate({
+                    search: { ...search, category: search.category === c ? undefined : c },
+                  })
                 }
                 className={`text-sm capitalize ${search.category === c ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >
@@ -139,10 +148,16 @@ function Shop() {
       </header>
 
       <div className="flex items-center justify-between border-y border-border py-3 mb-10 lg:hidden">
-        <button onClick={() => setFiltersOpen(true)} className="inline-flex items-center gap-2 text-xs tracking-widest uppercase">
+        <button
+          onClick={() => setFiltersOpen(true)}
+          className="inline-flex items-center gap-2 text-xs tracking-widest uppercase"
+        >
           <SlidersHorizontal className="h-4 w-4" /> Filter
         </button>
-        <SortSelect value={search.sort} onChange={(v) => navigate({ search: { ...search, sort: v } })} />
+        <SortSelect
+          value={search.sort}
+          onChange={(v) => navigate({ search: { ...search, sort: v } })}
+        />
       </div>
 
       <div className="grid lg:grid-cols-[220px_1fr] gap-10 lg:gap-16">
@@ -150,14 +165,21 @@ function Shop() {
 
         <div>
           <div className="hidden lg:flex items-center justify-end mb-8">
-            <SortSelect value={search.sort} onChange={(v) => navigate({ search: { ...search, sort: v } })} />
+            <SortSelect
+              value={search.sort}
+              onChange={(v) => navigate({ search: { ...search, sort: v } })}
+            />
           </div>
           {isLoading ? (
             <p className="text-sm text-muted-foreground py-20 text-center">Loading collection…</p>
           ) : isError ? (
-            <p className="text-sm text-muted-foreground py-20 text-center">Could not load products. Please try again.</p>
+            <p className="text-sm text-muted-foreground py-20 text-center">
+              Could not load products. Please try again.
+            </p>
           ) : filtered.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-20 text-center">No pieces match your selection.</p>
+            <p className="text-sm text-muted-foreground py-20 text-center">
+              No pieces match your selection.
+            </p>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-12 lg:gap-x-8 lg:gap-y-16">
               {filtered.map((p) => (

@@ -9,10 +9,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/order-confirmation")({
   validateSearch: searchSchema,
   head: ({ search }) => ({
-    meta: [
-      { title: "Order confirmed — Velin Studio" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Order confirmed — Velin Studio" }, { name: "robots", content: "noindex" }],
     links: [{ rel: "canonical", href: "/order-confirmation" }],
   }),
   component: OrderConfirmation,
@@ -27,8 +24,8 @@ function OrderConfirmation() {
       <p className="eyebrow mt-8">Order confirmed</p>
       <h1 className="mt-4 font-serif text-4xl md:text-5xl">Thank you.</h1>
       <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-        Your order <span className="font-mono text-foreground">{orderId}</span> has been placed.
-        We will contact you to confirm delivery. Payment is due on delivery (COD).
+        Your order <span className="font-mono text-foreground">{orderId}</span> has been placed. We
+        will contact you to confirm delivery. Payment is due on delivery (COD).
       </p>
       <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
         <Link

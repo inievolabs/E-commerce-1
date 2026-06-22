@@ -69,11 +69,7 @@ export function Header() {
                 className="flex items-center transition-opacity duration-150 hover:opacity-70 active:scale-95 active:opacity-80"
                 aria-label="Velin Studio — home"
               >
-                <img
-                  src={LOGO}
-                  alt="Velin Studio"
-                  className="h-6 w-auto max-w-full"
-                />
+                <img src={LOGO} alt="Velin Studio" className="h-6 w-auto max-w-full" />
               </Link>
             </div>
 
@@ -90,7 +86,6 @@ export function Header() {
               )}
             </Link>
           </div>
-
 
           {/* Desktop: grid layout with centered logo */}
           <div className="hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-full">
@@ -112,11 +107,7 @@ export function Header() {
               className="flex items-center transition-opacity duration-150 hover:opacity-70 active:scale-95"
               aria-label="Velin Studio — home"
             >
-              <img
-                src={LOGO}
-                alt="Velin Studio"
-                className="h-9 lg:h-10 w-auto"
-              />
+              <img src={LOGO} alt="Velin Studio" className="h-9 lg:h-10 w-auto" />
             </Link>
 
             <div className="flex items-center justify-self-end gap-5 lg:gap-6">
@@ -183,16 +174,32 @@ export function Header() {
               </Link>
             ))}
             <div className="h-px bg-border my-4" />
-            <Link to={isAuthenticated ? "/account" : "/login"} onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+            <Link
+              to={isAuthenticated ? "/account" : "/login"}
+              onClick={() => setMobileOpen(false)}
+              className="eyebrow text-foreground"
+            >
               {isAuthenticated ? "My account" : "Sign in"}
             </Link>
-            <Link to="/wishlist" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+            <Link
+              to="/wishlist"
+              onClick={() => setMobileOpen(false)}
+              className="eyebrow text-foreground"
+            >
               Wishlist {wishCount > 0 && `(${wishCount})`}
             </Link>
-            <Link to="/cart" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+            <Link
+              to="/cart"
+              onClick={() => setMobileOpen(false)}
+              className="eyebrow text-foreground"
+            >
               Bag
             </Link>
-            <Link to="/contact" onClick={() => setMobileOpen(false)} className="eyebrow text-foreground">
+            <Link
+              to="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="eyebrow text-foreground"
+            >
               Contact
             </Link>
           </nav>

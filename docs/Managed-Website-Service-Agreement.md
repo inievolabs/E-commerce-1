@@ -76,7 +76,7 @@ NOW, THEREFORE, in consideration of the mutual covenants and payments described 
 - (e) product photography, copywriting, branding, or SEO campaigns, unless separately quoted;
 - (f) 24/7 on-call support or guaranteed uptime unless separately agreed in writing.
 
-4.3 Any work outside Schedule A requires a **written Change Order** stating scope, timeline, and additional fees. Provider is not obligated to perform out-of-scope work until the Change Order is signed and any required deposit is received.
+  4.3 Any work outside Schedule A requires a **written Change Order** stating scope, timeline, and additional fees. Provider is not obligated to perform out-of-scope work until the Change Order is signed and any required deposit is received.
 
 ---
 
@@ -91,7 +91,7 @@ NOW, THEREFORE, in consideration of the mutual covenants and payments described 
 - (e) safeguard administrator credentials and notify Provider promptly of any suspected unauthorized access;
 - (f) respond to Provider requests for information, assets, or approvals within **five (5) business days**, understanding that delays may shift timelines.
 
-5.2 Client is solely responsible for the legality of products sold, pricing, promotions, and published policies (privacy, terms, shipping, returns).
+  5.2 Client is solely responsible for the legality of products sold, pricing, promotions, and published policies (privacy, terms, shipping, returns).
 
 ---
 
@@ -202,7 +202,7 @@ NOW, THEREFORE, in consideration of the mutual covenants and payments described 
 - (c) Upon written request within **thirty (30) days** of termination, Provider will provide reasonable assistance to export Client Data (`[export assistance fee: BDT X / included if maintenance active for 3+ months]`);
 - (d) **Source code is not transferred** upon termination unless Client purchases a separate written license or migration agreement with fees determined at that time.
 
-14.5 Sections that by nature should survive (fees owed, IP, confidentiality, liability limits, indemnity, dispute resolution) survive termination.
+  14.5 Sections that by nature should survive (fees owed, IP, confidentiality, liability limits, indemnity, dispute resolution) survive termination.
 
 ---
 
@@ -246,14 +246,14 @@ Neither Party is liable for delay or failure to perform due to events beyond rea
 
 **SERVICE PROVIDER**
 
-Signature: _______________________________  
+Signature: **************\_\_\_**************  
 Name: `[Printed Name]`  
 Title: `[Title]`  
 Date: `[DD Month YYYY]`
 
 **CLIENT**
 
-Signature: _______________________________  
+Signature: **************\_\_\_**************  
 Name: `[Printed Name]`  
 Title: `[Title]`  
 Date: `[DD Month YYYY]`
@@ -268,18 +268,18 @@ Date: `[DD Month YYYY]`
 
 ### Included Features
 
-| Feature | Included |
-|---------|----------|
-| Home, shop, and product detail pages | Yes |
-| Shopping cart and wishlist (synced when logged in) | Yes |
-| Cash on delivery (COD) checkout | Yes |
-| Customer accounts and order history | Yes |
-| Admin dashboard: products, categories, inventory, orders, customers | Yes |
-| Contact form and newsletter capture (admin inbox) | Yes |
-| Mobile-responsive layout and PWA basics | Yes |
-| HTTPS on Production Domain (via DNS/Cloudflare setup) | Yes |
-| Initial product setup (up to **`[10]`** SKUs) | Yes |
-| Admin training session (**`[1–2]`** hours, one-time) | Yes |
+| Feature                                                             | Included |
+| ------------------------------------------------------------------- | -------- |
+| Home, shop, and product detail pages                                | Yes      |
+| Shopping cart and wishlist (synced when logged in)                  | Yes      |
+| Cash on delivery (COD) checkout                                     | Yes      |
+| Customer accounts and order history                                 | Yes      |
+| Admin dashboard: products, categories, inventory, orders, customers | Yes      |
+| Contact form and newsletter capture (admin inbox)                   | Yes      |
+| Mobile-responsive layout and PWA basics                             | Yes      |
+| HTTPS on Production Domain (via DNS/Cloudflare setup)               | Yes      |
+| Initial product setup (up to **`[10]`** SKUs)                       | Yes      |
+| Admin training session (**`[1–2]`** hours, one-time)                | Yes      |
 
 ### Excluded (Available via Change Order)
 
@@ -293,23 +293,23 @@ Date: `[DD Month YYYY]`
 
 ### Client-Owned Accounts (Required)
 
-| Service | Owner | Notes |
-|---------|-------|-------|
-| Domain registrar | Client | Provider assists with DNS |
-| Database (e.g., Supabase) | Client | Client Data stored here |
-| Cloudinary / media (if applicable) | `[Client / Provider]` | Specify in writing |
+| Service                            | Owner                 | Notes                     |
+| ---------------------------------- | --------------------- | ------------------------- |
+| Domain registrar                   | Client                | Provider assists with DNS |
+| Database (e.g., Supabase)          | Client                | Client Data stored here   |
+| Cloudinary / media (if applicable) | `[Client / Provider]` | Specify in writing        |
 
 ---
 
 # SCHEDULE B — FEES & PAYMENT SCHEDULE
 
-| Item | Amount (BDT) | Due |
-|------|----------------|-----|
-| **One-time setup fee** | `[5,000 / 10,000]` | See below |
-| — Deposit (50%) | `[amount]` | Within **3** days of signing |
-| — Balance (50%) | `[amount]` | Before or within **7** days of Go-Live |
-| **Monthly maintenance** (optional) | `[1,500 – 3,000]` / month | 1st of each month, if selected |
-| **Change orders** | As quoted | Per Change Order |
+| Item                               | Amount (BDT)              | Due                                    |
+| ---------------------------------- | ------------------------- | -------------------------------------- |
+| **One-time setup fee**             | `[5,000 / 10,000]`        | See below                              |
+| — Deposit (50%)                    | `[amount]`                | Within **3** days of signing           |
+| — Balance (50%)                    | `[amount]`                | Before or within **7** days of Go-Live |
+| **Monthly maintenance** (optional) | `[1,500 – 3,000]` / month | 1st of each month, if selected         |
+| **Change orders**                  | As quoted                 | Per Change Order                       |
 
 **Maintenance plan selected:** `[ ] Yes  [ ] No`
 
@@ -337,9 +337,9 @@ Account / wallet number: `[number]`
 
 **Signatures:**
 
-Provider: _________________________ Date: _________  
-Client: _________________________ Date: _________
+Provider: ************\_************ Date: ****\_****  
+Client: ************\_************ Date: ****\_****
 
 ---
 
-*Template version 1.0 — Managed hosting model (no source code transfer). Have qualified legal counsel review before use.*
+_Template version 1.0 — Managed hosting model (no source code transfer). Have qualified legal counsel review before use._
