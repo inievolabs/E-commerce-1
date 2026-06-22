@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { products } from "@/data/products";
+import { useCatalog } from "@/lib/use-catalog";
+import { productImageUrl } from "@/lib/cloudinary-image";
 import { formatPrice } from "@/lib/cart";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 
 export function SearchOverlay({ open, onClose }: Props) {
   const [q, setQ] = useState("");
+  const { data: products = [] } = useCatalog();
 
   useEffect(() => {
     if (!open) setQ("");
@@ -34,7 +36,7 @@ export function SearchOverlay({ open, onClose }: Props) {
           p.color.toLowerCase().includes(term),
       )
       .slice(0, 8);
-  }, [q]);
+  }, [q, products]);
 
   if (!open) return null;
 
@@ -98,7 +100,7 @@ export function SearchOverlay({ open, onClose }: Props) {
                   >
                     <div className="aspect-[3/4] bg-muted overflow-hidden">
                       <img
-                        src={p.images[0]}
+                        src={productImageUrl(p.images[0], "thumb")}
                         alt={p.name}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                       />

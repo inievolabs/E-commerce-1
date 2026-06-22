@@ -1,10 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { X, Minus, Plus } from "lucide-react";
 import { useEffect } from "react";
-import { formatPrice, getProductById, useCart } from "@/lib/cart";
+import { formatPrice, useCart } from "@/lib/cart";
+import { productImageUrl } from "@/lib/cloudinary-image";
+import { useCatalogLookup } from "@/lib/use-catalog";
 
 export function CartDrawer() {
-  const { isOpen, close, items, setQty, remove, subtotal } = useCart();
+  const { isOpen, close, items, setQty, remove, subtotal, catalogLoading } = useCart();
+  const { getProductById } = useCatalogLookup();
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -34,7 +37,11 @@ export function CartDrawer() {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {items.length === 0 ? (
+          {catalogLoading && items.length > 0 ? (
+            <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+              Loading bag…
+            </div>
+          ) : items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center px-8 gap-4">
               <p className="font-serif text-2xl">Your bag is empty</p>
               <p className="text-sm text-muted-foreground">Begin with our newest arrivals.</p>
@@ -54,7 +61,11 @@ export function CartDrawer() {
                 return (
                   <li key={it.productId} className="p-6 flex gap-4">
                     <Link to="/product/$id" params={{ id: p.id }} onClick={close} className="shrink-0">
-                      <img src={p.images[0]} alt={p.name} className="w-20 h-24 object-cover bg-muted" />
+                      <img
+                        src={productImageUrl(p.images[0], "thumb")}
+                        alt={p.name}
+                        className="w-20 h-24 object-cover bg-muted"
+                      />
                     </Link>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between gap-3">

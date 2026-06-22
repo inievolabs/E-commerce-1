@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Facebook, Youtube } from "lucide-react";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 const LOGO =
   "https://res.cloudinary.com/dgcnhseqm/image/upload/q_auto/f_auto/v1781984765/velin_studio_logo_zujxjx.svg";
@@ -20,8 +21,7 @@ const cols = [
     title: "Customer care",
     links: [
       { label: "Contact", to: "/contact" },
-      { label: "Shipping", to: "/contact" },
-      { label: "Returns", to: "/contact" },
+      { label: "Shipping & returns", to: "/shipping-returns" },
       { label: "Care guide", to: "/about" },
     ],
   },
@@ -31,7 +31,7 @@ const cols = [
       { label: "Our story", to: "/about" },
       { label: "Craftsmanship", to: "/about" },
       { label: "Boutiques", to: "/contact" },
-      { label: "Journal", to: "/about" },
+      { label: "Journal", to: "/blog" },
     ],
   },
   {
@@ -86,32 +86,53 @@ export function Footer() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             Private invitations, new arrivals and the slow stories behind each piece.
           </p>
-          <form className="mt-5 flex border-b border-foreground/30" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder="Your email"
-              className="flex-1 bg-transparent py-2 text-sm focus:outline-none placeholder:text-muted-foreground"
-            />
-            <button className="text-xs tracking-[0.2em] uppercase">Subscribe</button>
-          </form>
+          <NewsletterForm source="footer" />
         </div>
       </div>
 
-      <div className="border-t border-border">
-        <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-8 flex flex-col items-center gap-4 text-xs text-muted-foreground">
-          <div className="flex flex-wrap items-center justify-center gap-3 opacity-70">
-            <span className="px-2 py-1 border border-border text-[10px] tracking-widest">VISA</span>
-            <span className="px-2 py-1 border border-border text-[10px] tracking-widest">MC</span>
-            <span className="px-2 py-1 border border-border text-[10px] tracking-widest">AMEX</span>
-            <span className="px-2 py-1 border border-border text-[10px] tracking-widest">PAYPAL</span>
-            <span className="px-2 py-1 border border-border text-[10px] tracking-widest">APPLE PAY</span>
+      <div className="border-t border-border bg-background/25">
+        <div className="mx-auto max-w-[1500px] px-5 lg:px-10">
+          <div className="flex flex-wrap items-center justify-center gap-2 py-8 border-b border-border/50">
+            <span className="px-3 py-1.5 border border-border/60 text-[9px] tracking-[0.28em] text-muted-foreground/65 uppercase">
+              Cash on delivery only
+            </span>
           </div>
-          <img src={LOGO} alt="Velin Studio" className="h-6 mt-2 opacity-80" />
-          <p>© {new Date().getFullYear()} Velin Studio. All rights reserved.</p>
-          <div className="flex items-center gap-2 opacity-70">
-            <span>Developed by</span>
-            <a href="https://inievo.com" target="_blank" rel="noopener noreferrer" aria-label="Inievo">
-              <img src={INIEVO} alt="Inievo" className="h-5 w-auto" />
+
+          <div className="flex flex-col items-center py-12 text-center">
+            <img src={LOGO} alt="Velin Studio" className="h-8 opacity-90" />
+            <p className="mt-5 text-[10px] tracking-[0.24em] uppercase text-muted-foreground/55">
+              © {new Date().getFullYear()} Velin Studio · All rights reserved
+            </p>
+          </div>
+
+          <div className="flex justify-center pb-10">
+            <a
+              href="https://inievo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Built by Inievo — visit inievo.com"
+              className="group relative inline-flex items-center gap-5 px-8 py-4 transition-all duration-500 hover:-translate-y-px"
+            >
+              <span
+                className="pointer-events-none absolute inset-0 border border-border/50 bg-card/40 transition-colors duration-500 group-hover:border-gold/35 group-hover:bg-card/70"
+                aria-hidden
+              />
+              <span
+                className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                aria-hidden
+              />
+
+              <span className="relative text-[10px] font-bold tracking-[0.24em] uppercase text-muted-foreground/55 transition-colors duration-500 group-hover:text-muted-foreground/75">
+                Built by
+              </span>
+
+              <span className="relative h-4 w-px bg-gold/35" aria-hidden />
+
+              <img
+                src={INIEVO}
+                alt="Inievo"
+                className="relative h-[18px] w-auto transition-transform duration-700 group-hover:scale-[1.04]"
+              />
             </a>
           </div>
         </div>

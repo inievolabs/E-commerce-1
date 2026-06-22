@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Instagram, Facebook, Mail, Phone, MapPin } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -15,6 +17,19 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const setF = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((s) => ({ ...s, [key]: e.target.value }));
+
   return (
     <div className="mx-auto max-w-[1200px] px-5 lg:px-10 py-16 lg:py-24">
       <header className="text-center max-w-xl mx-auto">
@@ -26,25 +41,82 @@ function Contact() {
       </header>
 
       <div className="mt-16 grid lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20">
-        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("Thank you — we will be in touch."); }}>
-          <div className="grid sm:grid-cols-2 gap-6">
-            <Field label="First name" required />
-            <Field label="Last name" required />
+        {sent ? (
+          <div className="border border-border bg-secondary p-8">
+            <p className="eyebrow">Message sent</p>
+            <h2 className="mt-3 font-serif text-2xl">Thank you for reaching out.</h2>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+              We received your message and will reply within one business day.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSent(false);
+                setForm({ firstName: "", lastName: "", email: "", subject: "", message: "" });
+              }}
+              className="mt-6 eyebrow link-underline"
+            >
+              Send another message
+            </button>
           </div>
-          <Field label="Email" type="email" required />
-          <Field label="Subject" />
-          <label className="block">
-            <span className="block eyebrow mb-2">Message</span>
-            <textarea
-              rows={6}
-              required
-              className="w-full bg-transparent border-b border-foreground/30 py-3 text-sm focus:outline-none focus:border-foreground placeholder:text-muted-foreground resize-none"
-            />
-          </label>
-          <button className="bg-foreground text-background px-8 py-4 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90">
-            Send message
-          </button>
-        </form>
+        ) : (
+          <form
+            className="space-y-6"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (submitting) return;
+              setSubmitting(true);
+              try {
+                const res = await fetch("/api/contact", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    firstName: form.firstName,
+                    lastName: form.lastName,
+                    email: form.email,
+                    subject: form.subject || null,
+                    message: form.message,
+                  }),
+                });
+                const result = (await res.json()) as { ok: boolean; error?: string };
+                if (!result.ok) {
+                  toast.error(result.error ?? "Unable to send message.");
+                  return;
+                }
+                setSent(true);
+                toast.success("Message sent — we'll be in touch soon.");
+              } catch {
+                toast.error("Unable to send message. Please try again.");
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            <div className="grid sm:grid-cols-2 gap-6">
+              <Field label="First name" required value={form.firstName} onChange={setF("firstName")} />
+              <Field label="Last name" required value={form.lastName} onChange={setF("lastName")} />
+            </div>
+            <Field label="Email" type="email" required value={form.email} onChange={setF("email")} />
+            <Field label="Subject" value={form.subject} onChange={setF("subject")} />
+            <label className="block">
+              <span className="block eyebrow mb-2">Message</span>
+              <textarea
+                rows={6}
+                required
+                value={form.message}
+                onChange={setF("message")}
+                className="w-full bg-transparent border-b border-foreground/30 py-3 text-sm focus:outline-none focus:border-foreground placeholder:text-muted-foreground resize-none"
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-foreground text-background px-8 py-4 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 disabled:opacity-60"
+            >
+              {submitting ? "Sending…" : "Send message"}
+            </button>
+          </form>
+        )}
 
         <aside className="space-y-10">
           <div>

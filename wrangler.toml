@@ -1,0 +1,18 @@
+# Velin Studio — Cloudflare Workers reference config
+# Deploy uses Nitro-generated .output/server/wrangler.json (see npm run deploy).
+# This file documents worker name, compatibility, and non-secret env vars.
+
+name = "velinstudio"
+compatibility_date = "2026-06-22"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+VITE_SITE_URL = "https://velinstudiobd.com"
+VITE_SUPABASE_URL = "https://xkqkwoxrwezywnoillgf.supabase.co"
+
+# Set secrets via CLI (never commit):
+#   wrangler secret put VITE_SUPABASE_ANON_KEY --config .output/server/wrangler.json
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY --config .output/server/wrangler.json
+#   wrangler secret put CLOUDINARY_CLOUD_NAME --config .output/server/wrangler.json
+#   wrangler secret put CLOUDINARY_API_KEY --config .output/server/wrangler.json
+#   wrangler secret put CLOUDINARY_API_SECRET --config .output/server/wrangler.json

@@ -1,30 +1,49 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown, X, Truck, Hammer, RotateCcw, Heart } from "lucide-react";
-import { getProduct, products, type Product } from "@/data/products";
+import { useEffect, useRef, useState, type ComponentType } from "react";
+import {
+  ChevronDown,
+  X,
+  Truck,
+  Hammer,
+  RotateCcw,
+  Heart,
+  Package,
+  Shield,
+} from "lucide-react";
+import { type Product } from "@/data/products";
+import { fetchCatalogProductServer } from "@/lib/catalog";
+import { productImageUrl } from "@/lib/cloudinary-image";
+import { useCatalog } from "@/lib/use-catalog";
 import { formatPrice, useCart } from "@/lib/cart";
+import { absoluteUrl } from "@/lib/site-url";
 import { useWishlist } from "@/lib/wishlist";
 import { ProductCard } from "@/components/ProductCard";
-
+import type { TrustBadge } from "@/lib/product-defaults";
 export const Route = createFileRoute("/product/$id")({
-  loader: ({ params }): { product: Product } => {
-    const product = getProduct(params.id);
+  loader: async ({ params }): Promise<{ product: Product }> => {
+    const product = await fetchCatalogProductServer(params.id);
     if (!product) throw notFound();
     return { product };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.product.name} — Velin Studio` },
-          { name: "description", content: loaderData.product.description },
-          { property: "og:title", content: `${loaderData.product.name} — Velin Studio` },
-          { property: "og:description", content: loaderData.product.description },
-          { property: "og:image", content: loaderData.product.images[0] },
-          { property: "og:url", content: `/product/${loaderData.product.id}` },
-        ]
-      : [],
-    links: loaderData ? [{ rel: "canonical", href: `/product/${loaderData.product.id}` }] : [],
-  }),
+  head: ({ loaderData }) => {
+    const product = loaderData?.product;
+    const pageUrl = product ? absoluteUrl(`/product/${product.id}`) : "";
+    const imageUrl = product?.images[0] ? productImageUrl(product.images[0], "card") : "";
+    return {
+      meta: product
+        ? [
+            { title: `${product.name} — Velin Studio` },
+            { name: "description", content: product.description },
+            { property: "og:title", content: `${product.name} — Velin Studio` },
+            { property: "og:description", content: product.description },
+            { property: "og:image", content: imageUrl },
+            { property: "og:url", content: pageUrl },
+            { property: "og:type", content: "product" },
+          ]
+        : [],
+      links: product ? [{ rel: "canonical", href: pageUrl }] : [],
+    };
+  },
   notFoundComponent: () => (
     <div className="px-5 py-32 text-center">
       <h1 className="font-serif text-4xl">Piece not found</h1>
@@ -40,33 +59,46 @@ export const Route = createFileRoute("/product/$id")({
   component: ProductPage,
 });
 
-const SIZES_BY_CATEGORY: Record<string, string[]> = {
-  bags: [],
-  luggage: [],
-  slippers: ["36", "37", "38", "39", "40", "41"],
-  wallets: [],
+const TRUST_ICON_MAP: Record<string, ComponentType<{ className?: string; strokeWidth?: number }>> = {
+  truck: Truck,
+  hammer: Hammer,
+  "rotate-ccw": RotateCcw,
+  package: Package,
+  shield: Shield,
+  heart: Heart,
 };
 
-function ProductPage() {
-  const { product } = Route.useLoaderData() as { product: Product };
+function TrustIcon({ badge }: { badge: TrustBadge }) {
+  const Icon = TRUST_ICON_MAP[badge.icon] ?? Truck;
+  return <Icon className="h-5 w-5 text-foreground/80" strokeWidth={1.25} />;
+}
+
+function stockLabel(stock: number | undefined): string | null {
+  if (stock === undefined) return null;
+  if (stock <= 0) return "Out of stock";
+  if (stock <= 4) return `Only ${stock} left`;
+  return "In stock";
+}
+
+function ProductPage() {  const { product } = Route.useLoaderData() as { product: Product };
+  const { data: catalogProducts = [] } = useCatalog();
   const { add, open, count: cartCount } = useCart();
   const wishlist = useWishlist();
 
   const [activeImage, setActiveImage] = useState(0);
-  const sizes = SIZES_BY_CATEGORY[product.category] ?? [];
-  const [size, setSize] = useState<string>(sizes[Math.floor(sizes.length / 2)] ?? "");
-  const [qty, setQty] = useState(1);
+  const sizes = product.sizes ?? [];
+  const [size, setSize] = useState<string>(sizes[Math.floor(sizes.length / 2)] ?? "");  const [qty, setQty] = useState(1);
   const [accordion, setAccordion] = useState<string | null>("desc");
   const [lightbox, setLightbox] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
-  // Reset on product change + scroll to top
   useEffect(() => {
     setActiveImage(0);
     setQty(1);
+    const nextSizes = product.sizes ?? [];
+    setSize(nextSizes[Math.floor(nextSizes.length / 2)] ?? "");
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-  }, [product.id]);
-
+  }, [product.id, product.sizes]);
   // Mobile carousel — track active dot via scroll
   const carouselRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -80,23 +112,55 @@ function ProductPage() {
     return () => el.removeEventListener("scroll", onScroll);
   }, [product.id]);
 
-  const related = products
+  const related = catalogProducts
     .filter((p) => p.id !== product.id && p.category === product.category && p.gender === product.gender)
     .slice(0, 6);
-  const completeTheLook = products
+  const completeTheLook = catalogProducts
     .filter((p) => p.category !== product.category && p.gender === product.gender)
     .slice(0, 3);
 
   const isWished = wishlist.has(product.id);
+  const outOfStock = product.stock !== undefined && product.stock <= 0;
+  const stockStatus = stockLabel(product.stock);
+  const trustBadges = product.trustBadges ?? [];
+  const shippingReturnsBody = [product.shippingInfo, product.returnsInfo].filter(Boolean).join(" ");
+  const deliveryImages = {
+    thumb: product.images.map((src) => productImageUrl(src, "thumb")),
+    gallery: product.images.map((src) => productImageUrl(src, "gallery")),
+    full: product.images.map((src) => productImageUrl(src, "full")),
+  };
 
   const handleAddToCart = () => {
-    if (sizes.length > 0 && !size) return;
-    add(product.id, qty, { color: product.color, size: size || undefined });
+    if (outOfStock) return;
+    if (sizes.length > 0 && !size) return;    add(product.id, qty, { color: product.color, size: size || undefined });
     open();
+  };
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: deliveryImages.gallery,
+    sku: product.id,
+    brand: { "@type": "Brand", name: "Velin Studio" },
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(`/product/${product.id}`),
+      priceCurrency: "BDT",
+      price: product.price,
+      availability:
+        product.stock === undefined || product.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",    },
   };
 
   return (
     <div className="bg-background pb-28 md:pb-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="mx-auto max-w-[1500px] px-5 lg:px-10 pt-6 lg:pt-10">
         {/* Breadcrumb */}
         <nav className="mb-6 lg:mb-10 text-[11px] tracking-widest uppercase text-muted-foreground">
@@ -125,7 +189,7 @@ function ProductPage() {
                       activeImage === i ? "border-foreground opacity-100" : "border-transparent opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                    <img src={deliveryImages.thumb[i]} alt="" className="h-full w-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
@@ -137,7 +201,7 @@ function ProductPage() {
                 {product.images.map((src, i) => (
                   <img
                     key={i}
-                    src={src}
+                    src={deliveryImages.gallery[i]}
                     alt={i === activeImage ? product.name : ""}
                     className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-out"
                     style={{ opacity: i === activeImage ? 1 : 0 }}
@@ -157,7 +221,7 @@ function ProductPage() {
                 {product.images.map((src, i) => (
                   <img
                     key={i}
-                    src={src}
+                    src={deliveryImages.gallery[i]}
                     alt={i === activeImage ? product.name : ""}
                     className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
                     style={{ opacity: i === activeImage ? 1 : 0 }}
@@ -173,7 +237,7 @@ function ProductPage() {
                       activeImage === i ? "border-foreground" : "border-transparent opacity-70"
                     }`}
                   >
-                    <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                    <img src={deliveryImages.thumb[i]} alt="" className="h-full w-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
@@ -195,7 +259,7 @@ function ProductPage() {
                     aria-label={`Open image ${i + 1}`}
                   >
                     <img
-                      src={src}
+                      src={deliveryImages.gallery[i]}
                       alt={product.name}
                       className="h-full w-full object-cover"
                       loading={i === 0 ? "eager" : "lazy"}
@@ -229,11 +293,21 @@ function ProductPage() {
             <h1 className="mt-2 font-serif text-3xl md:text-4xl lg:text-[2.5rem] leading-tight">
               {product.name}
             </h1>
-            <div className="mt-3 flex items-baseline gap-3">
+            <div className="mt-3 flex items-baseline gap-3 flex-wrap">
               <p className="text-xl tabular-nums">{formatPrice(product.price)}</p>
-              <span className="text-xs text-muted-foreground">Tax included</span>
+              {product.taxIncluded !== false && (
+                <span className="text-xs text-muted-foreground">{product.taxLabel ?? "Tax included"}</span>
+              )}
+              {stockStatus && (
+                <span
+                  className={`text-xs ${
+                    outOfStock ? "text-destructive" : "text-muted-foreground"
+                  }`}
+                >
+                  {stockStatus}
+                </span>
+              )}
             </div>
-
             <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
               {product.description}
             </p>
@@ -257,14 +331,15 @@ function ProductPage() {
               <div className="mt-8">
                 <div className="flex items-center justify-between mb-3">
                   <p className="eyebrow">Size · <span className="text-foreground">EU</span></p>
-                  <button
-                    onClick={() => setShowSizeGuide(true)}
-                    className="text-[11px] tracking-widest uppercase link-underline"
-                  >
-                    Size guide
-                  </button>
-                </div>
-                <div className="grid grid-cols-6 gap-2">
+                  {product.showSizeGuide && (product.sizeGuide?.length ?? 0) > 0 && (
+                    <button
+                      onClick={() => setShowSizeGuide(true)}
+                      className="text-[11px] tracking-widest uppercase link-underline"
+                    >
+                      Size guide
+                    </button>
+                  )}
+                </div>                <div className="grid grid-cols-6 gap-2">
                   {sizes.map((s) => (
                     <button
                       key={s}
@@ -308,11 +383,11 @@ function ProductPage() {
             <div className="mt-8 flex items-stretch gap-3">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 bg-foreground text-background py-4 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 transition-all duration-200 active:scale-[0.98]"
+                disabled={outOfStock}
+                className="flex-1 bg-foreground text-background py-4 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Add to bag
-              </button>
-              <button
+                {outOfStock ? "Out of stock" : "Add to bag"}
+              </button>              <button
                 onClick={() => wishlist.toggle(product.id)}
                 aria-pressed={isWished}
                 aria-label={isWished ? "Remove from wishlist" : "Add to wishlist"}
@@ -326,20 +401,16 @@ function ProductPage() {
               </button>
             </div>
 
-            {/* Trust row */}
-            <div className="mt-8 grid grid-cols-3 gap-4 border-y border-border py-5">
-              {[
-                { Icon: Truck, label: "Complimentary shipping" },
-                { Icon: Hammer, label: "Hand-finished in Italy" },
-                { Icon: RotateCcw, label: "30-day returns" },
-              ].map(({ Icon, label }) => (
-                <div key={label} className="flex flex-col items-center text-center gap-2">
-                  <Icon className="h-5 w-5 text-foreground/80" strokeWidth={1.25} />
-                  <p className="text-[10.5px] leading-snug tracking-wide text-muted-foreground">{label}</p>
-                </div>
-              ))}
-            </div>
-
+            {trustBadges.length > 0 && (
+              <div className="mt-8 grid grid-cols-3 gap-4 border-y border-border py-5">
+                {trustBadges.map((badge) => (
+                  <div key={`${badge.icon}-${badge.label}`} className="flex flex-col items-center text-center gap-2">
+                    <TrustIcon badge={badge} />
+                    <p className="text-[10.5px] leading-snug tracking-wide text-muted-foreground">{badge.label}</p>
+                  </div>
+                ))}
+              </div>
+            )}
             {/* Accordion */}
             <div className="mt-2 divide-y divide-border">
               {[
@@ -348,10 +419,8 @@ function ProductPage() {
                 {
                   id: "ship",
                   label: "Shipping & returns",
-                  body:
-                    "Complimentary express shipping nationwide. Free 30-day returns on unworn pieces in original packaging.",
-                },
-              ].map((row) => {
+                  body: shippingReturnsBody,
+                },              ].map((row) => {
                 const isOpen = accordion === row.id;
                 return (
                   <div key={row.id}>
@@ -437,11 +506,11 @@ function ProductPage() {
           </div>
           <button
             onClick={handleAddToCart}
-            className="ml-auto flex-1 max-w-[60%] bg-foreground text-background py-3 text-[11px] tracking-[0.22em] uppercase hover:bg-foreground/90 transition-all active:scale-[0.98]"
+            disabled={outOfStock}
+            className="ml-auto flex-1 max-w-[60%] bg-foreground text-background py-3 text-[11px] tracking-[0.22em] uppercase hover:bg-foreground/90 transition-all active:scale-[0.98] disabled:opacity-50"
           >
-            Add to bag {cartCount > 0 && <span className="opacity-70">· {cartCount}</span>}
-          </button>
-        </div>
+            {outOfStock ? "Out of stock" : `Add to bag ${cartCount > 0 ? `· ${cartCount}` : ""}`}
+          </button>        </div>
       </div>
 
       {/* Lightbox */}
@@ -466,7 +535,7 @@ function ProductPage() {
               {product.images.map((src, i) => (
                 <img
                   key={i}
-                  src={src}
+                  src={deliveryImages.full[i]}
                   alt={`${product.name} ${i + 1}`}
                   className="w-full h-auto object-contain"
                 />
@@ -496,7 +565,7 @@ function ProductPage() {
               <X className="h-4 w-4" />
             </button>
             <p className="eyebrow">Size guide</p>
-            <h3 className="mt-2 font-serif text-2xl">European sizing</h3>
+            <h3 className="mt-2 font-serif text-2xl">{product.sizeGuideTitle ?? "European sizing"}</h3>
             <table className="mt-5 w-full text-sm">
               <thead>
                 <tr className="text-left text-xs uppercase tracking-widest text-muted-foreground border-b border-border">
@@ -507,23 +576,16 @@ function ProductPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {[
-                  ["36", "3", "5", "23"],
-                  ["37", "4", "6", "23.5"],
-                  ["38", "5", "7", "24"],
-                  ["39", "6", "8", "24.5"],
-                  ["40", "7", "9", "25.5"],
-                  ["41", "8", "10", "26"],
-                ].map((row) => (
-                  <tr key={row[0]} className="tabular-nums">
-                    {row.map((c, i) => (
-                      <td key={i} className="py-2.5">{c}</td>
-                    ))}
+                {(product.sizeGuide ?? []).map((row) => (
+                  <tr key={row.eu} className="tabular-nums">
+                    <td className="py-2.5">{row.eu}</td>
+                    <td className="py-2.5">{row.uk}</td>
+                    <td className="py-2.5">{row.us}</td>
+                    <td className="py-2.5">{row.cm}</td>
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+            </table>          </div>
         </div>
       )}
     </div>

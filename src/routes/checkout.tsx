@@ -1,7 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { formatPrice, getProductById, useCart } from "@/lib/cart";
-import { useAdminStore } from "@/lib/admin-store";
+import { useEffect, useRef, useState } from "react";
+import { formatPrice, useCart } from "@/lib/cart";
+import { productImageUrl } from "@/lib/cloudinary-image";
+import { useAuth } from "@/lib/auth";
+import { useCatalogLookup } from "@/lib/use-catalog";
+import type { PlaceOrderResponse } from "@/lib/place-order";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -16,45 +19,104 @@ export const Route = createFileRoute("/checkout")({
 
 function Checkout() {
   const { items, subtotal, clear } = useCart();
-  const { addOrder, adjustStock } = useAdminStore();
+  const { getProductById } = useCatalogLookup();
+  const { user, addresses, addressesLoading, refreshOrders } = useAuth();
   const navigate = useNavigate();
-  const [shipping, setShipping] = useState("standard");
-  const [payment, setPayment] = useState("card");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const autofillDoneRef = useRef(false);
   const [form, setForm] = useState({
-    email: "", firstName: "", lastName: "", address: "", apt: "",
-    city: "", postal: "", country: "Bangladesh", phone: "",
+    email: user?.email ?? "",
+    firstName: user?.name?.split(" ")[0] ?? "",
+    lastName: user?.name?.split(" ").slice(1).join(" ") ?? "",
+    address: "",
+    apt: "",
+    city: "",
+    postal: "",
+    country: "Bangladesh",
+    phone: "",
   });
 
-  const shippingCost = shipping === "express" ? 25 : 0;
+  useEffect(() => {
+    if (autofillDoneRef.current || addressesLoading) return;
+    if (!user) return;
+
+    const defaultAddr = addresses.find((a) => a.isDefault) ?? addresses[0];
+
+    setForm((prev) => ({
+      ...prev,
+      email: user.email ?? prev.email,
+      firstName: user.name?.split(" ")[0] ?? prev.firstName,
+      lastName: user.name?.split(" ").slice(1).join(" ") ?? prev.lastName,
+      ...(defaultAddr
+        ? {
+            address: defaultAddr.line1,
+            city: defaultAddr.city,
+            postal: defaultAddr.postalCode,
+            country: defaultAddr.country,
+          }
+        : {}),
+    }));
+
+    autofillDoneRef.current = true;
+  }, [user, addresses, addressesLoading]);
+
+  const shippingCost = 0;
   const total = subtotal + shippingCost;
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (items.length === 0) return;
-    const order = addOrder({
-      customerName: `${form.firstName} ${form.lastName}`.trim() || "Guest",
-      customerEmail: form.email,
-      shippingAddress: [form.address, form.apt, `${form.city} ${form.postal}`, form.country]
-        .filter(Boolean).join("\n"),
-      items: items.map((it) => {
-        const p = getProductById(it.productId);
-        return {
-          productId: it.productId,
-          name: p?.name ?? it.productId,
-          price: p?.price ?? 0,
-          qty: it.qty,
-          color: it.color,
-          size: it.size,
-        };
-      }),
-      subtotal,
-      shipping: shippingCost,
-      total,
-    });
-    items.forEach((it) => adjustStock(it.productId, -it.qty));
-    clear();
-    alert(`Order ${order.id} placed (demo).`);
-    navigate({ to: "/" });
+    if (items.length === 0 || submitting) return;
+
+    setSubmitting(true);
+    setError(null);
+
+    const customerName = `${form.firstName} ${form.lastName}`.trim();
+    const shippingAddress = [form.address, form.apt, `${form.city} ${form.postal}`, form.country]
+      .filter(Boolean)
+      .join("\n");
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName,
+          customerEmail: form.email,
+          customerPhone: form.phone,
+          shippingAddress,
+          subtotal,
+          shipping: shippingCost,
+          total,
+          userId: user?.id ?? null,
+          items: items.map((it) => {
+            const p = getProductById(it.productId);
+            return {
+              productId: it.productId,
+              name: p?.name ?? it.productId,
+              price: p?.price ?? 0,
+              qty: it.qty,
+              color: it.color,
+              size: it.size,
+            };
+          }),
+        }),
+      });
+
+      const result = (await res.json()) as PlaceOrderResponse;
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+
+      clear();
+      refreshOrders();
+      navigate({ to: "/order-confirmation", search: { orderId: result.orderId } });
+    } catch {
+      setError("Unable to place order. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const setF = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -84,72 +146,28 @@ function Checkout() {
               <Field label="City" required value={form.city} onChange={setF("city")} />
               <Field label="Postal code" required value={form.postal} onChange={setF("postal")} />
               <Field label="Country" className="sm:col-span-2" required value={form.country} onChange={setF("country")} />
-              <Field label="Phone" type="tel" className="sm:col-span-2" value={form.phone} onChange={setF("phone")} />
-            </div>
-          </section>
-
-          <section>
-            <h2 className="font-serif text-2xl mb-6">Shipping method</h2>
-            <div className="space-y-3">
-              {[
-                { id: "standard", label: "Complimentary express · 2–4 days", price: 0 },
-                { id: "express", label: "Priority next-day", price: 25 },
-              ].map((m) => (
-                <label
-                  key={m.id}
-                  className={`flex items-center justify-between p-4 border cursor-pointer ${shipping === m.id ? "border-foreground" : "border-border"}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      checked={shipping === m.id}
-                      onChange={() => setShipping(m.id)}
-                      className="accent-foreground"
-                    />
-                    <span className="text-sm">{m.label}</span>
-                  </div>
-                  <span className="text-sm tabular-nums">{m.price === 0 ? "Free" : formatPrice(m.price)}</span>
-                </label>
-              ))}
+              <Field label="Phone" type="tel" className="sm:col-span-2" required value={form.phone} onChange={setF("phone")} />
             </div>
           </section>
 
           <section>
             <h2 className="font-serif text-2xl mb-6">Payment</h2>
-            <div className="space-y-3 mb-6">
-              {[
-                { id: "card", label: "Credit card" },
-                { id: "paypal", label: "PayPal" },
-                { id: "applepay", label: "Apple Pay" },
-              ].map((m) => (
-                <label
-                  key={m.id}
-                  className={`flex items-center gap-3 p-4 border cursor-pointer ${payment === m.id ? "border-foreground" : "border-border"}`}
-                >
-                  <input
-                    type="radio"
-                    checked={payment === m.id}
-                    onChange={() => setPayment(m.id)}
-                    className="accent-foreground"
-                  />
-                  <span className="text-sm">{m.label}</span>
-                </label>
-              ))}
+            <div className="border border-foreground p-4">
+              <p className="text-sm font-medium">Cash on delivery (COD)</p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Pay when your order arrives. No card or online payment required.
+              </p>
             </div>
-            {payment === "card" && (
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Card number" className="sm:col-span-2" placeholder="0000 0000 0000 0000" />
-                <Field label="Expiry" placeholder="MM / YY" />
-                <Field label="CVC" placeholder="000" />
-              </div>
-            )}
           </section>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
           <button
             type="submit"
-            className="w-full bg-foreground text-background py-5 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90"
+            disabled={submitting || items.length === 0}
+            className="w-full bg-foreground text-background py-5 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 disabled:opacity-60"
           >
-            Place order · {formatPrice(total)}
+            {submitting ? "Placing order…" : `Place order · ${formatPrice(total)}`}
           </button>
         </form>
 
@@ -169,7 +187,11 @@ function Checkout() {
                   return (
                     <li key={it.productId} className="flex gap-3">
                       <div className="relative w-16 h-20 bg-muted overflow-hidden shrink-0">
-                        <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
+                        <img
+                          src={productImageUrl(p.images[0], "thumb")}
+                          alt={p.name}
+                          className="h-full w-full object-cover"
+                        />
                         <span className="absolute -top-1 -right-1 bg-foreground text-background text-[10px] h-4 w-4 grid place-items-center rounded-full">{it.qty}</span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -183,7 +205,7 @@ function Checkout() {
               </ul>
               <dl className="mt-6 pt-6 border-t border-border space-y-2 text-sm">
                 <div className="flex justify-between"><dt>Subtotal</dt><dd className="tabular-nums">{formatPrice(subtotal)}</dd></div>
-                <div className="flex justify-between"><dt>Shipping</dt><dd className="tabular-nums">{shippingCost === 0 ? "Free" : formatPrice(shippingCost)}</dd></div>
+                <div className="flex justify-between"><dt>Shipping</dt><dd className="tabular-nums">Free</dd></div>
               </dl>
               <div className="mt-4 pt-4 border-t border-border flex justify-between text-base">
                 <span>Total</span>

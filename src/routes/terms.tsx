@@ -5,7 +5,7 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "Terms & Conditions — Velin Studio" },
-      { name: "description", content: "The terms governing your use of velinstudio.com and any purchase you make." },
+      { name: "description", content: "The terms governing your use of velinstudiobd.com and any purchase you make." },
       { property: "og:title", content: "Terms & Conditions — Velin Studio" },
       { property: "og:url", content: "/terms" },
     ],
@@ -18,7 +18,7 @@ function Terms() {
   return (
     <LegalLayout title="Terms & Conditions">
       <p>
-        These terms apply to your use of velinstudio.com and to any order you place with Velin
+        These terms apply to your use of velinstudiobd.com and to any order you place with Velin
         Studio. By browsing the site or purchasing a piece, you agree to be bound by them.
       </p>
 
@@ -75,7 +75,7 @@ function Terms() {
 
       <LegalSection title="Contact">
         <p>
-          For any question relating to these terms, please write to clientservices@velinstudio.com.
+          For any question relating to these terms, please write to clientservices@velinstudiobd.com.
         </p>
       </LegalSection>
     </LegalLayout>

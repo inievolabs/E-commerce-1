@@ -16,14 +16,18 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { CartDrawer } from "../components/CartDrawer";
 import { MobileBottomNav } from "../components/MobileBottomNav";
+import { Toaster } from "../components/ui/sonner";
 
 import { CartProvider } from "../lib/cart";
 import { AuthProvider } from "../lib/auth";
 import { WishlistProvider } from "../lib/wishlist";
 import { AdminStoreProvider } from "../lib/admin-store";
-
-const LOGO_URL =
-  "https://res.cloudinary.com/dgcnhseqm/image/upload/q_auto/f_auto/v1781984765/velin_studio_logo_zujxjx.svg";
+import {
+  PWA_APP_NAME,
+  PWA_ICONS,
+  PWA_SHORT_NAME,
+  PWA_THEME_COLOR,
+} from "../lib/pwa-config";
 
 function NotFoundComponent() {
   return (
@@ -94,7 +98,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Velin Studio crafts minimalist leather handbags, luggage, wallets and slippers — designed in Paris, made by hand in Italy.",
       },
-      { name: "author", content: "Velin Studio" },
+      { name: "author", content: "Inievo Technologies (inievo.com)" },
+      { name: "creator", content: "Inievo Technologies" },
       { property: "og:title", content: "Velin Studio" },
       {
         property: "og:description",
@@ -103,11 +108,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Velin Studio" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: PWA_THEME_COLOR },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: PWA_SHORT_NAME },
+      { name: "application-name", content: PWA_APP_NAME },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: LOGO_URL },
-      { rel: "apple-touch-icon", href: LOGO_URL },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", type: "image/png", href: PWA_ICONS.icon192 },
+      { rel: "apple-touch-icon", href: PWA_ICONS.appleTouchIcon },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -150,6 +162,17 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
 
+  useEffect(() => {
+    console.log(
+      "%cCrafted with care by Inievo Technologies — https://inievo.com",
+      "color: #b08458; font-size: 13px; font-weight: bold; padding: 4px;",
+    );
+
+    void import("virtual:pwa-register").then(({ registerSW }) => {
+      registerSW({ immediate: true });
+    });
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -183,6 +206,7 @@ function RootComponent() {
           </CartProvider>
         </WishlistProvider>
       </AuthProvider>
+      <Toaster richColors closeButton position="top-center" />
     </QueryClientProvider>
   );
 }

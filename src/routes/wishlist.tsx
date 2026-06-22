@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useWishlist } from "@/lib/wishlist";
-import { getProduct } from "@/data/products";
+import { useCatalogLookup } from "@/lib/use-catalog";
 import { ProductCard } from "@/components/ProductCard";
 
 export const Route = createFileRoute("/wishlist")({
@@ -19,7 +19,8 @@ export const Route = createFileRoute("/wishlist")({
 
 function WishlistPage() {
   const { ids, clear } = useWishlist();
-  const items = ids.map((id) => getProduct(id)).filter(Boolean);
+  const { getProductById, isLoading } = useCatalogLookup();
+  const items = ids.map((id) => getProductById(id)).filter(Boolean);
 
   return (
     <div className="mx-auto max-w-[1500px] px-5 lg:px-10 py-12 lg:py-20">
@@ -38,7 +39,9 @@ function WishlistPage() {
         )}
       </header>
 
-      {items.length === 0 ? (
+      {isLoading && ids.length > 0 ? (
+        <p className="text-sm text-muted-foreground">Loading saved pieces…</p>
+      ) : items.length === 0 ? (
         <div className="text-center py-24 border-y border-border">
           <p className="font-serif text-3xl">Begin curating your own edit.</p>
           <p className="mt-3 text-sm text-muted-foreground">Tap the heart on any piece to save it here.</p>

@@ -29,7 +29,7 @@ function ShippingReturns() {
           <li><strong>United Kingdom & Switzerland</strong> — 3–5 business days. Complimentary; duties prepaid.</li>
           <li><strong>United States & Canada</strong> — 3–5 business days. Complimentary; duties prepaid.</li>
           <li><strong>Asia, Middle East, Oceania</strong> — 4–7 business days. Complimentary; duties may apply on delivery.</li>
-          <li><strong>Express priority (24–48h within EU)</strong> — €25 at checkout.</li>
+          <li><strong>Express priority (24–48h within Bangladesh)</strong> — ৳25 at checkout.</li>
         </ul>
         <p>
           Orders are processed within 24 hours on business days. You will receive a tracking link by
@@ -72,7 +72,7 @@ function ShippingReturns() {
         <p>
           For size or colour exchanges, we recommend placing a new order and returning the
           original. Our atelier also offers complimentary lifetime repairs on manufacturing
-          defects — please contact clientservices@velinstudio.com.
+          defects — please contact clientservices@velinstudiobd.com.
         </p>
       </LegalSection>
     </LegalLayout>

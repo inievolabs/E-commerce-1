@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { PasswordField } from "@/components/PasswordField";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/signup")({
@@ -41,7 +42,7 @@ function SignupPage() {
         onSubmit={async (e) => {
           e.preventDefault();
           setError(null);
-          if (password.length < 6) return setError("Password must be at least 6 characters.");
+          if (password.length < 8) return setError("Password must be at least 8 characters.");
           if (password !== confirm) return setError("Passwords do not match.");
           setSubmitting(true);
           const res = await signup(name, email, password);
@@ -52,8 +53,8 @@ function SignupPage() {
       >
         <Field label="Full name" value={name} onChange={setName} required />
         <Field label="Email" type="email" value={email} onChange={setEmail} required />
-        <Field label="Password" type="password" value={password} onChange={setPassword} required />
-        <Field label="Confirm password" type="password" value={confirm} onChange={setConfirm} required />
+        <PasswordField label="Password" value={password} onChange={setPassword} autoComplete="new-password" required />
+        <PasswordField label="Confirm password" value={confirm} onChange={setConfirm} autoComplete="new-password" required />
 
         {error && <p className="text-sm text-destructive">{error}</p>}
 

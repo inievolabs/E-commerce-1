@@ -2,6 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { useAdminStore, type MediaItem } from "@/lib/admin-store";
+import { productImageUrl } from "@/lib/cloudinary-image";
+import {
+  assertImageFileSize,
+  formatMaxImageSizeMb,
+  normalizeImageDataUrl,
+} from "@/lib/image-upload";
+import { uploadMediaImage } from "@/lib/upload-media";
 
 export const Route = createFileRoute("/admin/media")({
   ssr: false,
@@ -30,6 +37,12 @@ function AdminMedia() {
 
   const handleFile = (file: File) => {
     if (!file.type.startsWith("image/")) return;
+    try {
+      assertImageFileSize(file);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "File is too large.");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => setPending({ name: file.name, src: String(reader.result) });
     reader.readAsDataURL(file);
@@ -96,7 +109,7 @@ function AdminMedia() {
           }}
           className="mb-6 border border-dashed border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground"
         >
-          Drag &amp; drop an image here, or use Upload to add to your library.
+          Drag &amp; drop an image here (max {formatMaxImageSizeMb()} MB), or use Upload to add to your library.
         </div>
       )}
 
@@ -119,7 +132,11 @@ function AdminMedia() {
                     onClick={() => setEditing(m)}
                     className="block w-full aspect-square bg-muted overflow-hidden"
                   >
-                    <img src={m.dataUrl} alt={m.name} className="w-full h-full object-cover" />
+                    <img
+                      src={productImageUrl(m.url, "card")}
+                      alt={m.name}
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                   <div className="p-3">
                     <p className="text-sm truncate font-medium">{m.name}</p>
@@ -155,8 +172,15 @@ function AdminMedia() {
           file={pending}
           products={products}
           onClose={() => setPending(null)}
-          onSave={({ dataUrl, width, height, name, productIds }) => {
-            addMedia({ dataUrl, width, height, name, productIds });
+          onSave={async ({ dataUrl, width, height, name, productIds }) => {
+            const uploaded = await uploadMediaImage(dataUrl);
+            addMedia({
+              url: uploaded.secure_url,
+              width: uploaded.width ?? width,
+              height: uploaded.height ?? height,
+              name,
+              productIds,
+            });
             setPending(null);
           }}
         />
@@ -189,7 +213,7 @@ function CropDialog({
   file: PendingFile;
   products: { id: string; name: string }[];
   onClose: () => void;
-  onSave: (out: { dataUrl: string; width: number; height: number; name: string; productIds: string[] }) => void;
+  onSave: (out: { dataUrl: string; width: number; height: number; name: string; productIds: string[] }) => Promise<void>;
 }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -197,12 +221,23 @@ function CropDialog({
   const [pixels, setPixels] = useState<Area | null>(null);
   const [name, setName] = useState(file.name);
   const [selected, setSelected] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onCropComplete = useCallback((_: Area, areaPixels: Area) => setPixels(areaPixels), []);
 
   const handleSave = async () => {
-    const out = await renderCrop(file.src, pixels);
-    onSave({ ...out, name, productIds: selected });
+    setSaving(true);
+    setError(null);
+    try {
+      const out = await renderCrop(file.src, pixels);
+      const dataUrl = await normalizeImageDataUrl(out.dataUrl);
+      await onSave({ ...out, dataUrl, name, productIds: selected });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const toggle = (id: string) =>
@@ -301,11 +336,22 @@ function CropDialog({
           </div>
 
           <div className="flex flex-wrap justify-end gap-3 mt-8">
-            <button onClick={onClose} className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background">
+            {error && (
+              <p className="w-full text-sm text-destructive text-right">{error}</p>
+            )}
+            <button
+              onClick={onClose}
+              disabled={saving}
+              className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background disabled:opacity-50"
+            >
               Cancel
             </button>
-            <button onClick={handleSave} className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90">
-              Save to library
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 disabled:opacity-50"
+            >
+              {saving ? "Uploading…" : "Save to library"}
             </button>
           </div>
         </div>
@@ -346,7 +392,7 @@ function ManageDialog({
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-muted aspect-square overflow-hidden">
-              <img src={item.dataUrl} alt={item.name} className="w-full h-full object-cover" />
+              <img src={item.url} alt={item.name} className="w-full h-full object-cover" />
             </div>
             <div>
               <label className="block">
@@ -425,7 +471,11 @@ function GalleriesPanel({
               className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-secondary"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <img src={p.images[0]} alt="" className="w-10 h-12 object-cover bg-muted" />
+                <img
+                  src={productImageUrl(p.images[0], "thumb")}
+                  alt=""
+                  className="w-10 h-12 object-cover bg-muted"
+                />
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{p.name}</p>
                   <p className="text-xs text-muted-foreground">{p.images.length} images</p>
@@ -499,7 +549,11 @@ function GalleryReorder({
               overIdx === i && dragIdx !== i ? "border-foreground ring-2 ring-foreground/30" : "border-border"
             } ${dragIdx === i ? "opacity-40" : ""}`}
           >
-            <img src={src} alt="" className="w-full h-full object-cover pointer-events-none" />
+            <img
+              src={productImageUrl(src, "thumb")}
+              alt=""
+              className="w-full h-full object-cover pointer-events-none"
+            />
             <span className="absolute top-1 left-1 bg-background/90 text-foreground text-[10px] tracking-[0.18em] uppercase px-1.5 py-0.5">
               {i + 1}
             </span>

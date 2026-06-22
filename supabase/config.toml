@@ -1,0 +1,17 @@
+# Velin Studio Supabase project
+# Remote project ref: xkqkwoxrwezywnoillgf (Velin Studio org)
+
+project_id = "xkqkwoxrwezywnoillgf"
+
+[api]
+enabled = true
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+major_version = 17
+
+[auth]
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/**"]

@@ -3,7 +3,9 @@ import { useMemo, useState } from "react";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { z } from "zod";
 import { ProductCard } from "@/components/ProductCard";
-import { products, type Category, type Gender } from "@/data/products";
+import { absoluteUrl } from "@/lib/site-url";
+import { type Category, type Gender } from "@/data/products";
+import { useCatalog } from "@/lib/use-catalog";
 
 const searchSchema = z.object({
   gender: z.enum(["women", "men"]).optional(),
@@ -18,9 +20,9 @@ export const Route = createFileRoute("/shop")({
       { title: "Shop — Velin Studio" },
       { name: "description", content: "Browse the full Velin Studio collection of handbags, luggage, wallets and slippers." },
       { property: "og:title", content: "Shop — Velin Studio" },
-      { property: "og:url", content: "/shop" },
+      { property: "og:url", content: absoluteUrl("/shop") },
     ],
-    links: [{ rel: "canonical", href: "/shop" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/shop") }],
   }),
   component: Shop,
 });
@@ -32,6 +34,7 @@ const COLORS = ["Noir", "Ivory", "Camel", "Cognac", "Burgundy", "Olive"];
 function Shop() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const { data: products = [], isLoading, isError } = useCatalog();
 
   const [priceMax, setPriceMax] = useState(3500);
   const [color, setColor] = useState<string | null>(null);
@@ -47,7 +50,7 @@ function Shop() {
     else if (search.sort === "price-desc") list.sort((a, b) => b.price - a.price);
     else if (search.sort === "newest") list.sort((a, b) => Number(b.isNew ?? false) - Number(a.isNew ?? false));
     return list;
-  }, [search, color, priceMax]);
+  }, [products, search, color, priceMax]);
 
   const title = search.gender
     ? search.gender === "women" ? "Women" : "Men"
@@ -149,7 +152,11 @@ function Shop() {
           <div className="hidden lg:flex items-center justify-end mb-8">
             <SortSelect value={search.sort} onChange={(v) => navigate({ search: { ...search, sort: v } })} />
           </div>
-          {filtered.length === 0 ? (
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground py-20 text-center">Loading collection…</p>
+          ) : isError ? (
+            <p className="text-sm text-muted-foreground py-20 text-center">Could not load products. Please try again.</p>
+          ) : filtered.length === 0 ? (
             <p className="text-sm text-muted-foreground py-20 text-center">No pieces match your selection.</p>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-12 lg:gap-x-8 lg:gap-y-16">

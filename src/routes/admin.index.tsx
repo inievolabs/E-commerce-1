@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useAdminStore } from "@/lib/admin-store";
+import { useMemo } from "react";
+import { useAdminStore, type Order, type OrderStatus } from "@/lib/admin-store";
+import {
+  countOrdersByStatus,
+  orderCountForPeriod,
+  ordersNeedingAction,
+  pendingOrders,
+  revenueForPeriod,
+  sortOrdersNewest,
+} from "@/lib/admin-dashboard";
 import { formatPrice } from "@/lib/cart";
 
 export const Route = createFileRoute("/admin/")({
@@ -7,63 +16,135 @@ export const Route = createFileRoute("/admin/")({
   component: AdminOverview,
 });
 
-function AdminOverview() {
-  const { products, categories, inventory, orders } = useAdminStore();
-  const revenue = orders
-    .filter((o) => o.status !== "cancelled")
-    .reduce((s, o) => s + o.total, 0);
-  const pending = orders.filter((o) => o.status === "pending").length;
-  const lowStock = products.filter((p) => {
-    const r = inventory[p.id];
-    return r && r.stock <= r.lowStockThreshold;
-  });
+const STATUS_OPTIONS: OrderStatus[] = [
+  "pending",
+  "confirmed",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+];
 
-  const stats = [
-    { label: "Products", value: products.length, to: "/admin/products" },
-    { label: "Categories", value: categories.length, to: "/admin/categories" },
-    { label: "Pending orders", value: pending, to: "/admin/orders" },
-    { label: "Revenue (all time)", value: formatPrice(revenue), to: "/admin/orders" },
-  ];
+function AdminOverview() {
+  const { products, inventory, orders, setOrderStatus, isLoading } = useAdminStore();
+
+  const metrics = useMemo(() => {
+    const statusCounts = countOrdersByStatus(orders);
+    return {
+      revenueToday: revenueForPeriod(orders, "today"),
+      revenueMonth: revenueForPeriod(orders, "month"),
+      revenueAll: revenueForPeriod(orders, "all"),
+      ordersToday: orderCountForPeriod(orders, "today"),
+      ordersMonth: orderCountForPeriod(orders, "month"),
+      pendingCount: statusCounts.pending,
+      actionCount: ordersNeedingAction(orders).length,
+      deliveredCount: statusCounts.delivered,
+      statusCounts,
+      pending: pendingOrders(orders),
+      needsAction: ordersNeedingAction(orders),
+      recent: sortOrdersNewest(orders).slice(0, 6),
+    };
+  }, [orders]);
+
+  const lowStock = useMemo(
+    () =>
+      products.filter((p) => {
+        const row = inventory[p.id];
+        return row && row.stock <= row.lowStockThreshold;
+      }),
+    [products, inventory],
+  );
+
+  if (isLoading) {
+    return (
+      <div className="py-20 text-center text-sm text-muted-foreground">Loading dashboard…</div>
+    );
+  }
 
   return (
     <div>
-      <header className="mb-8">
-        <p className="eyebrow">Dashboard</p>
-        <h1 className="font-serif text-3xl md:text-4xl mt-2">Overview</h1>
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow">Dashboard</p>
+          <h1 className="font-serif text-3xl md:text-4xl mt-2">Overview</h1>
+        </div>
+        <Link
+          to="/admin/orders"
+          className="border border-foreground px-4 py-2.5 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background transition-colors"
+        >
+          All orders
+        </Link>
       </header>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s) => (
-          <Link
-            key={s.label}
-            to={s.to}
-            className="bg-background border border-border p-5 hover:border-foreground transition-colors"
-          >
-            <p className="eyebrow text-muted-foreground">{s.label}</p>
-            <p className="font-serif text-3xl mt-3 tabular-nums">{s.value}</p>
-          </Link>
-        ))}
-      </div>
+      {/* Revenue */}
+      <section className="mb-8">
+        <h2 className="eyebrow text-muted-foreground mb-4">Revenue</h2>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <MetricCard label="Today" value={formatPrice(metrics.revenueToday)} hint={`${metrics.ordersToday} order${metrics.ordersToday === 1 ? "" : "s"}`} />
+          <MetricCard label="This month" value={formatPrice(metrics.revenueMonth)} hint={`${metrics.ordersMonth} order${metrics.ordersMonth === 1 ? "" : "s"}`} highlight />
+          <MetricCard label="All time" value={formatPrice(metrics.revenueAll)} hint="Excludes cancelled" />
+        </div>
+      </section>
 
-      <div className="grid lg:grid-cols-2 gap-6 mt-8">
+      {/* Order pipeline */}
+      <section className="mb-8">
+        <h2 className="eyebrow text-muted-foreground mb-4">Orders</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <StatusCount label="Pending" count={metrics.statusCounts.pending} accent />
+          <StatusCount label="Confirmed" count={metrics.statusCounts.confirmed} />
+          <StatusCount label="Processing" count={metrics.statusCounts.processing} />
+          <StatusCount label="Shipped" count={metrics.statusCounts.shipped} />
+          <StatusCount label="Delivered" count={metrics.statusCounts.delivered} />
+          <StatusCount label="Cancelled" count={metrics.statusCounts.cancelled} muted />
+        </div>
+      </section>
+
+      {/* Pending — needs attention */}
+      {metrics.needsAction.length > 0 && (
+        <section className="mb-8 bg-background border border-foreground/20 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div>
+              <h2 className="font-serif text-xl">Needs your attention</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {metrics.pendingCount} pending · {metrics.actionCount} awaiting fulfilment
+              </p>
+            </div>
+            <Link to="/admin/orders" search={{ filter: "pending" }} className="eyebrow link-underline">
+              Open orders
+            </Link>
+          </div>
+          <ul className="divide-y divide-border">
+            {metrics.needsAction.slice(0, 8).map((o) => (
+              <PendingOrderRow key={o.id} order={o} onStatusChange={setOrderStatus} />
+            ))}
+          </ul>
+          {metrics.needsAction.length > 8 && (
+            <p className="text-xs text-muted-foreground mt-4">
+              +{metrics.needsAction.length - 8} more in queue
+            </p>
+          )}
+        </section>
+      )}
+
+      <div className="grid lg:grid-cols-2 gap-6">
         <section className="bg-background border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-serif text-xl">Recent orders</h2>
             <Link to="/admin/orders" className="eyebrow link-underline">View all</Link>
           </div>
-          {orders.length === 0 ? (
+          {metrics.recent.length === 0 ? (
             <p className="text-sm text-muted-foreground">No orders yet.</p>
           ) : (
             <ul className="divide-y divide-border">
-              {orders.slice(0, 5).map((o) => (
+              {metrics.recent.map((o) => (
                 <li key={o.id} className="py-3 flex items-center justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium">{o.id} · {o.customerName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(o.createdAt).toLocaleString()}
+                    <p className="text-sm font-medium truncate">{o.id}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {o.customerName} · {new Date(o.createdAt).toLocaleString()}
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className="text-sm tabular-nums">{formatPrice(o.total)}</p>
                     <StatusBadge status={o.status} />
                   </div>
@@ -83,17 +164,14 @@ function AdminOverview() {
           ) : (
             <ul className="divide-y divide-border">
               {lowStock.slice(0, 6).map((p) => {
-                const r = inventory[p.id];
+                const row = inventory[p.id];
                 return (
                   <li key={p.id} className="py-3 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img src={p.images[0]} alt="" className="w-10 h-12 object-cover bg-muted" />
-                      <div className="min-w-0">
-                        <p className="text-sm truncate">{p.name}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{p.category} · {p.gender}</p>
-                      </div>
+                    <div className="min-w-0">
+                      <p className="text-sm truncate">{p.name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{p.category}</p>
                     </div>
-                    <p className="text-sm tabular-nums">{r.stock} left</p>
+                    <p className="text-sm tabular-nums text-destructive">{row?.stock} left</p>
                   </li>
                 );
               })}
@@ -105,16 +183,100 @@ function AdminOverview() {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
+function MetricCard({
+  label,
+  value,
+  hint,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`border p-5 ${highlight ? "border-foreground bg-secondary/30" : "border-border bg-background"}`}
+    >
+      <p className="eyebrow text-muted-foreground">{label}</p>
+      <p className="font-serif text-2xl md:text-3xl mt-3 tabular-nums">{value}</p>
+      {hint && <p className="text-xs text-muted-foreground mt-2">{hint}</p>}
+    </div>
+  );
+}
+
+function StatusCount({
+  label,
+  count,
+  accent,
+  muted,
+}: {
+  label: string;
+  count: number;
+  accent?: boolean;
+  muted?: boolean;
+}) {
+  return (
+    <div
+      className={`border px-4 py-3 ${accent ? "border-foreground/40 bg-secondary/20" : "border-border bg-background"}`}
+    >
+      <p className={`text-[10px] tracking-[0.2em] uppercase ${muted ? "text-muted-foreground" : "text-muted-foreground"}`}>
+        {label}
+      </p>
+      <p className={`font-serif text-2xl mt-1 tabular-nums ${accent && count > 0 ? "text-foreground" : ""}`}>
+        {count}
+      </p>
+    </div>
+  );
+}
+
+function PendingOrderRow({
+  order,
+  onStatusChange,
+}: {
+  order: Order;
+  onStatusChange: (id: string, status: OrderStatus) => void;
+}) {
+  return (
+    <li className="py-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="min-w-0">
+        <p className="text-sm font-medium font-mono">{order.id}</p>
+        <p className="text-sm mt-0.5">{order.customerName}</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          {new Date(order.createdAt).toLocaleString()} · {order.items.length} item
+          {order.items.length === 1 ? "" : "s"}
+        </p>
+      </div>
+      <div className="flex items-center gap-4">
+        <p className="text-sm tabular-nums font-medium">{formatPrice(order.total)}</p>
+        <select
+          value={order.status}
+          onChange={(e) => onStatusChange(order.id, e.target.value as OrderStatus)}
+          className="bg-background border border-border px-2 py-1.5 text-xs uppercase tracking-wider focus:outline-none focus:border-foreground"
+          aria-label={`Update status for ${order.id}`}
+        >
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+      </div>
+    </li>
+  );
+}
+
+function StatusBadge({ status }: { status: OrderStatus }) {
+  const map: Record<OrderStatus, string> = {
     pending: "bg-amber-100 text-amber-900",
+    confirmed: "bg-sky-100 text-sky-900",
     processing: "bg-blue-100 text-blue-900",
     shipped: "bg-indigo-100 text-indigo-900",
     delivered: "bg-emerald-100 text-emerald-900",
     cancelled: "bg-rose-100 text-rose-900",
   };
   return (
-    <span className={`inline-block mt-1 px-2 py-0.5 text-[10px] uppercase tracking-wider ${map[status] ?? "bg-secondary"}`}>
+    <span className={`inline-block mt-1 px-2 py-0.5 text-[10px] uppercase tracking-wider ${map[status]}`}>
       {status}
     </span>
   );

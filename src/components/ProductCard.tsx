@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import type { Product } from "@/data/products";
 import { formatPrice, useCart } from "@/lib/cart";
+import { productImageUrl } from "@/lib/cloudinary-image";
 import { WishlistButton } from "@/components/WishlistButton";
 
 interface Props {
@@ -13,6 +14,8 @@ export function ProductCard({ product, aspect = "portrait" }: Props) {
   const { add, open } = useCart();
   const [hover, setHover] = useState(false);
   const second = product.images[1] ?? product.images[0];
+  const cover = productImageUrl(product.images[0], "card");
+  const hoverImage = productImageUrl(second, "card");
 
   return (
     <div
@@ -27,14 +30,14 @@ export function ProductCard({ product, aspect = "portrait" }: Props) {
       >
         <div className={aspect === "portrait" ? "aspect-[3/4]" : "aspect-square"}>
           <img
-            src={product.images[0]}
+            src={cover}
             alt={product.name}
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
             style={{ opacity: hover ? 0 : 1 }}
           />
           <img
-            src={second}
+            src={hoverImage}
             alt=""
             aria-hidden
             loading="lazy"

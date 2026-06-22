@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useAdminStore } from "@/lib/admin-store";
+import { productImageUrl } from "@/lib/cloudinary-image";
 
 export const Route = createFileRoute("/admin/inventory")({
   ssr: false,
@@ -89,7 +90,11 @@ function AdminInventory() {
                 <tr key={p.id}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <img src={p.images[0]} alt="" className="w-10 h-12 object-cover bg-muted" />
+                      <img
+                        src={productImageUrl(p.images[0], "thumb")}
+                        alt=""
+                        className="w-10 h-12 object-cover bg-muted"
+                      />
                       <div>
                         <p className="font-medium">{p.name}</p>
                         <p className="text-xs text-muted-foreground capitalize">{p.category} · {p.gender}</p>

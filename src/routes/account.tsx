@@ -2,9 +2,11 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Package } from "lucide-react";
 import { useAuth, type Order } from "@/lib/auth";
+import { OrderStatusBadge } from "@/components/OrderStatus";
 import { useWishlist } from "@/lib/wishlist";
-import { getProduct } from "@/data/products";
+import { useCatalogLookup } from "@/lib/use-catalog";
 import { formatPrice } from "@/lib/cart";
+import { productImageUrl } from "@/lib/cloudinary-image";
 import { ProductCard } from "@/components/ProductCard";
 
 export const Route = createFileRoute("/account")({
@@ -66,8 +68,8 @@ function AccountPage() {
             </button>
           ))}
           <button
-            onClick={() => {
-              logout();
+            onClick={async () => {
+              await logout();
               navigate({ to: "/" });
             }}
             className="whitespace-nowrap text-left text-xs tracking-[0.22em] uppercase py-3 px-1 lg:px-0 text-muted-foreground hover:text-foreground mt-4"
@@ -87,21 +89,8 @@ function AccountPage() {
   );
 }
 
-function StatusBadge({ status }: { status: Order["status"] }) {
-  const map: Record<Order["status"], string> = {
-    Delivered: "bg-foreground/5 text-foreground",
-    "In transit": "bg-accent/15 text-accent-foreground",
-    Processing: "bg-muted text-foreground",
-    Cancelled: "bg-destructive/10 text-destructive",
-  };
-  return (
-    <span className={`inline-block px-3 py-1 text-[10px] tracking-[0.22em] uppercase ${map[status]}`}>
-      {status}
-    </span>
-  );
-}
-
 function OrdersTab({ orders }: { orders: Order[] }) {
+  const { getProductById } = useCatalogLookup();
   if (orders.length === 0) {
     return (
       <div className="text-center py-20 border border-border">
@@ -113,15 +102,21 @@ function OrdersTab({ orders }: { orders: Order[] }) {
   }
   return (
     <ul className="divide-y divide-border border-y border-border">
-      {orders.map((o) => (
+      {orders.map((o) => {
+        const cover = getProductById(o.items[0].productId)?.images[0];
+        return (
         <li key={o.id} className="py-6 grid grid-cols-[64px_1fr_auto] sm:grid-cols-[80px_1fr_auto] gap-5 items-center">
           <div className="aspect-square bg-muted overflow-hidden">
-            <img src={o.items[0].image} alt={o.items[0].name} className="h-full w-full object-cover" />
+            <img
+              src={cover ? productImageUrl(cover, "thumb") : "/pwa/icon-192.png"}
+              alt={o.items[0].name}
+              className="h-full w-full object-cover"
+            />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <p className="eyebrow">Order {o.id}</p>
-              <StatusBadge status={o.status} />
+              <OrderStatusBadge status={o.status} />
             </div>
             <p className="mt-2 font-serif text-lg truncate">{o.items[0].name}{o.items.length > 1 ? ` + ${o.items.length - 1} more` : ""}</p>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -130,22 +125,28 @@ function OrdersTab({ orders }: { orders: Order[] }) {
           </div>
           <div className="text-right">
             <p className="tabular-nums">{formatPrice(o.total)}</p>
-            <button
-              onClick={() => alert(`Order ${o.id} — demo only.`)}
-              className="mt-2 text-[10px] tracking-[0.22em] uppercase link-underline"
+            <Link
+              to="/account/orders/$orderId"
+              params={{ orderId: o.id }}
+              className="mt-2 inline-block text-[10px] tracking-[0.22em] uppercase link-underline"
             >
               View details
-            </button>
+            </Link>
           </div>
         </li>
-      ))}
+        );
+      })}
     </ul>
   );
 }
 
 function WishlistTab() {
   const { ids } = useWishlist();
-  const items = ids.map((id) => getProduct(id)).filter(Boolean);
+  const { getProductById, isLoading } = useCatalogLookup();
+  const items = ids.map((id) => getProductById(id)).filter(Boolean);
+  if (isLoading && ids.length > 0) {
+    return <p className="text-sm text-muted-foreground">Loading wishlist…</p>;
+  }
   if (items.length === 0) {
     return (
       <div className="text-center py-20 border border-border">
@@ -171,11 +172,12 @@ function DetailsTab() {
   return (
     <form
       className="max-w-md space-y-6"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        updateUser({ name, email });
         setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+        const res = await updateUser({ name, email });
+        if (!res.ok) setSaved(false);
+        else setTimeout(() => setSaved(false), 2000);
       }}
     >
       <label className="block">
@@ -221,7 +223,9 @@ function AddressesTab() {
             <p className="text-sm text-muted-foreground">{a.postalCode} {a.city}</p>
             <p className="text-sm text-muted-foreground">{a.country}</p>
             <button
-              onClick={() => removeAddress(a.id)}
+              onClick={async () => {
+                await removeAddress(a.id);
+              }}
               className="mt-4 text-[10px] tracking-[0.22em] uppercase link-underline"
             >
               Remove
@@ -233,9 +237,10 @@ function AddressesTab() {
       {adding ? (
         <form
           className="border border-border p-6 max-w-lg space-y-4"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            addAddress(draft);
+            const res = await addAddress(draft);
+            if (!res.ok) return;
             setDraft({ label: "", line1: "", city: "", postalCode: "", country: "" });
             setAdding(false);
           }}

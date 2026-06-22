@@ -1,5 +1,12 @@
+import heroHomeImg from "@/assets/hero-home.jpg";
+import womenBannerImg from "@/assets/women-banner.jpg";
+import menBannerImg from "@/assets/men-banner.jpg";
+
 export type Category = "bags" | "luggage" | "slippers" | "wallets";
 export type Gender = "women" | "men";
+
+export type SizeGuideRow = { eu: string; uk: string; us: string; cm: string };
+export type TrustBadge = { icon: string; label: string };
 
 export interface Product {
   id: string;
@@ -14,10 +21,23 @@ export interface Product {
   materials: string;
   isNew?: boolean;
   isBestseller?: boolean;
+  sizes?: string[];
+  taxIncluded?: boolean;
+  taxLabel?: string;
+  shippingInfo?: string;
+  returnsInfo?: string;
+  sizeGuide?: SizeGuideRow[];
+  sizeGuideTitle?: string;
+  showSizeGuide?: boolean;
+  trustBadges?: TrustBadge[];
+  stock?: number;
 }
 
 const img = (id: string, w = 1200) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+/** Local mock product photos — generated via `node scripts/generate-product-images.mjs` */
+export const productImg = (id: string, index: 1 | 2 = 1) => `/products/${id}-${index}.jpg`;
 
 export const products: Product[] = [
   // Women's bags
@@ -29,7 +49,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Camel",
     colorHex: "#b08458",
-    images: [img("photo-1584917865442-de89df76afd3"), img("photo-1591561954557-26941169b49e")],
+    images: [productImg("w-bag-01", 1), productImg("w-bag-01", 2)],
     description: "A softly structured shoulder bag in supple Italian leather, finished with hand-burnished edges.",
     materials: "Full-grain calfskin, brass hardware, suede lining.",
     isNew: true,
@@ -43,7 +63,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Ivory",
     colorHex: "#efe7d8",
-    images: [img("photo-1548036328-c9fa89d128fa"), img("photo-1566150905458-1bf1fc113f0d")],
+    images: [productImg("w-bag-02", 1), productImg("w-bag-02", 2)],
     description: "A miniature tote with subtle pleating, designed for the considered essentials of an unhurried day.",
     materials: "Smooth nappa leather, lambskin lining.",
     isNew: true,
@@ -56,7 +76,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Noir",
     colorHex: "#1a1a1a",
-    images: [img("photo-1564222256577-45e728f2c0a5"), img("photo-1590739225497-56c1ef803296")],
+    images: [productImg("w-bag-03", 1), productImg("w-bag-03", 2)],
     description: "Slouched silhouette with a single curved handle, an everyday hobo refined to its essential form.",
     materials: "Pebbled calfskin, woven cotton lining.",
     isBestseller: true,
@@ -69,7 +89,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Burgundy",
     colorHex: "#5c1a1b",
-    images: [img("photo-1559563458-527698bf5295"), img("photo-1606522754091-a3bbf9ad4cb3")],
+    images: [productImg("w-bag-04", 1), productImg("w-bag-04", 2)],
     description: "Compact crossbody with adjustable strap and a sculpted magnetic flap closure.",
     materials: "Polished calfskin, palladium hardware.",
   },
@@ -82,7 +102,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Cognac",
     colorHex: "#8b4a2a",
-    images: [img("photo-1553062407-98eeb64c6a62"), img("photo-1572276596237-5db2c3e16c5d")],
+    images: [productImg("w-lug-01", 1), productImg("w-lug-01", 2)],
     description: "A spacious weekender hand-stitched in the Tuscan tradition, made for slow travel.",
     materials: "Vegetable-tanned leather, solid brass feet.",
     isBestseller: true,
@@ -95,7 +115,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Ivory",
     colorHex: "#efe7d8",
-    images: [img("photo-1581553680321-4fffae59fccd"), img("photo-1565026057447-bc90a3dceb87")],
+    images: [productImg("w-lug-02", 1), productImg("w-lug-02", 2)],
     description: "Cabin-sized trunk in featherweight aluminum with leather corners and a silent four-wheel system.",
     materials: "Anodised aluminium, calfskin trim.",
     isNew: true,
@@ -109,7 +129,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Noir",
     colorHex: "#1a1a1a",
-    images: [img("photo-1543163521-1bf539c55dd2"), img("photo-1606107557195-0e29a4b5b4aa")],
+    images: [productImg("w-slp-01", 1), productImg("w-slp-01", 2)],
     description: "A relaxed leather mule with a softly squared toe and tonal stitching.",
     materials: "Nappa leather upper, leather sole.",
     isNew: true,
@@ -122,7 +142,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Burgundy",
     colorHex: "#5c1a1b",
-    images: [img("photo-1535043934128-cf0b28d52f95"), img("photo-1518049362265-d5b2a6467637")],
+    images: [productImg("w-slp-02", 1), productImg("w-slp-02", 2)],
     description: "Plush velvet slipper with embroidered emblem — refined comfort for evenings at home.",
     materials: "Silk velvet, leather sole, shearling lining.",
   },
@@ -134,7 +154,7 @@ export const products: Product[] = [
     gender: "women",
     color: "Camel",
     colorHex: "#b08458",
-    images: [img("photo-1603487742131-4160ec999306"), img("photo-1581101767113-1677fc2bee76")],
+    images: [productImg("w-slp-03", 1), productImg("w-slp-03", 2)],
     description: "Unstructured leather flat that folds gently with the foot — an everyday companion.",
     materials: "Calfskin upper, padded leather insole.",
     isBestseller: true,
@@ -148,7 +168,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Noir",
     colorHex: "#1a1a1a",
-    images: [img("photo-1547949003-9792a18a2601"), img("photo-1591348122449-02525d70379b")],
+    images: [productImg("m-bag-01", 1), productImg("m-bag-01", 2)],
     description: "An architectural briefcase with hand-rolled handles and a discreet trolley sleeve.",
     materials: "Saffiano leather, palladium hardware.",
     isBestseller: true,
@@ -161,7 +181,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Cognac",
     colorHex: "#8b4a2a",
-    images: [img("photo-1590739225497-56c1ef803296"), img("photo-1622560480605-d83c853bc5c3")],
+    images: [productImg("m-bag-02", 1), productImg("m-bag-02", 2)],
     description: "Soft-construction messenger in vegetable-tanned leather that develops a unique patina over time.",
     materials: "Vegetable-tanned leather, canvas lining.",
     isNew: true,
@@ -174,7 +194,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Olive",
     colorHex: "#4b4a30",
-    images: [img("photo-1547949003-9792a18a2601"), img("photo-1553062407-98eeb64c6a62")],
+    images: [productImg("m-bag-03", 1), productImg("m-bag-03", 2)],
     description: "A weekend duffel cut from waxed canvas and trimmed in matte leather.",
     materials: "Waxed cotton canvas, bridle leather trim.",
   },
@@ -187,7 +207,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Noir",
     colorHex: "#1a1a1a",
-    images: [img("photo-1627123424574-724758594e93"), img("photo-1604644401890-0bd678c83788")],
+    images: [productImg("m-wal-01", 1), productImg("m-wal-01", 2)],
     description: "A slim bifold with six card slots and a full-length note compartment, edge-painted by hand.",
     materials: "Box calf leather, lambskin lining.",
     isBestseller: true,
@@ -200,7 +220,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Cognac",
     colorHex: "#8b4a2a",
-    images: [img("photo-1620109893353-ac5fb43c1a8a"), img("photo-1606293926249-ed22f747f5dc")],
+    images: [productImg("m-wal-02", 1), productImg("m-wal-02", 2)],
     description: "Minimalist cardholder with four slots and a central pocket, debossed with our quiet monogram.",
     materials: "Vegetable-tanned calfskin.",
     isNew: true,
@@ -213,7 +233,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Burgundy",
     colorHex: "#5c1a1b",
-    images: [img("photo-1604644401890-0bd678c83788"), img("photo-1627123424574-724758594e93")],
+    images: [productImg("m-wal-03", 1), productImg("m-wal-03", 2)],
     description: "A travel-length wallet with twelve card slots, a zipped coin pocket, and a passport sleeve.",
     materials: "Saffiano leather, satin lining.",
   },
@@ -225,7 +245,7 @@ export const products: Product[] = [
     gender: "men",
     color: "Ivory",
     colorHex: "#efe7d8",
-    images: [img("photo-1606293926249-ed22f747f5dc"), img("photo-1620109893353-ac5fb43c1a8a")],
+    images: [productImg("m-wal-04", 1), productImg("m-wal-04", 2)],
     description: "A clean-lined zip pouch for documents, devices, and the quiet ceremony of arrival.",
     materials: "Smooth calfskin, brass zip.",
   },
@@ -242,7 +262,7 @@ export const editorialImages = [
   img("photo-1509631179647-0177331693ae", 900),
 ];
 
-export const heroImage = img("photo-1490481651871-ab68de25d43d", 2000);
-export const womenBannerImage = img("photo-1581338834647-b0fb40704e21", 1400);
-export const menBannerImage = img("photo-1617137968427-85924c800a22", 1400);
-export const craftImage = img("photo-1528605248644-14dd04022da1", 1400);
+export const heroImage = heroHomeImg;
+export const womenBannerImage = womenBannerImg;
+export const menBannerImage = menBannerImg;
+export const craftImage = heroHomeImg;

@@ -19,7 +19,7 @@ function Privacy() {
     <LegalLayout title="Privacy Policy">
       <p>
         Velin Studio ("we", "our", "us") respects your privacy. This policy explains what
-        personal data we collect when you visit velinstudio.com or place an order, how we use it,
+        personal data we collect when you visit velinstudiobd.com or place an order, how we use it,
         and the rights you have over it.
       </p>
 
@@ -65,7 +65,7 @@ function Privacy() {
         <p>
           Depending on where you live, you may have the right to access, correct, delete or port
           your data, and to withdraw consent or object to certain processing. To exercise these
-          rights, contact privacy@velinstudio.com. You also have the right to lodge a complaint
+          rights, contact privacy@velinstudiobd.com. You also have the right to lodge a complaint
           with your local data protection authority.
         </p>
       </LegalSection>
@@ -80,7 +80,7 @@ function Privacy() {
 
       <LegalSection title="Contact">
         <p>
-          For any privacy question, please write to privacy@velinstudio.com or Velin Studio,
+          For any privacy question, please write to privacy@velinstudiobd.com or Velin Studio,
           12 Rue des Archives, 75004 Paris, France.
         </p>
       </LegalSection>

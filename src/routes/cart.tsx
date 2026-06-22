@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, X } from "lucide-react";
-import { formatPrice, getProductById, useCart } from "@/lib/cart";
+import { formatPrice, useCart } from "@/lib/cart";
+import { productImageUrl } from "@/lib/cloudinary-image";
+import { useCatalogLookup } from "@/lib/use-catalog";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -14,7 +16,8 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, setQty, remove, subtotal } = useCart();
+  const { items, setQty, remove, subtotal, catalogLoading } = useCart();
+  const { getProductById } = useCatalogLookup();
 
   return (
     <div className="mx-auto max-w-[1200px] px-5 lg:px-10 py-12 lg:py-20">
@@ -33,6 +36,8 @@ function CartPage() {
             Discover the collection
           </Link>
         </div>
+      ) : catalogLoading ? (
+        <p className="text-sm text-muted-foreground">Loading your bag…</p>
       ) : (
         <div className="grid lg:grid-cols-[1fr_360px] gap-12 lg:gap-20">
           <ul className="divide-y divide-border border-y border-border">
@@ -42,7 +47,11 @@ function CartPage() {
               return (
                 <li key={it.productId} className="py-6 flex gap-5">
                   <Link to="/product/$id" params={{ id: p.id }} className="shrink-0">
-                    <img src={p.images[0]} alt={p.name} className="w-24 h-32 object-cover bg-muted" />
+                    <img
+                      src={productImageUrl(p.images[0], "card")}
+                      alt={p.name}
+                      className="w-24 h-32 object-cover bg-muted"
+                    />
                   </Link>
                   <div className="flex-1 flex flex-col">
                     <div className="flex justify-between gap-4">

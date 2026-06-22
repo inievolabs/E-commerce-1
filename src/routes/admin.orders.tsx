@@ -1,19 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAdminStore, type Order, type OrderStatus } from "@/lib/admin-store";
 import { formatPrice } from "@/lib/cart";
 
 export const Route = createFileRoute("/admin/orders")({
   ssr: false,
+  validateSearch: (search: Record<string, unknown>) => ({
+    filter: typeof search.filter === "string" ? search.filter : undefined,
+  }),
   component: AdminOrders,
 });
 
-const STATUSES: OrderStatus[] = ["pending", "processing", "shipped", "delivered", "cancelled"];
+const STATUSES: OrderStatus[] = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
 function AdminOrders() {
   const { orders, setOrderStatus, deleteOrder } = useAdminStore();
+  const { filter: initialFilter } = Route.useSearch();
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
   const [selected, setSelected] = useState<Order | null>(null);
+
+  useEffect(() => {
+    if (initialFilter && STATUSES.includes(initialFilter as OrderStatus)) {
+      setFilter(initialFilter as OrderStatus);
+    }
+  }, [initialFilter]);
 
   const filtered = useMemo(
     () => (filter === "all" ? orders : orders.filter((o) => o.status === filter)),
