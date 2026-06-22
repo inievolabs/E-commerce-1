@@ -22,8 +22,7 @@ Your PC (primary)
   D:\Backups\velinstudio\    ← optional: occasional zip copy
 
 GitHub (remote backup)
-  https://github.com/inievolabs/E-commerce-1.git   ← primary (inievo)
-  https://github.com/abumdselim/velinstudio.git    ← Lovable sync (origin)
+  https://github.com/inievolabs/E-commerce-1.git   ← origin
 ```
 
 **Rule:** Code lives in Git. Secrets live outside Git.
@@ -72,10 +71,7 @@ git status
 git add .
 git commit -m "Describe what changed and why"
 
-# 3. Push backup to GitHub (Inievo Labs)
-git push inievo main
-
-# Optional: also push to Lovable-connected repo
+# 3. Push backup to GitHub
 git push origin main
 ```
 
@@ -88,13 +84,13 @@ git push origin main
 You already have:
 
 - Repo cloned at `D:\Failed\velinstudio`
-- `origin` → `https://github.com/abumdselim/velinstudio.git`
+- `origin` → `https://github.com/inievolabs/E-commerce-1.git`
 - `.env.local` configured
 
 After pulling on a new PC or fresh clone:
 
 ```powershell
-git clone https://github.com/abumdselim/velinstudio.git
+git clone https://github.com/inievolabs/E-commerce-1.git velinstudio
 cd velinstudio
 npm install
 copy .env.example .env.local
@@ -126,17 +122,6 @@ Compress-Archive -Path D:\Failed\velinstudio -DestinationPath D:\Backups\velinst
 ```
 
 Or use **Git only** — if you push regularly, GitHub is enough for code.
-
----
-
-## Lovable connection
-
-This repo is linked to [Lovable](https://lovable.dev). Avoid:
-
-- `git push --force` to `main`
-- Rebasing/amending commits already pushed to `main`
-
-Normal flow is fine: commit → push → Lovable syncs.
 
 ---
 

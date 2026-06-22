@@ -336,7 +336,7 @@ placed (COD, status: pending)
 
 ## ধাপ ৯ — Vercel Deploy (২–৩ দিন)
 
-> প্রজেক্ট Lovable + Nitro (Cloudflare default) ব্যবহার করে — Vercel-এ adapter ঠিক করতে হবে।
+> প্রজেক্ট Nitro (Cloudflare default) ব্যবহার করে — Vercel-এ adapter ঠিক করতে হবে।
 
 ### ৯.১ Build ও adapter
 
