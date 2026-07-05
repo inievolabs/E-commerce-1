@@ -9,6 +9,9 @@ function readEnv(name: string): string | undefined {
   if (typeof process !== "undefined" && process.env?.[name]) {
     return process.env[name];
   }
+  if (typeof globalThis !== "undefined" && (globalThis as any)[name]) {
+    return (globalThis as any)[name];
+  }
   return undefined;
 }
 

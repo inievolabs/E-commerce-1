@@ -1,9 +1,22 @@
+function readEnv(name: string): string | undefined {
+  if (typeof window !== "undefined" && (window as any).ENV?.[name]) {
+    return (window as any).ENV[name];
+  }
+  if (typeof import.meta !== "undefined" && import.meta.env?.[name]) {
+    return import.meta.env[name] as string;
+  }
+  if (typeof process !== "undefined" && process.env?.[name]) {
+    return process.env[name];
+  }
+  if (typeof globalThis !== "undefined" && (globalThis as any)[name]) {
+    return (globalThis as any)[name];
+  }
+  return undefined;
+}
+
 /** Canonical site origin from `VITE_SITE_URL` (no trailing slash). */
 export function getSiteUrl(): string {
-  const raw =
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_SITE_URL) ||
-    (typeof process !== "undefined" && process.env?.VITE_SITE_URL) ||
-    "";
+  const raw = readEnv("VITE_SITE_URL") || "";
   return String(raw).replace(/\/$/, "");
 }
 

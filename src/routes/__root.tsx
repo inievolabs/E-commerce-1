@@ -131,10 +131,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const isServer = typeof window === "undefined";
+  const supabaseUrl = isServer
+    ? (globalThis as any).VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL
+    : undefined;
+  const supabaseAnonKey = isServer
+    ? (globalThis as any).VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
+    : undefined;
+  const siteUrl = isServer
+    ? (globalThis as any).VITE_SITE_URL || process.env.VITE_SITE_URL
+    : undefined;
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        {isServer && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV = ${JSON.stringify({
+                VITE_SUPABASE_URL: supabaseUrl,
+                VITE_SUPABASE_ANON_KEY: supabaseAnonKey,
+                VITE_SITE_URL: siteUrl,
+              })};`,
+            }}
+          />
+        )}
       </head>
       <body>
         {children}
