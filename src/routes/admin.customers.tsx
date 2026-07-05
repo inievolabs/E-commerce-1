@@ -190,10 +190,10 @@ function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: ()
       className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto"
       onClick={onClose}
     >
-      <div className="min-h-full grid place-items-center p-4">
+      <div className="min-h-full flex items-start justify-center p-0 sm:p-4">
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-background border border-border w-full max-w-2xl p-6 lg:p-8 my-8"
+          className="bg-background w-full min-h-screen sm:min-h-0 sm:max-w-2xl p-5 sm:p-8 sm:my-8 sm:border sm:border-border"
         >
           <header className="flex items-start justify-between gap-4 mb-6">
             <div>
@@ -272,6 +272,7 @@ function CustomerDetail({ customer, onClose }: { customer: Customer; onClose: ()
                       <p className="text-sm tabular-nums">{formatPrice(o.total)}</p>
                       <Link
                         to="/admin/orders"
+                        search={{ filter: undefined }}
                         className="text-[10px] tracking-[0.2em] uppercase link-underline"
                       >
                         In orders

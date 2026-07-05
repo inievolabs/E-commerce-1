@@ -41,7 +41,7 @@ export async function placeCodOrder(
     p_subtotal: verified.order.subtotal,
     p_shipping: verified.order.shipping,
     p_total: verified.order.total,
-    p_items: verified.order.items,
+    p_items: verified.order.items as unknown as import("./database.types").Json,
   });
 
   if (error) {

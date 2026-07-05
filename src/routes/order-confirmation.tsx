@@ -8,7 +8,7 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/order-confirmation")({
   validateSearch: searchSchema,
-  head: ({ search }) => ({
+  head: () => ({
     meta: [{ title: "Order confirmed — Velin Studio" }, { name: "robots", content: "noindex" }],
     links: [{ rel: "canonical", href: "/order-confirmation" }],
   }),

@@ -477,6 +477,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_wishlists: {
+        Row: {
+          id: string;
+          user_id: string;
+          product_ids: string[];
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          product_ids?: string[];
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          product_ids?: string[];
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           created_at: string;

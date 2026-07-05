@@ -98,7 +98,7 @@ function CategoryEditor({
       className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm overflow-y-auto"
       onClick={onClose}
     >
-      <div className="min-h-full grid place-items-center p-4">
+      <div className="min-h-full flex items-start justify-center p-0 sm:p-4">
         <form
           onClick={(e) => e.stopPropagation()}
           onSubmit={(e) => {
@@ -110,7 +110,7 @@ function CategoryEditor({
             }
             onSave(c);
           }}
-          className="bg-background border border-border w-full max-w-md p-6"
+          className="bg-background w-full min-h-screen sm:min-h-0 sm:max-w-md p-5 sm:p-6 sm:my-8 sm:border sm:border-border"
         >
           <h2 className="font-serif text-2xl mb-6">{isNew ? "New category" : "Edit category"}</h2>
           <label className="block mb-4">

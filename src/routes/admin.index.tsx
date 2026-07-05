@@ -85,6 +85,7 @@ function AdminOverview() {
         </div>
         <Link
           to="/admin/orders"
+          search={{ filter: undefined }}
           className="inline-flex items-center gap-2 border border-foreground px-4 py-2.5 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background transition-colors"
         >
           All orders
@@ -175,6 +176,7 @@ function AdminOverview() {
             </div>
             <Link
               to="/admin/orders"
+              search={{ filter: undefined }}
               className="text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
             >
               View all <ArrowRight className="w-3 h-3" />

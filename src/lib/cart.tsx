@@ -105,7 +105,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (merged.length > 0) {
         await supabase.from("user_carts").upsert({
           user_id: user.id,
-          items: merged,
+          items: merged as unknown as import("@/lib/database.types").Json,
           updated_at: new Date().toISOString(),
         });
       }
@@ -124,7 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const supabase = createSupabaseBrowserClient();
       void supabase.from("user_carts").upsert({
         user_id: user.id,
-        items,
+        items: items as unknown as import("@/lib/database.types").Json,
         updated_at: new Date().toISOString(),
       });
     }, 600);
