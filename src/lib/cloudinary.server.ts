@@ -65,8 +65,6 @@ export async function uploadImageToCloudinary(
   const signPayload: Record<string, string | number> = {
     folder,
     timestamp,
-    quality: "auto:good",
-    fetch_format: "auto",
   };
   if (options?.publicId) signPayload.public_id = options.publicId;
 
@@ -78,8 +76,6 @@ export async function uploadImageToCloudinary(
   formData.append("timestamp", String(timestamp));
   formData.append("signature", signature);
   formData.append("folder", folder);
-  formData.append("quality", "auto:good");
-  formData.append("fetch_format", "auto");
   if (options?.publicId) formData.append("public_id", options.publicId);
 
   const res = await fetch(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, {
