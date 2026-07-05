@@ -44,7 +44,7 @@ export function Header() {
   return (
     <>
       <div className="bg-foreground text-background text-[10.5px] tracking-[0.22em] uppercase py-2 text-center">
-        Complimentary shipping on all orders · Hand-finished in Italy
+        FREE DELIVERY ON ALL ORDERS (LIMITED TIME)
       </div>
       <header
         className={`sticky top-0 z-40 border-b border-border/60 transition-colors duration-300 ${
