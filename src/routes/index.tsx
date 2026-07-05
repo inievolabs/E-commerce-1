@@ -47,7 +47,7 @@ function Home() {
         <img
           src={heroImage}
           alt="Velin Studio leather collection"
-          className="absolute inset-0 h-full w-full object-cover object-[center_42%] animate-fade-in-slow"
+          className="absolute inset-0 h-full w-full object-cover object-bottom animate-fade-in-slow"
         />
         <div className="absolute inset-0 bg-foreground/20" aria-hidden />
         <div

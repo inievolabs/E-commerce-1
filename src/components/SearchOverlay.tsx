@@ -41,7 +41,7 @@ export function SearchOverlay({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur animate-fade-in-slow overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur overflow-y-auto">
       <div className="flex items-center justify-end px-5 h-16">
         <button onClick={onClose} aria-label="Close search" className="p-2">
           <X className="h-5 w-5" />
