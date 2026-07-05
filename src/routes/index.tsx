@@ -4,7 +4,6 @@ import { NewsletterForm } from "@/components/NewsletterForm";
 import { ProductCard } from "@/components/ProductCard";
 import {
   craftImage,
-  editorialImages,
   heroImage,
   menBannerImage,
   womenBannerImage,
@@ -38,7 +37,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { data: products = [] } = useCatalog();
-  const newArrivals = products.filter((p) => p.isNew);
+  const newArrivals = products.filter((p) => p.isNew).slice(0, 6);
   const bestsellers = products.filter((p) => p.isBestseller).slice(0, 6);
 
   return (
@@ -80,6 +79,13 @@ function Home() {
 
       {/* Split banner — Women & Men side by side on all breakpoints */}
       <section className="mx-auto max-w-[1500px] px-5 lg:px-10 py-20 lg:py-28">
+        <div className="text-center mb-12">
+          <p className="eyebrow">THE COLLECTIONS</p>
+          <h2 className="mt-3 font-serif text-3xl md:text-5xl">Explore curated essentials for Men and Women</h2>
+          <p className="mt-4 text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+            Time-honoured leather craftsmanship, tailored for distinct sensibilities and everyday elegance.
+          </p>
+        </div>
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {[
             {
@@ -125,27 +131,16 @@ function Home() {
         </div>
       </section>
 
-      {/* New arrivals carousel */}
+      {/* New arrivals */}
       <section className="py-16 lg:py-24 border-t border-border">
-        <div className="mx-auto max-w-[1500px] px-5 lg:px-10 flex items-end justify-between mb-10">
-          <div>
+        <div className="mx-auto max-w-[1500px] px-5 lg:px-10">
+          <div className="text-center mb-12">
             <p className="eyebrow">Just arrived</p>
             <h2 className="mt-3 font-serif text-3xl md:text-5xl">New arrivals</h2>
           </div>
-          <Link
-            to="/shop"
-            search={{ sort: "newest" } as never}
-            className="hidden md:inline-block eyebrow link-underline"
-          >
-            View all
-          </Link>
-        </div>
-        <div className="overflow-x-auto scrollbar-none">
-          <div className="flex gap-5 lg:gap-8 px-5 lg:px-10 pb-4 snap-x snap-mandatory">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-12 lg:gap-x-8 lg:gap-y-16">
             {newArrivals.map((p) => (
-              <div key={p.id} className="shrink-0 w-[78%] sm:w-[44%] lg:w-[24%] snap-start">
-                <ProductCard product={p} />
-              </div>
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </div>
@@ -189,27 +184,6 @@ function Home() {
               Read our story <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Lookbook */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-[1500px] px-5 lg:px-10 mb-10 flex items-end justify-between">
-          <div>
-            <p className="eyebrow">Lookbook</p>
-            <h2 className="mt-3 font-serif text-3xl md:text-5xl">@velin.studio</h2>
-          </div>
-        </div>
-        <div className="mx-auto max-w-[1500px] px-5 lg:px-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1">
-          {editorialImages.map((src, i) => (
-            <a key={i} href="#" className="block aspect-square overflow-hidden bg-muted">
-              <img
-                src={src}
-                alt="Editorial"
-                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-            </a>
-          ))}
         </div>
       </section>
 
