@@ -1,6 +1,4 @@
 import heroHomeImg from "@/assets/hero-home.jpg";
-import womenBannerImg from "@/assets/women-banner.jpg";
-import menBannerImg from "@/assets/men-banner.jpg";
 
 export type Category = "bags" | "luggage" | "slippers" | "wallets";
 export type Gender = "women" | "men";
@@ -276,6 +274,6 @@ export const editorialImages = [
 ];
 
 export const heroImage = heroHomeImg;
-export const womenBannerImage = womenBannerImg;
-export const menBannerImage = menBannerImg;
+export const womenBannerImage = "https://res.cloudinary.com/dtwejrh45/image/upload/v1783216169/ChatGPT_Image_Jul_5_2026_07_47_21_AM_fo1kbk.png";
+export const menBannerImage = "https://res.cloudinary.com/dtwejrh45/image/upload/v1783216139/ChatGPT_Image_Jul_5_2026_07_47_28_AM_lpw8xd.png";
 export const craftImage = heroHomeImg;
