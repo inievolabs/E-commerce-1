@@ -42,6 +42,81 @@ export type Database = {
         };
         Relationships: [];
       };
+      contact_submissions: {
+        Row: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          subject: string | null;
+          message: string;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          subject?: string | null;
+          message: string;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          first_name?: string;
+          last_name?: string;
+          email?: string;
+          subject?: string | null;
+          message?: string;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      customers: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          email: string;
+          name: string;
+          phone: string | null;
+          type: string;
+          order_count: number;
+          total_spent: number;
+          last_order_at: string | null;
+          first_seen_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          email: string;
+          name: string;
+          phone?: string | null;
+          type?: string;
+          order_count?: number;
+          total_spent?: number;
+          last_order_at?: string | null;
+          first_seen_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          email?: string;
+          name?: string;
+          phone?: string | null;
+          type?: string;
+          order_count?: number;
+          total_spent?: number;
+          last_order_at?: string | null;
+          first_seen_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       categories: {
         Row: {
           description: string | null;
@@ -359,6 +434,48 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      newsletter_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          source: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          source?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          source?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      user_carts: {
+        Row: {
+          id: string;
+          user_id: string;
+          items: Json;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          items?: Json;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          items?: Json;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       profiles: {
         Row: {

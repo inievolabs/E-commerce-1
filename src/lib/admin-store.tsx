@@ -432,7 +432,8 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       inventoryQuery.isLoading ||
       ordersQuery.isLoading ||
       postsQuery.isLoading ||
-      postCategoriesQuery.isLoading,
+      postCategoriesQuery.isLoading ||
+      mediaQuery.isLoading,
   };
 
   const value = useMemo<AdminContextValue>(
