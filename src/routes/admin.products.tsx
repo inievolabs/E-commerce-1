@@ -83,90 +83,117 @@ function AdminProducts() {
       <header className="flex flex-wrap items-end justify-between gap-4 mb-6">
         <div>
           <p className="eyebrow">Catalog</p>
-          <h1 className="font-serif text-3xl md:text-4xl mt-2">Products</h1>
-          <p className="text-sm text-muted-foreground mt-1">{products.length} total</p>
+          <h1 className="font-serif text-3xl md:text-4xl mt-1.5">Products</h1>
+          <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-semibold">{products.length} total products</p>
         </div>
         <button
           onClick={() => setEditing(emptyProduct(categories))}
-          className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90"
+          className="bg-foreground text-background px-5 py-3 text-[10px] tracking-[0.22em] uppercase font-semibold hover:bg-foreground/90 transition-all cursor-pointer shadow-xs"
         >
           + New product
         </button>
       </header>
 
-      <div className="mb-4">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search products…"
-          className="w-full sm:w-80 bg-background border border-border px-4 py-2.5 text-sm focus:outline-none focus:border-foreground"
-        />
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
+        <div className="relative w-full sm:w-80">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products…"
+            className="w-full bg-background border border-border pl-9 pr-4 py-2.5 text-xs uppercase tracking-wider focus:outline-none focus:border-foreground transition-colors"
+          />
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground/60">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-background border border-border overflow-x-auto">
-        <table className="w-full text-sm min-w-[700px]">
-          <thead className="bg-secondary text-left">
+      <div className="bg-background border border-border overflow-x-auto shadow-xs">
+        <table className="w-full text-xs min-w-[700px]">
+          <thead className="bg-[#131210]/5 text-left border-b border-border text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
             <tr>
-              <th className="px-4 py-3 font-medium">Product</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Gender</th>
-              <th className="px-4 py-3 font-medium text-right">Stock</th>
-              <th className="px-4 py-3 font-medium text-right">Price</th>
-              <th className="px-4 py-3 font-medium text-right">Actions</th>
+              <th className="px-5 py-3.5 font-semibold">Product</th>
+              <th className="px-5 py-3.5 font-semibold">Category</th>
+              <th className="px-5 py-3.5 font-semibold">Gender</th>
+              <th className="px-5 py-3.5 font-semibold text-right">Stock</th>
+              <th className="px-5 py-3.5 font-semibold text-right">Price</th>
+              <th className="px-5 py-3.5 font-semibold text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filtered.map((p) => (
-              <tr key={p.id}>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={productImageUrl(p.images[0], "thumb")}
-                      alt=""
-                      className="w-10 h-12 object-cover bg-muted"
-                    />
-                    <div>
-                      <p className="font-medium">{p.name}</p>
-                      <p className="text-xs text-muted-foreground font-mono">{p.id}</p>
+            {filtered.map((p) => {
+              const stock = p.stock ?? inventory[p.id]?.stock ?? 0;
+              const threshold = inventory[p.id]?.lowStockThreshold ?? 4;
+              return (
+                <tr key={p.id} className="hover:bg-black/1 transition-all duration-150">
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-3.5">
+                      <img
+                        src={productImageUrl(p.images[0], "thumb")}
+                        alt=""
+                        className="w-10 h-13 object-cover bg-muted border border-black/5"
+                      />
+                      <div className="min-w-0">
+                        <p className="font-semibold text-foreground truncate text-sm">{p.name}</p>
+                        <p className="text-[10px] text-muted-foreground font-mono mt-1">{p.id}</p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 capitalize">{p.category}</td>
-                <td className="px-4 py-3 capitalize">{p.gender}</td>
-                <td className="px-4 py-3 text-right tabular-nums">
-                  {p.stock ?? inventory[p.id]?.stock ?? 0}
-                </td>
-                <td className="px-4 py-3 text-right tabular-nums">{formatPrice(p.price)}</td>
-                <td className="px-4 py-3 text-right whitespace-nowrap">
-                  <button
-                    onClick={() =>
-                      setEditing({
-                        ...p,
-                        stock: p.stock ?? inventory[p.id]?.stock ?? 0,
-                      })
-                    }
-                    className="eyebrow link-underline mr-4"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete ${p.name}?`)) deleteProduct(p.id);
-                    }}
-                    className="eyebrow text-destructive link-underline"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-muted-foreground text-sm">
-                  No products.
-                </td>
-              </tr>
-            )}
+                  </td>
+                  <td className="px-5 py-3 capitalize font-medium text-foreground/80">{p.category}</td>
+                  <td className="px-5 py-3 capitalize text-muted-foreground">{p.gender}</td>
+                  <td className="px-5 py-3 text-right">
+                    {(() => {
+                      if (stock === 0) {
+                        return (
+                          <div className="inline-flex items-center gap-1.5 text-rose-700 bg-rose-500/5 px-2 py-0.5 rounded-sm border border-rose-500/10">
+                            <span className="w-1 h-1 rounded-full bg-rose-500 shrink-0" />
+                            <span className="font-mono font-semibold">Out</span>
+                          </div>
+                        );
+                      }
+                      if (stock <= threshold) {
+                        return (
+                          <div className="inline-flex items-center gap-1.5 text-amber-700 bg-amber-500/5 px-2 py-0.5 rounded-sm border border-amber-500/10">
+                            <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0 animate-pulse" />
+                            <span className="font-mono font-semibold">{stock} Low</span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-500/5 px-2 py-0.5 rounded-sm border border-emerald-500/10">
+                          <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
+                          <span className="font-mono font-semibold">{stock}</span>
+                        </div>
+                      );
+                    })()}
+                  </td>
+                  <td className="px-5 py-3 text-right font-mono font-semibold text-foreground tabular-nums">{formatPrice(p.price)}</td>
+                  <td className="px-5 py-3 text-right whitespace-nowrap">
+                    <button
+                      onClick={() =>
+                        setEditing({
+                          ...p,
+                          stock: p.stock ?? inventory[p.id]?.stock ?? 0,
+                        })
+                      }
+                      className="eyebrow link-underline mr-5 cursor-pointer text-foreground/70 hover:text-foreground font-semibold"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete ${p.name}?`)) deleteProduct(p.id);
+                      }}
+                      className="eyebrow text-destructive link-underline cursor-pointer font-semibold"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -209,26 +236,26 @@ function ProductEditor({
   return (
     <div>
       {/* Sticky top bar with back navigation */}
-      <div className="sticky top-14 z-10 bg-secondary border-b border-border -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 mb-6 flex items-center justify-between gap-4">
+      <div className="sticky top-14 z-10 bg-[#f5f2ed]/90 backdrop-blur-md border-b border-black/5 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3.5 mb-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
             onClick={onClose}
-            className="eyebrow link-underline shrink-0 flex items-center gap-1"
+            className="eyebrow link-underline shrink-0 flex items-center gap-1 cursor-pointer font-semibold"
             aria-label="Back to products"
           >
             ← Back
           </button>
-          <span className="text-muted-foreground hidden sm:inline">/</span>
-          <h2 className="font-serif text-lg sm:text-2xl truncate hidden sm:block">
-            {isNew ? "New product" : "Edit product"}
+          <span className="text-muted-foreground/45 hidden sm:inline text-xs">/</span>
+          <h2 className="font-serif text-lg sm:text-xl truncate hidden sm:block font-medium">
+            {isNew ? "New Product" : "Edit Product"}
           </h2>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="border border-foreground px-4 py-2 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background"
+            className="border border-[#0d0c0b]/15 bg-background px-5 py-2.5 text-[10px] tracking-[0.22em] uppercase font-semibold hover:bg-[#0d0c0b] hover:text-white transition-all cursor-pointer shadow-xs"
           >
             Cancel
           </button>
@@ -236,7 +263,7 @@ function ProductEditor({
             type="submit"
             form="product-editor-form"
             disabled={imagesUploading}
-            className="bg-foreground text-background px-4 py-2 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90 disabled:opacity-50"
+            className="bg-foreground text-background px-5 py-2.5 text-[10px] tracking-[0.22em] uppercase font-semibold hover:bg-foreground/90 disabled:opacity-50 transition-all cursor-pointer shadow-xs"
           >
             {imagesUploading ? "Uploading…" : "Save"}
           </button>

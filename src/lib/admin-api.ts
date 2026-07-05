@@ -173,42 +173,141 @@ export async function fetchAdminCategories(): Promise<CategoryDef[]> {
 }
 
 export async function fetchAdminInventory(): Promise<Record<string, InventoryRecord>> {
-  const { data, error } = await createSupabaseBrowserClient().from("inventory").select("*");
-  if (error) throw error;
-  return Object.fromEntries((data ?? []).map((row) => [row.product_id, mapInventory(row)]));
+  try {
+    const { data, error } = await createSupabaseBrowserClient().from("inventory").select("*");
+    if (error) throw error;
+    return Object.fromEntries((data ?? []).map((row) => [row.product_id, mapInventory(row)]));
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn("Using mock inventory in dev mode:", err);
+      // Dynamically generate default inventory for seeded products
+      try {
+        const { products } = await import("@/data/products");
+        return Object.fromEntries(
+          products.map((p) => [
+            p.id,
+            { productId: p.id, stock: (p.id.charCodeAt(0) % 25) + 1, lowStockThreshold: 4 },
+          ]),
+        );
+      } catch {
+        return {};
+      }
+    }
+    throw err;
+  }
+}
+
+function getMockOrders(): Order[] {
+  const statuses: OrderStatus[] = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
+  const customerNames = ["Eleanor Vance", "Liam Sterling", "Sophia Loren", "Julian Brooks", "Clara Dubois", "Amara Okafor"];
+  const customerEmails = ["eleanor@vance.com", "liam@sterling.co", "sophia@loren.it", "julian@brooks.net", "clara@dubois.fr", "amara@okafor.org"];
+  const products = [
+    { productId: "velin-tote", name: "Classic Leather Tote", price: 280, qty: 1, color: "Tan", size: "O/S" },
+    { productId: "velin-cardholder", name: "Smyth Cardholder", price: 85, qty: 1, color: "Black", size: "O/S" },
+    { productId: "velin-scarf", name: "Cashmere Knit Scarf", price: 145, qty: 1, color: "Oatmeal", size: "O/S" },
+    { productId: "velin-bag", name: "Studio Hobo Bag", price: 340, qty: 1, color: "Olive", size: "O/S" }
+  ];
+
+  const now = new Date();
+  return Array.from({ length: 12 }).map((_, i) => {
+    const status = statuses[i % statuses.length];
+    const customerName = customerNames[i % customerNames.length];
+    const customerEmail = customerEmails[i % customerEmails.length];
+    
+    // Pick 1 or 2 products
+    const itemsCount = (i % 2) + 1;
+    const items = Array.from({ length: itemsCount }).map((_, itemIndex) => {
+      const p = products[(i + itemIndex) % products.length];
+      return {
+        productId: p.productId,
+        name: p.name,
+        price: p.price,
+        qty: (i % 2) + 1,
+        color: p.color,
+        size: p.size
+      };
+    });
+    
+    const subtotal = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const shipping = subtotal > 200 ? 0 : 15;
+    const total = subtotal + shipping;
+    const createdAt = new Date(now.getTime() - i * 4 * 3600 * 1000).toISOString();
+    
+    return {
+      id: `VS-${1000 + i}`,
+      createdAt,
+      customerName,
+      customerEmail,
+      shippingAddress: "123 Rue de Rivoli, Paris, 75001, France",
+      items,
+      subtotal,
+      shipping,
+      total,
+      status
+    };
+  });
 }
 
 export async function fetchAdminOrders(): Promise<Order[]> {
-  const { data, error } = await createSupabaseBrowserClient()
-    .from("orders")
-    .select("*, order_items(*)")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map((row) =>
-    mapOrder(row, (row.order_items ?? []) as Tables<"order_items">[]),
-  );
+  try {
+    const { data, error } = await createSupabaseBrowserClient()
+      .from("orders")
+      .select("*, order_items(*)")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map((row) =>
+      mapOrder(row, (row.order_items ?? []) as Tables<"order_items">[]),
+    );
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn("Using mock orders in dev mode:", err);
+      return getMockOrders();
+    }
+    throw err;
+  }
 }
 
 export async function fetchAdminPosts(): Promise<Post[]> {
-  const { data, error } = await createSupabaseBrowserClient()
-    .from("posts")
-    .select("*")
-    .order("published_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map(mapPost);
+  try {
+    const { data, error } = await createSupabaseBrowserClient()
+      .from("posts")
+      .select("*")
+      .order("published_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map(mapPost);
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn("Using empty posts list in dev mode");
+      return [];
+    }
+    throw err;
+  }
 }
 
 export async function fetchAdminPostCategories(): Promise<PostCategory[]> {
-  const { data, error } = await createSupabaseBrowserClient().from("post_categories").select("*");
-  if (error) throw error;
-  return (data ?? []).map(mapPostCategory);
+  try {
+    const { data, error } = await createSupabaseBrowserClient().from("post_categories").select("*");
+    if (error) throw error;
+    return (data ?? []).map(mapPostCategory);
+  } catch (err) {
+    if (import.meta.env.DEV) return [];
+    throw err;
+  }
 }
 
 export async function fetchAdminMedia(): Promise<MediaItem[]> {
-  const { data, error } = await createSupabaseBrowserClient()
-    .from("media_assets")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map(mapMedia);
+  try {
+    const { data, error } = await createSupabaseBrowserClient()
+      .from("media_assets")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map(mapMedia);
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.warn("Using empty media assets list in dev mode");
+      return [];
+    }
+    throw err;
+  }
 }

@@ -21,11 +21,11 @@ function AdminCategories() {
       <header className="flex flex-wrap items-end justify-between gap-4 mb-6">
         <div>
           <p className="eyebrow">Catalog</p>
-          <h1 className="font-serif text-3xl md:text-4xl mt-2">Categories</h1>
+          <h1 className="font-serif text-3xl md:text-4xl mt-1.5">Categories</h1>
         </div>
         <button
           onClick={() => setEditing({ id: "" as Category, label: "", description: "" })}
-          className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90"
+          className="bg-foreground text-background px-5 py-3 text-[10px] tracking-[0.22em] uppercase font-semibold hover:bg-foreground/90 transition-all cursor-pointer shadow-xs"
         >
           + New category
         </button>
@@ -33,19 +33,19 @@ function AdminCategories() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {categories.map((c) => (
-          <div key={c.id} className="bg-background border border-border p-5">
+          <div key={c.id} className="bg-background border border-border p-6 transition-all duration-350 hover:shadow-md hover:-translate-y-0.5 group relative overflow-hidden">
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-serif text-xl">{c.label}</p>
-                <p className="text-xs text-muted-foreground font-mono mt-1">{c.id}</p>
+              <div className="min-w-0">
+                <p className="font-serif text-2xl text-foreground group-hover:text-[#c9a96e] transition-colors truncate">{c.label}</p>
+                <p className="text-[10px] text-muted-foreground font-mono mt-1.5 tracking-wider uppercase">{c.id}</p>
               </div>
-              <span className="text-xs text-muted-foreground tabular-nums">
-                {countByCat[c.id] ?? 0} products
+              <span className="text-[9px] font-sans font-semibold px-2 py-0.5 uppercase tracking-wider bg-[#c9a96e]/10 text-[#c9a96e] border border-[#c9a96e]/20 rounded-sm shrink-0">
+                {countByCat[c.id] ?? 0} items
               </span>
             </div>
-            {c.description && <p className="text-sm text-muted-foreground mt-3">{c.description}</p>}
-            <div className="mt-4 flex gap-4">
-              <button onClick={() => setEditing(c)} className="eyebrow link-underline">
+            {c.description && <p className="text-xs text-muted-foreground mt-4 line-clamp-2 leading-relaxed">{c.description}</p>}
+            <div className="mt-6 flex gap-4 border-t border-black/5 pt-4">
+              <button onClick={() => setEditing(c)} className="eyebrow link-underline mr-1 cursor-pointer font-semibold text-foreground/75 hover:text-foreground">
                 Edit
               </button>
               <button
@@ -56,7 +56,7 @@ function AdminCategories() {
                   }
                   if (confirm(`Delete category "${c.label}"?`)) deleteCategory(c.id);
                 }}
-                className="eyebrow text-destructive link-underline"
+                className="eyebrow text-destructive link-underline cursor-pointer font-semibold"
               >
                 Delete
               </button>
@@ -110,53 +110,59 @@ function CategoryEditor({
             }
             onSave(c);
           }}
-          className="bg-background w-full min-h-screen sm:min-h-0 sm:max-w-md p-5 sm:p-6 sm:my-8 sm:border sm:border-border"
+          className="bg-[#f5f2ed] w-full min-h-screen sm:min-h-0 sm:max-w-md p-6 sm:my-8 border border-[#0d0c0b]/10 shadow-2xl relative"
         >
-          <h2 className="font-serif text-2xl mb-6">{isNew ? "New category" : "Edit category"}</h2>
-          <label className="block mb-4">
-            <span className="eyebrow block mb-2">ID (slug)</span>
-            <input
-              value={c.id}
-              onChange={(e) =>
-                setC((s) => ({
-                  ...s,
-                  id: e.target.value.toLowerCase().replace(/\s+/g, "-") as Category,
-                }))
-              }
-              disabled={!isNew}
-              required
-              className="w-full bg-transparent border-b border-foreground/30 py-2 text-sm focus:outline-none focus:border-foreground font-mono disabled:opacity-50"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="eyebrow block mb-2">Label</span>
-            <input
-              value={c.label}
-              onChange={(e) => setC((s) => ({ ...s, label: e.target.value }))}
-              required
-              className="w-full bg-transparent border-b border-foreground/30 py-2 text-sm focus:outline-none focus:border-foreground"
-            />
-          </label>
-          <label className="block mb-6">
-            <span className="eyebrow block mb-2">Description</span>
-            <textarea
-              rows={3}
-              value={c.description ?? ""}
-              onChange={(e) => setC((s) => ({ ...s, description: e.target.value }))}
-              className="w-full bg-transparent border border-border p-3 text-sm focus:outline-none focus:border-foreground"
-            />
-          </label>
-          <div className="flex justify-end gap-3">
+          <h2 className="font-serif text-2xl mb-6 font-medium text-foreground">{isNew ? "New Category" : "Edit Category"}</h2>
+          
+          <div className="space-y-4 mb-6">
+            <label className="block">
+              <span className="eyebrow block mb-2">ID (slug)</span>
+              <input
+                value={c.id}
+                onChange={(e) =>
+                  setC((s) => ({
+                    ...s,
+                    id: e.target.value.toLowerCase().replace(/\s+/g, "-") as Category,
+                  }))
+                }
+                disabled={!isNew}
+                required
+                className="w-full bg-background border border-border px-3.5 py-2.5 text-xs focus:outline-none focus:border-foreground font-mono disabled:opacity-50 transition-colors uppercase tracking-wider"
+              />
+            </label>
+            
+            <label className="block">
+              <span className="eyebrow block mb-2">Label</span>
+              <input
+                value={c.label}
+                onChange={(e) => setC((s) => ({ ...s, label: e.target.value }))}
+                required
+                className="w-full bg-background border border-border px-3.5 py-2.5 text-xs focus:outline-none focus:border-foreground transition-colors"
+              />
+            </label>
+            
+            <label className="block">
+              <span className="eyebrow block mb-2">Description</span>
+              <textarea
+                rows={4}
+                value={c.description ?? ""}
+                onChange={(e) => setC((s) => ({ ...s, description: e.target.value }))}
+                className="w-full bg-background border border-border p-3.5 text-xs focus:outline-none focus:border-foreground transition-colors resize-none leading-relaxed"
+              />
+            </label>
+          </div>
+
+          <div className="flex justify-end gap-3 border-t border-black/5 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="border border-foreground px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground hover:text-background"
+              className="border border-[#0d0c0b]/15 bg-background px-5 py-2.5 text-[10px] tracking-[0.22em] uppercase font-semibold hover:bg-[#0d0c0b] hover:text-white transition-all cursor-pointer shadow-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-foreground text-background px-5 py-3 text-xs tracking-[0.22em] uppercase hover:bg-foreground/90"
+              className="bg-foreground text-background px-5 py-2.5 text-[10px] tracking-[0.22em] uppercase font-semibold hover:bg-foreground/90 transition-all cursor-pointer shadow-xs"
             >
               Save
             </button>
